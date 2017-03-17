@@ -1,17 +1,29 @@
 package com.about.zhiye.bean.zhihu;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by 跃峰 on 2016/9/19.
  * Contact Me : mcxinyu@foxmail.com
+ *
  * 最新消息
+ *
+ * date : 日期
+ * stories : 当日新闻
+ * top_stories : 界面顶部 ViewPager 滚动显示的显示内容（子项格式同上）
+ * （请注意区分此处的 image 属性与 stories 中的 images 属性）
+ *
  */
 public class NewsTimeLine implements Serializable{
+    @SerializedName("date")
     private String date;
+    @SerializedName("stories")
     private List<Stories> stories;
-    private List<TopStories> top_stories;
+    @SerializedName("top_stories")
+    private List<TopStories> topStories;
 
     public String getDate() {
         return date;
@@ -21,8 +33,8 @@ public class NewsTimeLine implements Serializable{
         return stories;
     }
 
-    public List<TopStories> getTop_stories() {
-        return top_stories;
+    public List<TopStories> getTopStories() {
+        return topStories;
     }
 
     @Override
@@ -30,7 +42,7 @@ public class NewsTimeLine implements Serializable{
         return "NewsTimeLine{" +
                 "date='" + date + '\'' +
                 ", stories='" + stories + '\'' +
-                ", top_stories='" + top_stories + '\'' +
+                ", topStories='" + topStories + '\'' +
                 "}";
     }
 }

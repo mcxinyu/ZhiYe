@@ -6,7 +6,7 @@ package com.about.zhiye.api;
  */
 public class ApiFactory {
 
-    protected static final Object monitor = new Object();
+    private static final Object monitor = new Object();
     static ZhihuApi zhihuApiSingleton = null;
 
     //return Singleton
