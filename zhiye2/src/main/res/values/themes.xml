@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 亮色主题 -->
+    <style name="Theme.Zhiye.Light.NoActionbar" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionModeOverlay">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="popupTheme">@style/Widget.AppCompat.Light.PopupMenu.Overflow</item>
+        <item name="textAppearanceLargePopupMenu">
+            @style/Theme.Zhiye.Light.PopupMenuTextAppearanceLarge
+        </item>
+        <item name="android:textAppearanceLargePopupMenu">
+            <!-- 菜单的颜色 底部菜单-->
+            @style/Theme.Zhiye.Light.PopupMenuTextAppearanceLarge
+        </item>
+    </style>
+
+    <style name="Theme.Zhiye.Light.Preferences" parent="Theme.Zhiye.Light.NoActionbar">
+        <item name="android:textColor">@color/titleGray</item>
+    </style>
+
+    <style name="Theme.Zhiye.Light.PopupMenuTextAppearanceLarge" parent="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Large">
+        <item name="android:textColor">@android:color/darker_gray</item>
+    </style>
+
+
+    <!-- 暗色主题 -->
+    <style name="Theme.Zhiye.Dark.NoActionbar" parent="@style/Theme.AppCompat.NoActionBar">
+        <item name="windowActionModeOverlay">true</item>
+        <item name="colorPrimary">@color/colorDarkPrimary</item>
+        <item name="colorPrimaryDark">@color/colorDarkPrimaryDark</item>
+        <item name="android:textColorPrimary">@android:color/darker_gray</item>
+        <item name="popupTheme">@style/Widget.AppCompat.Light.PopupMenu.Overflow</item>
+        <item name="textAppearanceLargePopupMenu">
+            @style/Theme.Zhiye.Dark.PopupMenuTextAppearanceLarge
+        </item>
+        <item name="android:textAppearanceLargePopupMenu">
+            @style/Theme.Zhiye.Dark.PopupMenuTextAppearanceLarge
+        </item>
+    </style>
+
+    <style name="Theme.Zhiye.Dark.Preferences" parent="Theme.Zhiye.Dark.NoActionbar">
+        <item name="android:textColor">@android:color/darker_gray</item>
+    </style>
+
+    <style name="Theme.Zhiye.Dark.PopupMenuTextAppearanceLarge" parent="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Large">
+        <item name="android:textColor">@color/colorDarkPrimaryDark</item>
+    </style>
+
+</resources>
