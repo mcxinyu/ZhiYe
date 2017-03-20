@@ -25,12 +25,12 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
 
-    // @BindView(R.id.toolbar)
-    // Toolbar mToolbar;
     @BindView(R.id.fragment_content)
     FrameLayout mFragmentContent;
     @BindView(R.id.bottom_navigation)
     BottomNavigationView mBottomNavigation;
+
+    private ActionBar mSupportActionBar;
 
     private FragmentManager mFragmentManager;
 
@@ -46,15 +46,15 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    // mToolbar.setTitle(getString(R.string.title_zhihu));
+                    // mSupportActionBar.setTitle(getString(R.string.title_zhihu));
                     switchFragment(mZhihuFragment);
                     return true;
                 case R.id.navigation_dashboard:
-                    // mToolbar.setTitle(getString(R.string.title_dashboard));
+                    // mSupportActionBar.setTitle(getString(R.string.title_dashboard));
                     switchFragment(mZhihuFragment1);
                     return true;
                 case R.id.navigation_notifications:
-                    // mToolbar.setTitle(getString(R.string.title_notifications));
+                    // mSupportActionBar.setTitle(getString(R.string.title_notifications));
                     switchFragment(mZhihuFragment2);
                     return true;
             }
@@ -105,11 +105,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initToolbar() {
-        // setSupportActionBar(mToolbar);
-        // mToolbar.setTitle(getString(R.string.title_zhihu));
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setHomeButtonEnabled(true);
+        mSupportActionBar = getSupportActionBar();
+        if (mSupportActionBar != null) {
+            mSupportActionBar.setHomeButtonEnabled(true);
         }
     }
 

@@ -16,7 +16,7 @@ import java.io.Serializable;
  * multipic : 消息是否包含多张图片（仅出现在包含多图的新闻中）
  *
  */
-public class TopStories implements Serializable{
+public class TopStory implements Serializable{
     @SerializedName("id")
     private String id;
     @SerializedName("title")
@@ -90,7 +90,7 @@ public class TopStories implements Serializable{
 
     @Override
     public String toString() {
-        return "TopStories{" +
+        return "TopStory{" +
                 "gaPrefix='" + gaPrefix + '\'' +
                 ", id='" + id + '\'' +
                 ", multiPic='" + multiPic + '\'' +

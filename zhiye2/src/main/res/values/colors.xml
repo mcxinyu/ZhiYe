@@ -9,4 +9,6 @@
     <color name="colorDarkPrimaryDark">#263043</color>
     <color name="colorDarkAccent">#FF4081</color>
     <color name="titleDarkGray">#a0a4ae</color>
+
+    <color name="titleTransparency">#00000000</color>
 </resources>

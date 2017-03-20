@@ -23,7 +23,7 @@ public class NewsTimeLine implements Serializable{
     @SerializedName("stories")
     private List<Story> stories;
     @SerializedName("top_stories")
-    private List<TopStories> topStories;
+    private List<TopStory> topStories;
 
     public String getDate() {
         return date;
@@ -41,11 +41,11 @@ public class NewsTimeLine implements Serializable{
         this.stories = stories;
     }
 
-    public List<TopStories> getTopStories() {
+    public List<TopStory> getTopStories() {
         return topStories;
     }
 
-    public void setTopStories(List<TopStories> topStories) {
+    public void setTopStories(List<TopStory> topStories) {
         this.topStories = topStories;
     }
 

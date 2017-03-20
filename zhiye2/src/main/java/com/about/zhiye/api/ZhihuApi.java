@@ -32,7 +32,7 @@ public interface ZhihuApi {
     Observable<NewsTimeLine> getLatestNews();
 
     /**
-     * 过往消息，没有 TopStories
+     * 过往消息，没有 TopStory
      * @param date 日期，例如 20170315 获取的是 20170312 的消息，日期大于等于当天获取的是当天的消息，
      *             （知乎日报的生日为 2013 年 5 月 19 日，若 before 后数字小于 20130520 ，只会接收到空消息。）
      * @return 新闻

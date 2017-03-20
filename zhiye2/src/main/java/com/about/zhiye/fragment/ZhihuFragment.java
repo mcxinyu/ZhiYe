@@ -1,7 +1,9 @@
 package com.about.zhiye.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -15,22 +17,32 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.about.zhiye.R;
+import com.about.zhiye.api.ApiFactory;
+import com.about.zhiye.model.NewsTimeLine;
+import com.about.zhiye.model.TopStory;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Observable;
+import rx.Observer;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by huangyuefeng on 2017/3/17.
  * Contact me : mcxinyu@foxmail.com
  * 管理按日期排列的 ViewPager 里面存放最近一周各个日期的 NewsListFragment
  */
-public class ZhihuFragment extends Fragment {
+public class ZhihuFragment extends Fragment implements Observer<List<TopStory>> {
     @SuppressWarnings("deprecation")
     public static final Date ZHIHU_DAILY_BIRTHDAY = new Date(113, 4, 19); // May 19th, 2013
     public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd", Locale.US);
@@ -39,12 +51,19 @@ public class ZhihuFragment extends Fragment {
 
     @BindView(R.id.zhihu_tab_layout)
     TabLayout mTabLayout;
-    @BindView(R.id.zhihu_view_pager)
+    @BindView(R.id.story_list_view_pager)
     ViewPager mViewPager;
     @BindView(R.id.floating_action_button)
     FloatingActionButton mFloatingActionButton;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    @BindView(R.id.top_story_view_pager)
+    ViewPager mTopStoryViewPager;
+    @BindView(R.id.collapsing_layout)
+    CollapsingToolbarLayout mCollapsingLayout;
+
+    private TopStoryPagerAdapter mTopStoryPagerAdapter;
+    private List<TopStory> mTopStories;
 
     public static ZhihuFragment newInstance() {
 
@@ -66,8 +85,12 @@ public class ZhihuFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_zhihu, container, false);
         ButterKnife.bind(this, view);
 
+        mTopStoryPagerAdapter = new TopStoryPagerAdapter(getFragmentManager());
+        mTopStoryViewPager.setAdapter(mTopStoryPagerAdapter);
+        doRefreshTopStories();
+
         mViewPager.setOffscreenPageLimit(PAGER_COUNT);
-        mViewPager.setAdapter(new ZhihuPagerAdapter(getFragmentManager()));
+        mViewPager.setAdapter(new StoryListPagerAdapter(getFragmentManager()));
         mTabLayout.setupWithViewPager(mViewPager);
 
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -82,12 +105,44 @@ public class ZhihuFragment extends Fragment {
     }
 
     private void initToolbar() {
-        ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+        mCollapsingLayout.setTitle(getString(R.string.title_zhihu));
+        mCollapsingLayout.setExpandedTitleColor(Color.TRANSPARENT);
     }
 
-    private class ZhihuPagerAdapter extends FragmentStatePagerAdapter {
+    // @Override
+    // public void setUserVisibleHint(boolean isVisibleToUser) {
+    //     super.setUserVisibleHint(isVisibleToUser);
+    //     doRefreshTopStories();
+    // }
 
-        ZhihuPagerAdapter(FragmentManager fm) {
+    /**
+     * RxJava
+     */
+    @Override
+    public void onCompleted() {
+        mTopStoryPagerAdapter.updateTopStories(mTopStories);
+    }
+
+    /**
+     * RxJava
+     */
+    @Override
+    public void onError(Throwable e) {
+        // TODO: 2017/3/20
+    }
+
+    /**
+     * RxJava
+     */
+    @Override
+    public void onNext(List<TopStory> topStories) {
+        mTopStories = topStories;
+    }
+
+    private class StoryListPagerAdapter extends FragmentStatePagerAdapter {
+
+        StoryListPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -113,6 +168,51 @@ public class ZhihuFragment extends Fragment {
             return (position == 0 ?
                     getString(R.string.zhihu_daily_today) + " " :
                     DateFormat.getDateInstance().format(calendar.getTime()));
+        }
+    }
+
+    private void doRefreshTopStories() {
+        getTopStories()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this);
+    }
+
+    private Observable<List<TopStory>> getTopStories() {
+        return ApiFactory.getZhihuApiSingleton()
+                .getLatestNews()
+                .map(new Func1<NewsTimeLine, List<TopStory>>() {
+                    @Override
+                    public List<TopStory> call(NewsTimeLine newsTimeLine) {
+                        return newsTimeLine.getTopStories();
+                    }
+                });
+    }
+
+    private class TopStoryPagerAdapter extends FragmentStatePagerAdapter {
+        List<TopStory> list = new ArrayList<>();
+
+        public TopStoryPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return TopStoryFragment.newInstance(list.get(position));
+        }
+
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+
+        public void updateTopStories(List<TopStory> topStories) {
+            setTopStories(topStories);
+            notifyDataSetChanged();
+        }
+
+        private void setTopStories(List<TopStory> topStories) {
+            list = topStories;
         }
     }
 }
