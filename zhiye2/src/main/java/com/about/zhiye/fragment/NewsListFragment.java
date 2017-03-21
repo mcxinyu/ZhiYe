@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.about.zhiye.R;
-import com.about.zhiye.adapter.NewsAdapter;
+import com.about.zhiye.adapter.NewsListAdapter;
 import com.about.zhiye.api.ZhihuObservable;
 import com.about.zhiye.model.Story;
 
@@ -47,7 +47,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     private List<Story> mStories = new ArrayList<>();
 
     private OnFragmentInteractionListener mListener;
-    private NewsAdapter mNewsAdapter;
+    private NewsListAdapter mNewsAdapter;
     private String mDate;
     private boolean isRefreshed = false;
 
@@ -75,7 +75,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         // mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        mNewsAdapter = new NewsAdapter(getContext(), mStories);
+        mNewsAdapter = new NewsListAdapter(getContext(), mStories);
         mRecyclerView.setAdapter(mNewsAdapter);
 
         mSwipeRefreshLayout.setOnRefreshListener(this);

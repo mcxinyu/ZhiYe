@@ -17,9 +17,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.about.zhiye.R;
+import com.about.zhiye.activity.ZhihuWebActivity;
 import com.about.zhiye.api.ApiFactory;
 import com.about.zhiye.model.NewsTimeLine;
 import com.about.zhiye.model.TopStory;
+import com.jude.rollviewpager.OnItemClickListener;
+import com.jude.rollviewpager.RollPagerView;
+import com.jude.rollviewpager.hintview.ColorPointHintView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -57,10 +61,10 @@ public class ZhihuFragment extends Fragment implements Observer<List<TopStory>> 
     FloatingActionButton mFloatingActionButton;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @BindView(R.id.top_story_view_pager)
-    ViewPager mTopStoryViewPager;
     @BindView(R.id.collapsing_layout)
     CollapsingToolbarLayout mCollapsingLayout;
+    @BindView(R.id.roll_pager_view)
+    RollPagerView mRollPagerView;
 
     private TopStoryPagerAdapter mTopStoryPagerAdapter;
     private List<TopStory> mTopStories;
@@ -86,7 +90,15 @@ public class ZhihuFragment extends Fragment implements Observer<List<TopStory>> 
         ButterKnife.bind(this, view);
 
         mTopStoryPagerAdapter = new TopStoryPagerAdapter(getFragmentManager());
-        mTopStoryViewPager.setAdapter(mTopStoryPagerAdapter);
+        mRollPagerView.setAdapter(mTopStoryPagerAdapter);
+        mRollPagerView.setAnimationDurtion(500);
+        mRollPagerView.setHintView(new ColorPointHintView(getContext(), Color.WHITE, Color.GRAY));
+        mRollPagerView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                startActivity(ZhihuWebActivity.newIntent(getContext(), mTopStories.get(position).getId()));
+            }
+        });
         doRefreshTopStories();
 
         mViewPager.setOffscreenPageLimit(PAGER_COUNT);

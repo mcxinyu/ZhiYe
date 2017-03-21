@@ -1,6 +1,8 @@
 package com.about.zhiye.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.about.zhiye.R;
+import com.about.zhiye.activity.ZhihuWebActivity;
 import com.about.zhiye.model.Story;
 import com.bumptech.glide.Glide;
 
@@ -24,11 +27,11 @@ import butterknife.ButterKnife;
  * Created by huangyuefeng on 2017/3/18.
  * Contact me : mcxinyu@foxmail.com
  */
-public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CardViewHolder> {
+public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardViewHolder> {
     private Context mContext;
     private List<Story> mStories;
 
-    public NewsAdapter(Context context, List<Story> stories) {
+    public NewsListAdapter(Context context, List<Story> stories) {
         mContext = context;
         mStories = stories;
     }
@@ -78,7 +81,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CardViewHolder
             mNewsListCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    openUsingBrowser(story.getId());
+                    mContext.startActivity(ZhihuWebActivity.newIntent(mContext, story.getId()));
                 }
             });
 
@@ -91,20 +94,21 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.CardViewHolder
             }
 
             if (null != story.getImages() && story.getImages().length > 0) {
-                Glide.with(mContext).load(story.getImages()[0]).into(mThumbnailImage);
+                Glide.with(mContext)
+                        .load(story.getImages()[0]).asBitmap().centerCrop()
+                        .into(mThumbnailImage);
             }
         }
 
-        private void openUsingBrowser(String url) {
-            Toast.makeText(mContext, "go to browser", Toast.LENGTH_SHORT).show();
 
-            // Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            //
-            // if (mContext.getPackageManager().queryIntentActivities(browserIntent, 0).size() > 0) {
-            //     mContext.startActivity(browserIntent);
-            // } else {
-            //     Toast.makeText(mContext, mContext.getString(R.string.no_browser), Toast.LENGTH_SHORT).show();
-            // }
+        private void openUsingBrowser(String url) {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+
+            if (mContext.getPackageManager().queryIntentActivities(browserIntent, 0).size() > 0) {
+                mContext.startActivity(browserIntent);
+            } else {
+                Toast.makeText(mContext, mContext.getString(R.string.no_browser), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

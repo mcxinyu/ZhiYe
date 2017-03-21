@@ -11,14 +11,15 @@
     <application
         android:name=".ZhiYeApp"
         android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Zhiye.Light.NoActionbar"
-        android:fullBackupContent="true">
+        android:theme="@style/Theme.Zhiye.Light.NoActionbar">
         <meta-data
             android:name="com.google.android.backup.api_key"
             android:value="AEdPqrEAAAAIjzrthDXQrr6_BQMZHdfhcOemS-Y4hUPdw2UU5Q"/>
+
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name">
@@ -27,6 +28,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.ZhihuWebActivity"
+            android:parentActivityName=".activity.MainActivity"
+            android:label="@string/title_activity_zhihu_web">
         </activity>
     </application>
 

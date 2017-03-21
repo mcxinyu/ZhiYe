@@ -12,7 +12,6 @@
         <item name="cardPreventCornerOverlap">false</item>
         <item name="cardUseCompatPadding">true</item>
         <item name="cardCornerRadius">2dp</item>
-        <!--<item name="cardElevation">3dp</item>-->
         <item name="android:foreground">?attr/selectableItemBackground</item>
         <item name="android:stateListAnimator" tools:targetApi="lollipop">@drawable/lift_on_touch</item>
     </style>

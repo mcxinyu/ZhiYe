@@ -13,23 +13,26 @@
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_layout"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:contentScrim="@color/colorPrimary"
-            android:minHeight="?attr/actionBarSize"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            app:contentScrim="@color/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:statusBarScrim="@android:color/transparent">
 
-            <android.support.v4.view.ViewPager
-                android:id="@+id/top_story_view_pager"
+            <com.jude.rollviewpager.RollPagerView
+                android:id="@+id/roll_pager_view"
                 android:layout_width="match_parent"
+                android:layout_height="200dp"
                 app:layout_collapseMode="parallax"
-                android:layout_height="200dp"/>
+                app:rollviewpager_hint_paddingBottom="8dp"
+                app:rollviewpager_play_delay="3000"/>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
-                app:layout_collapseMode="pin"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"/>
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"/>
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
@@ -37,8 +40,8 @@
             android:id="@+id/zhihu_tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabMode="scrollable"
             app:tabIndicatorColor="@android:color/white"
+            app:tabMode="scrollable"
             app:tabSelectedTextColor="@android:color/white"
             app:tabTextColor="@color/titleGray"/>
         <!--app:tabBackground="@color/colorPrimary"-->

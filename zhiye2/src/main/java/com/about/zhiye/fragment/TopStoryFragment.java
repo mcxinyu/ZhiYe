@@ -7,9 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.about.zhiye.R;
 import com.about.zhiye.model.TopStory;
@@ -29,8 +27,6 @@ public class TopStoryFragment extends Fragment {
     ImageView mImageView;
     @BindView(R.id.top_title_text_view)
     TextView mTopTitleTextView;
-    @BindView(R.id.top_story_fragment)
-    RelativeLayout mTopStoryFragment;
 
     private TopStory mTopStory;
 
@@ -57,14 +53,8 @@ public class TopStoryFragment extends Fragment {
         View view = inflater.inflate(R.layout.item_top_story, container, false);
         ButterKnife.bind(this, view);
 
-        Glide.with(this).load(mTopStory.getImage()).asBitmap().into(mImageView);
+        Glide.with(this).load(mTopStory.getImage()).asBitmap().centerCrop().into(mImageView);
         mTopTitleTextView.setText(mTopStory.getTitle());
-        mTopStoryFragment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "go to browser", Toast.LENGTH_SHORT).show();
-            }
-        });
 
         return view;
     }
