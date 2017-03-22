@@ -14,6 +14,7 @@
             <!-- 菜单的颜色 底部菜单-->
             @style/Theme.Zhiye.Light.PopupMenuTextAppearanceLarge
         </item>
+        <item name="colorControlNormal">@color/colorWhite</item>
     </style>
 
     <style name="Theme.Zhiye.Light.Preferences" parent="Theme.Zhiye.Light.NoActionbar">
@@ -48,4 +49,7 @@
         <item name="android:textColor">@color/colorDarkPrimaryDark</item>
     </style>
 
+    <style name="Theme.Zhiyu.Light.NoActionBar.Translucent" parent="Theme.Zhiye.Light.NoActionbar">
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
 </resources>

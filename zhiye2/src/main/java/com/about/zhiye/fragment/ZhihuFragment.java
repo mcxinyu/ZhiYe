@@ -99,7 +99,7 @@ public class ZhihuFragment extends Fragment implements Observer<List<TopStory>> 
                 startActivity(ZhihuWebActivity.newIntent(getContext(), mTopStories.get(position).getId()));
             }
         });
-        doRefreshTopStories();
+        // doRefreshTopStories();
 
         mViewPager.setOffscreenPageLimit(PAGER_COUNT);
         mViewPager.setAdapter(new StoryListPagerAdapter(getFragmentManager()));
@@ -120,6 +120,12 @@ public class ZhihuFragment extends Fragment implements Observer<List<TopStory>> 
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         mCollapsingLayout.setTitle(getString(R.string.title_zhihu));
         mCollapsingLayout.setExpandedTitleColor(Color.TRANSPARENT);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        doRefreshTopStories();
     }
 
     // @Override

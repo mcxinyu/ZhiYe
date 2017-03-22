@@ -31,7 +31,6 @@
         </activity>
         <activity
             android:name=".activity.ZhihuWebActivity"
-            android:parentActivityName=".activity.MainActivity"
             android:label="@string/title_activity_zhihu_web">
         </activity>
     </application>

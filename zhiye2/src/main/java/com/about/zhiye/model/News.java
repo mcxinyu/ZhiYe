@@ -27,19 +27,19 @@ import java.util.List;
 public class News implements Serializable{
     @SerializedName("body")
     private String body;
-    @SerializedName("imageSource")
+    @SerializedName("image_source")
     private String imageSource;
     @SerializedName("title")
     private String title;
     @SerializedName("image")
     private String image;
-    @SerializedName("shareUrl")
+    @SerializedName("share_url")
     private String shareUrl;
     @SerializedName("js")
     private String[] js;
     @SerializedName("recommenders")
     private List<Recommender> recommenders;
-    @SerializedName("gaPrefix")
+    @SerializedName("ga_prefix")
     private String gaPrefix;
     @SerializedName("section")
     private Section section;

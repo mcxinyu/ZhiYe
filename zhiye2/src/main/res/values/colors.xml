@@ -11,5 +11,8 @@
     <color name="titleDarkGray">#a0a4ae</color>
 
     <color name="translucenceGery">#512e2e2e</color>
+    <color name="translucenceBlack">#7F000000</color>
     <color name="translucency">#00000000</color>
+
+    <color name="colorWhite">@android:color/white</color>
 </resources>

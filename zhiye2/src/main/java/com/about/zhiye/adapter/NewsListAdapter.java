@@ -38,7 +38,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
 
     @Override
     public CardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_news_liat, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_news_list, parent, false);
 
         return new CardViewHolder(view);
     }

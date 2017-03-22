@@ -19,32 +19,32 @@
             android:id="@+id/thumbnail_image"
             android:layout_width="96dp"
             android:layout_height="96dp"
-            android:padding="8dp"
+            android:padding="@dimen/view_padding"
             android:layout_alignParentStart="true"
             android:contentDescription="@string/news_image_preview"/>
 
         <TextView
             tools:text="@string/app_name"
             android:id="@+id/question_title"
-            android:textSize="16sp"
+            android:textSize="@dimen/list_text_max_size"
             android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:padding="8dp"
+            android:padding="@dimen/view_padding"
             android:layout_toEndOf="@id/thumbnail_image"/>
 
         <TextView
             android:id="@+id/daily_title"
             tools:text="@string/app_name"
-            android:textSize="14sp"
+            android:textSize="@dimen/list_text_min_size"
             android:textStyle="normal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_toEndOf="@id/thumbnail_image"
             android:layout_below="@id/question_title"
-            android:padding="8dp"/>
+            android:padding="@dimen/view_padding"/>
 
         <!--<ImageView-->
             <!--android:id="@+id/card_share_overflow"-->

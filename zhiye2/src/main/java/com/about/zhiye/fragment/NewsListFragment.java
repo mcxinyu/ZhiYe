@@ -3,6 +3,7 @@ package com.about.zhiye.fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -102,6 +103,12 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        refreshIf(shouldRefreshOnVisibilityChange(true));
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
@@ -110,12 +117,12 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        refreshIf(shouldRefreshOnVisibilityChange(isVisibleToUser));
+        // refreshIf(shouldRefreshOnVisibilityChange(isVisibleToUser));
     }
 
     private boolean UserWantsToRefreshAutomatically() {
         // TODO: 2017/3/19 用户首选项
-        return false;
+        return true;
     }
 
     private boolean shouldRefreshOnVisibilityChange(boolean isVisibleToUser) {

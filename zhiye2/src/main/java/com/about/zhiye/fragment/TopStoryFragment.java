@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.about.zhiye.R;
 import com.about.zhiye.model.TopStory;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,8 +54,12 @@ public class TopStoryFragment extends Fragment {
         View view = inflater.inflate(R.layout.item_top_story, container, false);
         ButterKnife.bind(this, view);
 
-        Glide.with(this).load(mTopStory.getImage()).asBitmap().centerCrop().into(mImageView);
         mTopTitleTextView.setText(mTopStory.getTitle());
+        Glide.with(this)
+                .load(mTopStory.getImage())
+                .crossFade()
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .into(mImageView);
 
         return view;
     }

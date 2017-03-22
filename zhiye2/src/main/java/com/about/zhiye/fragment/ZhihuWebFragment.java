@@ -1,6 +1,5 @@
 package com.about.zhiye.fragment;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -13,6 +12,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
@@ -24,6 +26,10 @@ import com.about.zhiye.R;
 import com.about.zhiye.api.ApiFactory;
 import com.about.zhiye.model.News;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,8 +59,9 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
     FloatingActionButton mFloatingActionButton;
     @BindView(R.id.coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
+    @BindView(R.id.title_text_view)
+    TextView mTitleTextView;
 
-    private boolean isRefreshed = false;
     private String mNewsId;
     private News mNews;
 
@@ -72,6 +79,7 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
         if (getArguments() != null) {
             mNewsId = getArguments().getString(ARGS_NEWS_ID);
         }
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -89,12 +97,13 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     private void initToolbar() {
+
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
-        // mCollapsingLayout.setTitle(getString(R.string.title_zhihu));
-        // mCollapsingLayout.setExpandedTitleColor(Color.TRANSPARENT);
+        mCollapsingLayout.setTitle(" ");
+
 
         ActionBar supportActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        if (supportActionBar != null){
+        if (supportActionBar != null) {
             supportActionBar.setDisplayHomeAsUpEnabled(true);
             supportActionBar.setHomeButtonEnabled(true);
         }
@@ -108,10 +117,27 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
         }
     }
 
-    /**
-     * Fragment 的懒加载
-     * @param isVisibleToUser
-     */
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.menu_zhihu_web, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_share:
+                return false;
+            case R.id.action_collect:
+                return false;
+            case R.id.action_like:
+                return false;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     // @Override
     // public void setUserVisibleHint(boolean isVisibleToUser) {
     //     super.setUserVisibleHint(isVisibleToUser);
@@ -129,10 +155,22 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
         }
     }
 
-    private void setWebView(News news) {
+    private void setWebView(final News news) {
+        mTitleTextView.setText(news.getTitle());
+        Glide.with(this)
+                .load(news.getImage()).centerCrop()
+                .crossFade()
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .into(new GlideDrawableImageViewTarget(mImageView){
+                    @Override
+                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
+                        super.onResourceReady(resource, animation);
+                        mImageSource.setText(news.getImageSource());
+                    }
+                });
 
         WebSettings settings = mWebView.getSettings();
-        settings.setJavaScriptEnabled(true);
+        // settings.setJavaScriptEnabled(true);
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 
         String head = "<head>\n\t<link rel=\"stylesheet\" href=\""
@@ -140,10 +178,6 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
         String image = "<div class=\"headline\">";
         String html = head + news.getBody().replace(image, " ");
         mWebView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
-        Glide.with(this).load(news.getImage()).centerCrop().into(mImageView);
-
-        // mTitleTextView.setText(news.getTitle());
-        mImageSource.setText(news.getImageSource());
     }
 
     @Override
@@ -153,9 +187,8 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void onCompleted() {
-        isRefreshed = true;
         mSwipeRefreshLayout.setRefreshing(false);
-        mCollapsingLayout.setTitle(mNews.getTitle());
+        mSwipeRefreshLayout.setEnabled(false);
         setWebView(mNews);
     }
 
