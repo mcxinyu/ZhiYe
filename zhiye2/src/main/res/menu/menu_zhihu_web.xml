@@ -5,18 +5,24 @@
         android:id="@+id/action_share"
         android:icon="@drawable/ic_action_share"
         android:orderInCategory="100"
-        app:showAsAction="always"
-        android:title="@string/action_share"/>
-    <item
-        android:id="@+id/action_collect"
-        android:icon="@drawable/ic_action_collect"
-        android:orderInCategory="200"
-        app:showAsAction="always"
-        android:title="@string/action_collect"/>
-    <item
-        android:id="@+id/action_like"
-        android:icon="@drawable/ic_action_like"
-        android:orderInCategory="300"
         app:showAsAction="ifRoom"
-        android:title="@string/action_like"/>
+        android:title="@string/action_title_share"/>
+    <item
+        android:id="@+id/action_read_later"
+        android:icon="@drawable/ic_action_read_later_unselected"
+        android:orderInCategory="200"
+        app:showAsAction="ifRoom"
+        android:title="@string/action_read_later"/>
+    <item
+        android:id="@+id/action_browser"
+        android:icon="@drawable/ic_action_browser"
+        android:orderInCategory="300"
+        app:showAsAction="never"
+        android:title="@string/action_title_open_browser"/>
+    <!--<item-->
+        <!--android:id="@+id/action_zhihu"-->
+        <!--android:icon="@drawable/ic_action_zhihu"-->
+        <!--android:orderInCategory="400"-->
+        <!--app:showAsAction="ifRoom"-->
+        <!--android:title="@string/action_title_open_zhihu"/>-->
 </menu>

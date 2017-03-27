@@ -16,7 +16,7 @@ import android.widget.FrameLayout;
 
 import com.about.zhiye.R;
 import com.about.zhiye.adapter.NewsListAdapter;
-import com.about.zhiye.api.ZhihuObservable;
+import com.about.zhiye.api.ZhihuHelper;
 import com.about.zhiye.model.Story;
 
 import java.util.ArrayList;
@@ -152,7 +152,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     private Observable<List<Story>> getStoryObservable() {
-        return ZhihuObservable.ofDate(mDate);
+        return ZhihuHelper.ofDate(mDate);
     }
 
     /**

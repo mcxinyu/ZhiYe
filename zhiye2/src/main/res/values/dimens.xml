@@ -11,4 +11,6 @@
 
     <dimen name="list_text_max_size">16sp</dimen>
     <dimen name="list_text_min_size">14sp</dimen>
+
+    <dimen name="action_size">32dp</dimen>
 </resources>

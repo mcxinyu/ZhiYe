@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
                     // mSupportActionBar.setTitle(getString(R.string.title_dashboard));
                     switchFragment(mZhihuFragment1);
                     return true;
-                case R.id.navigation_notifications:
+                case R.id.navigation_read_later:
                     // mSupportActionBar.setTitle(getString(R.string.title_notifications));
                     switchFragment(mZhihuFragment2);
                     return true;

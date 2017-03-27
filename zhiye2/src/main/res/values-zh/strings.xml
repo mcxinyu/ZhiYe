@@ -9,4 +9,16 @@
     <string name="no_browser">未找到支持的浏览器</string>
     <string name="zhihu_daily_today">今日知乎日报</string>
     <string name="network_error">网络异常</string>
+    <string name="share_from_zhihu">(分享自知乎网)</string>
+    <string name="share_to">选择分享至…</string>
+    <string name="the_left_brace">【</string>
+    <string name="the_right_brace">】</string>
+    <string name="action_title_settings">设置</string>
+    <string name="action_title_share">分享</string>
+    <string name="action_title_read_later">稍后阅读</string>
+    <string name="action_title_open_zhihu">在知乎客户端打开</string>
+    <string name="action_title_open_browser">在浏览器打开</string>
+    <string name="title_activity_zhihu_web">新闻</string>
+    <string name="title_read_later">稍后阅读</string>
+    <string name="no_zhihu_client">未找到知乎客户端</string>
 </resources>

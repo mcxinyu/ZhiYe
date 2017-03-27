@@ -51,7 +51,7 @@ public class TopStoryFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.item_top_story, container, false);
+        View view = inflater.inflate(R.layout.item_zhihu_top_story, container, false);
         ButterKnife.bind(this, view);
 
         mTopTitleTextView.setText(mTopStory.getTitle());

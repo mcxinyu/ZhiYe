@@ -13,7 +13,17 @@
         <item name="cardUseCompatPadding">true</item>
         <item name="cardCornerRadius">2dp</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
-        <item name="android:stateListAnimator" tools:targetApi="lollipop">@drawable/lift_on_touch</item>
+        <item name="android:stateListAnimator" tools:targetApi="lollipop">@drawable/lift_on_touch
+        </item>
     </style>
 
+    <style name="dialog" parent="@android:style/Theme.Dialog">
+        <item name="android:textColor">@android:color/black</item>
+        <!--设置dialog的背景-->
+        <item name="android:background">@color/colorWhite</item>
+        <item name="android:windowBackground">@color/colorWhite</item>
+        <!--就是用来控制灰度的值，当为1时，界面除了我们的dialog内容是高亮显示的，dialog以外的区域是黑色的，完全看不到其他内容-->
+        <item name="android:backgroundDimAmount">0.7</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
 </resources>

@@ -13,4 +13,8 @@ public class Constants {
         public static final String SEARCH = "http://zhihudailypurify.herokuapp.com/search/";
     }
 
+    public class Information {
+        public static final String ZHIHU_QUESTION_LINK_PREFIX = "http://www.zhihu.com/question/";
+        public static final String ZHIHU_PACKAGE_ID = "com.zhihu.android";
+    }
 }
