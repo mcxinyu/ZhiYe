@@ -9,6 +9,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -63,6 +64,8 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
     CoordinatorLayout mCoordinatorLayout;
     @BindView(R.id.title_text_view)
     TextView mTitleTextView;
+    @BindView(R.id.scroll_view)
+    NestedScrollView mScrollView;
 
     private String mNewsId;
     private News mNews;
@@ -84,7 +87,7 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             mNews = (News) savedInstanceState.getSerializable(KEY_NEWS);
             mNewsId = mNews.getId();
         } else {
@@ -123,7 +126,7 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
         mToolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 2017/3/27 滚动返回顶部
+                mScrollView.fullScroll(View.FOCUS_UP);
             }
         });
     }
