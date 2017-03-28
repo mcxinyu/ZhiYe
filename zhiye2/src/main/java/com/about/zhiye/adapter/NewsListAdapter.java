@@ -1,8 +1,6 @@
 package com.about.zhiye.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -11,12 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.about.zhiye.R;
 import com.about.zhiye.activity.ZhihuWebActivity;
+import com.about.zhiye.api.ZhihuHelper;
+import com.about.zhiye.db.DBLab;
 import com.about.zhiye.model.Story;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.List;
 
@@ -62,7 +62,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
         notifyDataSetChanged();
     }
 
-    class CardViewHolder extends RecyclerView.ViewHolder{
+    class CardViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.thumbnail_image)
         ImageView mThumbnailImage;
         @BindView(R.id.question_title)
@@ -71,21 +71,20 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
         TextView mDailyTitle;
         @BindView(R.id.news_list_card_view)
         CardView mNewsListCardView;
+        @BindView(R.id.share_image_view)
+        ImageView mShareImageView;
+        @BindView(R.id.read_later_image_view)
+        ImageView mReadLaterImageView;
+        @BindView(R.id.browser_image_view)
+        ImageView mBrowserImageView;
 
         public CardViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        public void BindView(final Story story){
-            mNewsListCardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mContext.startActivity(ZhihuWebActivity.newIntent(mContext, story.getId()));
-                }
-            });
-
-            if (TextUtils.isEmpty(story.getQuestionTitle())){
+        public void BindView(final Story story) {
+            if (TextUtils.isEmpty(story.getQuestionTitle())) {
                 mQuestionTitle.setText(story.getTitle());
                 mDailyTitle.setText(story.getTitle());
             } else {
@@ -93,22 +92,52 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
                 mDailyTitle.setText(story.getTitle());
             }
 
+            if (DBLab.get(mContext).queryReadLaterHave(story.getId())) {
+                mReadLaterImageView.setImageResource(R.drawable.ic_action_read_later_selected_black);
+            } else {
+                mReadLaterImageView.setImageResource(R.drawable.ic_action_read_later_unselected_black);
+            }
+
             if (null != story.getImages() && story.getImages().length > 0) {
                 Glide.with(mContext)
-                        .load(story.getImages()[0]).asBitmap().centerCrop()
+                        .load(story.getImages()[0])
+                        .crossFade()
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .centerCrop()
                         .into(mThumbnailImage);
             }
-        }
 
-
-        private void openUsingBrowser(String url) {
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-
-            if (mContext.getPackageManager().queryIntentActivities(browserIntent, 0).size() > 0) {
-                mContext.startActivity(browserIntent);
-            } else {
-                Toast.makeText(mContext, mContext.getString(R.string.no_browser), Toast.LENGTH_SHORT).show();
-            }
+            mNewsListCardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mContext.startActivity(ZhihuWebActivity.newIntent(mContext, story.getId()));
+                }
+            });
+            mShareImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ZhihuHelper.shareNews(mContext, story.getTitle(), story.getShareUrl());
+                }
+            });
+            mReadLaterImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DBLab dbLab = DBLab.get(mContext);
+                    if (dbLab.queryReadLaterHave(story.getId())) {
+                        dbLab.deleteReadLaterNews(story.getId());
+                        ((ImageView) v).setImageResource(R.drawable.ic_action_read_later_unselected_black);
+                    } else {
+                        dbLab.insertReadLaterNews(story.getId());
+                        ((ImageView) v).setImageResource(R.drawable.ic_action_read_later_selected_black);
+                    }
+                }
+            });
+            mBrowserImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ZhihuHelper.shareToBrowser(mContext, story.getShareUrl());
+                }
+            });
         }
     }
 }

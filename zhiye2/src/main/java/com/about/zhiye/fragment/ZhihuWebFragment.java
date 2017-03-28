@@ -1,8 +1,6 @@
 package com.about.zhiye.fragment;
 
-import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -24,10 +22,11 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.about.zhiye.R;
 import com.about.zhiye.api.ApiFactory;
+import com.about.zhiye.api.ZhihuHelper;
+import com.about.zhiye.db.DBLab;
 import com.about.zhiye.model.News;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -144,102 +143,39 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
         inflater.inflate(R.menu.menu_zhihu_web, menu);
+
+        MenuItem readLaterItem = menu.findItem(R.id.action_read_later);
+        DBLab dbLab = DBLab.get(getContext());
+        if (dbLab.queryReadLaterHave(mNewsId)) {
+            readLaterItem.setIcon(R.drawable.ic_action_read_later_selected);
+        } else {
+            readLaterItem.setIcon(R.drawable.ic_action_read_later_unselected);
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_share:
-                shareNews(mNews.getTitle(), mNews.getShareUrl());
+                ZhihuHelper.shareNews(getContext(), mNews.getTitle(), mNews.getShareUrl());
                 return false;
             case R.id.action_read_later:
-                // TODO: 2017/3/25
+                DBLab dbLab = DBLab.get(getContext());
+                if (dbLab.queryReadLaterHave(mNews.getId())) {
+                    dbLab.deleteReadLaterNews(mNews.getId());
+                    item.setIcon(R.drawable.ic_action_read_later_unselected);
+                } else {
+                    dbLab.insertReadLaterNews(mNews.getId());
+                    item.setIcon(R.drawable.ic_action_read_later_selected);
+                }
                 return false;
             case R.id.action_browser:
-                shareToBrowser(mNews.getShareUrl());
+                ZhihuHelper.shareToBrowser(getContext(), mNews.getShareUrl());
                 return false;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-
-    private void shareToBrowser(String url) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-
-        if (isIntentSafe(intent)) {
-            startActivity(intent);
-        } else {
-            Toast.makeText(getContext(), getString(R.string.no_browser), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void shareNews(String newsTitle, String newsUrl) {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        //noinspection deprecation
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-        intent.putExtra(Intent.EXTRA_TEXT,
-                getString(R.string.the_left_brace) + newsTitle + getString(R.string.the_right_brace) + " " + newsUrl + " " + getString(R.string.share_from_zhihu));
-        startActivity(Intent.createChooser(intent, getString(R.string.share_to)));
-    }
-
-    private boolean isIntentSafe(Intent intent) {
-        return getActivity().getPackageManager().queryIntentActivities(intent, 0).size() > 0;
-    }
-
-    /*
-    // 分享到客户端相关代码
-    private void shareToZhihu() {
-        final List<Question> questions = ZhihuHelper.getQuestions(mNews);
-        String[] titlesArray = getQuestionTitlesAsStringArray(questions);
-
-        if (titlesArray.length > 1){
-            new AlertDialog.Builder(getContext(), R.style.dialog)
-                    .setTitle("用知乎打开一个你感兴趣的问题")
-                    .setItems(titlesArray, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            shareToZhihuClient(questions.get(which).getUrl());
-                        }
-                    })
-                    .create()
-                    .show();
-        } else {
-            shareToZhihuClient(questions.get(0).getUrl());
-        }
-    }
-
-    private void shareToZhihuClient(String questionUrl) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(questionUrl));
-        intent.setPackage(Constants.Information.ZHIHU_PACKAGE_ID);
-        if (isZhihuClientInstalled()) {
-            getActivity().startActivity(intent);
-        } else {
-            Toast.makeText(getContext(), getString(R.string.no_zhihu_client), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private String[] getQuestionTitlesAsStringArray(List<Question> questions) {
-        String[] titles = new String[questions.size()];
-
-        for (int i = 0; i < titles.length; i++) {
-            titles[i] = questions.get(i).getTitle();
-        }
-
-        return titles;
-    }
-
-    private boolean isZhihuClientInstalled() {
-        try {
-            return getActivity()
-                    .getPackageManager()
-                    .getPackageInfo(Constants.Information.ZHIHU_PACKAGE_ID,
-                            PackageManager.GET_ACTIVITIES) != null;
-        } catch (PackageManager.NameNotFoundException ignored) {
-            return false;
-        }
-    }
-    */
 
     // @Override
     // public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -263,7 +199,7 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
         Glide.with(this)
                 .load(news.getImage()).centerCrop()
                 .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(new GlideDrawableImageViewTarget(mImageView) {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {

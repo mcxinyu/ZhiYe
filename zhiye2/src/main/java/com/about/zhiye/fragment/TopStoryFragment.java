@@ -58,7 +58,7 @@ public class TopStoryFragment extends Fragment {
         Glide.with(this)
                 .load(mTopStory.getImage())
                 .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(mImageView);
 
         return view;

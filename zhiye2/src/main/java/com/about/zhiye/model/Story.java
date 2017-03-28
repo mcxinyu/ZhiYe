@@ -30,6 +30,7 @@ public class Story implements Serializable {
     @SerializedName("images")
     private String[] images;
     private String questionTitle;
+    private String shareUrl;
 
     public String getId() {
         return id;
@@ -85,6 +86,14 @@ public class Story implements Serializable {
 
     public void setQuestionTitle(String questionTitle) {
         this.questionTitle = questionTitle;
+    }
+
+    public String getShareUrl() {
+        return shareUrl;
+    }
+
+    public void setShareUrl(String shareUrl) {
+        this.shareUrl = shareUrl;
     }
 
     @Override

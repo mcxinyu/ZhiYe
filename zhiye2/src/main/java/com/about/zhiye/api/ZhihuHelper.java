@@ -1,7 +1,12 @@
 package com.about.zhiye.api;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.text.TextUtils;
+import android.widget.Toast;
 
+import com.about.zhiye.R;
 import com.about.zhiye.model.News;
 import com.about.zhiye.model.NewsTimeLine;
 import com.about.zhiye.model.Question;
@@ -67,6 +72,7 @@ public class ZhihuHelper {
                                             @Override
                                             public Story call(Story story) {
                                                 story.setQuestionTitle(getQuestions(news).get(0).getTitle());
+                                                story.setShareUrl(news.getShareUrl());
                                                 return story;
                                             }
                                         });
@@ -137,4 +143,97 @@ public class ZhihuHelper {
         }
     }
 
+    /**
+     * 用浏览器打开
+     * @param context
+     * @param url
+     */
+    public static void shareToBrowser(Context context, String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+
+        if (isIntentSafe(context, intent)) {
+            context.startActivity(intent);
+        } else {
+            Toast.makeText(context,
+                    context.getString(R.string.no_browser),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * 分享新闻
+     * @param context
+     * @param newsTitle
+     * @param newsUrl
+     */
+    public static void shareNews(Context context, String newsTitle, String newsUrl) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        //noinspection deprecation
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        intent.putExtra(Intent.EXTRA_TEXT, context.getString(R.string.the_left_brace) +
+                        newsTitle +
+                        context.getString(R.string.the_right_brace) + " " +
+                        newsUrl + " " +
+                        context.getString(R.string.share_from_zhihu));
+        context.startActivity(Intent.createChooser(intent, context.getString(R.string.share_to)));
+    }
+
+    private static boolean isIntentSafe(Context context, Intent intent) {
+        return context.getPackageManager().queryIntentActivities(intent, 0).size() > 0;
+    }
+
+    /*
+    // 分享到客户端相关代码
+    private void shareToZhihu() {
+        final List<Question> questions = ZhihuHelper.getQuestions(mNews);
+        String[] titlesArray = getQuestionTitlesAsStringArray(questions);
+
+        if (titlesArray.length > 1){
+            new AlertDialog.Builder(getContext(), R.style.dialog)
+                    .setTitle("用知乎打开一个你感兴趣的问题")
+                    .setItems(titlesArray, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            shareToZhihuClient(questions.get(which).getUrl());
+                        }
+                    })
+                    .create()
+                    .show();
+        } else {
+            shareToZhihuClient(questions.get(0).getUrl());
+        }
+    }
+
+    private void shareToZhihuClient(String questionUrl) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(questionUrl));
+        intent.setPackage(Constants.Information.ZHIHU_PACKAGE_ID);
+        if (isZhihuClientInstalled()) {
+            getActivity().startActivity(intent);
+        } else {
+            Toast.makeText(getContext(), getString(R.string.no_zhihu_client), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private String[] getQuestionTitlesAsStringArray(List<Question> questions) {
+        String[] titles = new String[questions.size()];
+
+        for (int i = 0; i < titles.length; i++) {
+            titles[i] = questions.get(i).getTitle();
+        }
+
+        return titles;
+    }
+
+    private boolean isZhihuClientInstalled() {
+        try {
+            return getActivity()
+                    .getPackageManager()
+                    .getPackageInfo(Constants.Information.ZHIHU_PACKAGE_ID,
+                            PackageManager.GET_ACTIVITIES) != null;
+        } catch (PackageManager.NameNotFoundException ignored) {
+            return false;
+        }
+    }
+    */
 }

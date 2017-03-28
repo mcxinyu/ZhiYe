@@ -26,4 +26,9 @@
         <item name="android:backgroundDimAmount">0.7</item>
         <item name="android:backgroundDimEnabled">true</item>
     </style>
+
+    <style name="ReadLaterToggleButtonStyle" parent="@android:style/Widget.CompoundButton">
+        <item name="android:button">@drawable/selector_read_later_toggle_button</item>
+        <!--<item name="android:foreground">?attr/selectableItemBackground</item>-->
+    </style>
 </resources>

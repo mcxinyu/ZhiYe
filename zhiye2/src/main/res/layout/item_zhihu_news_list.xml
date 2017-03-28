@@ -5,10 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/news_list_card_view"
     style="@style/AppThemeCardView"
-    android:layout_marginLeft="4dp"
-    android:layout_marginRight="4dp"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -16,66 +16,72 @@
         tools:ignore="UselessParent">
 
         <ImageView
-            tools:src="@mipmap/ic_launcher"
             android:id="@+id/thumbnail_image"
             android:layout_width="96dp"
             android:layout_height="96dp"
-            android:padding="@dimen/view_padding"
             android:layout_alignParentStart="true"
-            android:contentDescription="@string/news_image_preview"/>
-
-        <TextView
-            tools:text="@string/app_name"
-            android:id="@+id/question_title"
-            android:textSize="@dimen/list_text_max_size"
-            android:textStyle="bold"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
+            android:contentDescription="@string/news_image_preview"
             android:padding="@dimen/view_padding"
-            android:layout_toEndOf="@id/thumbnail_image"/>
+            tools:src="@mipmap/ic_launcher"/>
 
         <TextView
-            android:id="@+id/daily_title"
-            tools:text="@string/app_name"
-            android:textSize="@dimen/list_text_min_size"
-            android:textStyle="normal"
+            android:id="@+id/question_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_toEndOf="@id/thumbnail_image"
+            android:padding="@dimen/view_padding"
+            android:textSize="@dimen/list_text_max_size"
+            android:textStyle="bold"
+            tools:text="@string/app_name"/>
+
+        <TextView
+            android:id="@+id/daily_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_below="@id/question_title"
-            android:padding="@dimen/view_padding"/>
+            android:layout_toEndOf="@id/thumbnail_image"
+            android:padding="@dimen/view_padding"
+            android:textSize="@dimen/list_text_min_size"
+            android:textStyle="normal"
+            tools:text="@string/app_name"/>
 
         <LinearLayout
-            android:layout_below="@id/thumbnail_image"
-            android:layout_marginTop="@dimen/activity_horizontal_margin"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin"
-            android:orientation="horizontal"
-            android:gravity="end"
+            android:id="@+id/action_linear_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_below="@id/daily_title"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:gravity="end"
+            android:orientation="horizontal">
+
             <ImageView
-                android:padding="@dimen/view_padding"
                 android:id="@+id/share_image_view"
-                android:src="@drawable/ic_action_share"
                 android:layout_width="@dimen/action_size"
                 android:layout_height="@dimen/action_size"
-                android:contentDescription="@string/action_title_share"/>
-            <ImageView
+                android:foreground="?attr/selectableItemBackground"
+                android:contentDescription="@string/action_title_share"
                 android:padding="@dimen/view_padding"
+                android:src="@drawable/ic_action_share_black"/>
+
+            <ImageView
                 android:id="@+id/read_later_image_view"
-                android:src="@drawable/ic_action_read_later_unselected"
                 android:layout_width="@dimen/action_size"
                 android:layout_height="@dimen/action_size"
-                android:contentDescription="@string/action_read_later"/>
-            <ImageView
+                android:foreground="?attr/selectableItemBackground"
+                android:contentDescription="@string/action_read_later"
                 android:padding="@dimen/view_padding"
+                android:src="@drawable/ic_action_read_later_unselected_black"/>
+
+            <ImageView
                 android:id="@+id/browser_image_view"
-                android:src="@drawable/ic_action_browser"
                 android:layout_width="@dimen/action_size"
                 android:layout_height="@dimen/action_size"
-                android:contentDescription="@string/action_title_open_browser"/>
+                android:foreground="?attr/selectableItemBackground"
+                android:contentDescription="@string/action_title_open_browser"
+                android:padding="@dimen/view_padding"
+                android:src="@drawable/ic_action_browser_black"/>
         </LinearLayout>
     </RelativeLayout>
 </android.support.v7.widget.CardView>
