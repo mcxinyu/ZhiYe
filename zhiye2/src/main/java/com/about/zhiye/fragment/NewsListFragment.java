@@ -51,6 +51,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     private NewsListAdapter mNewsAdapter;
     private String mDate;
     private boolean isRefreshed = false;
+    private boolean isGetStoryFailure = false;
 
     public static NewsListFragment newInstance(String date) {
         NewsListFragment fragment = new NewsListFragment();
@@ -75,7 +76,8 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
         ButterKnife.bind(this, view);
 
         // mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
         mNewsAdapter = new NewsListAdapter(getContext(), mStories);
         mRecyclerView.setAdapter(mNewsAdapter);
 
@@ -88,6 +90,18 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
+        }
+    }
+
+    public int getCurrentItem() {
+        return ((LinearLayoutManager) mRecyclerView.getLayoutManager())
+                .findFirstCompletelyVisibleItemPosition();
+    }
+
+    public void setRecyclerScrollTo(int position){
+        if (mStories.size() > position) {
+            mRecyclerView.smoothScrollToPosition(position);
+            // mRecyclerView.scrollToPosition(position);
         }
     }
 
@@ -105,7 +119,9 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        refreshIf(shouldRefreshOnVisibilityChange(true));
+        if (isGetStoryFailure){
+            refreshIf(shouldRefreshOnVisibilityChange(true));
+        }
     }
 
     @Override
@@ -117,7 +133,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        // refreshIf(shouldRefreshOnVisibilityChange(isVisibleToUser));
+        refreshIf(shouldRefreshOnVisibilityChange(isVisibleToUser));
     }
 
     private boolean UserWantsToRefreshAutomatically() {
@@ -141,6 +157,11 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     private void doRefresh() {
+        // date 有可能为空，因为 setUserVisibleHint 可能在 onCreate 之前调用。
+        if (mDate == null){
+            isGetStoryFailure = true;
+            return;
+        }
         getStoryObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -170,8 +191,11 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
      */
     @Override
     public void onError(Throwable e) {
+        e.printStackTrace();
         mSwipeRefreshLayout.setRefreshing(false);
-        Snackbar.make(mContainer, getString(R.string.network_error), Snackbar.LENGTH_SHORT).show();
+        if (isAdded()) {
+            Snackbar.make(mContainer, getString(R.string.network_error), Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     /**
