@@ -18,9 +18,8 @@ import android.view.ViewGroup;
 
 import com.about.zhiye.R;
 import com.about.zhiye.activity.ZhihuWebActivity;
-import com.about.zhiye.api.ApiFactory;
-import com.about.zhiye.model.NewsTimeLine;
-import com.about.zhiye.model.TopStory;
+import com.about.zhiye.api.ZhihuHelper;
+import com.about.zhiye.model.News;
 import com.jude.rollviewpager.OnItemClickListener;
 import com.jude.rollviewpager.RollPagerView;
 import com.jude.rollviewpager.hintview.ColorPointHintView;
@@ -35,10 +34,10 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -46,7 +45,7 @@ import rx.schedulers.Schedulers;
  * Contact me : mcxinyu@foxmail.com
  * 管理按日期排列的 ViewPager 里面存放最近一周各个日期的 NewsListFragment
  */
-public class ZhihuFragment extends Fragment implements Observer<List<TopStory>> {
+public class ZhihuFragment extends Fragment implements Observer<List<News>> {
     @SuppressWarnings("deprecation")
     public static final Date ZHIHU_DAILY_BIRTHDAY = new Date(113, 4, 19); // May 19th, 2013
     public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd", Locale.US);
@@ -65,9 +64,10 @@ public class ZhihuFragment extends Fragment implements Observer<List<TopStory>> 
     CollapsingToolbarLayout mCollapsingLayout;
     @BindView(R.id.roll_pager_view)
     RollPagerView mRollPagerView;
+    private Unbinder unbinder;
 
-    private TopStoryPagerAdapter mTopStoryPagerAdapter;
-    private List<TopStory> mTopStories;
+    private TopNewsPagerAdapter mTopNewsPagerAdapter;
+    private List<News> mTopNewses;
 
     public static ZhihuFragment newInstance() {
 
@@ -87,22 +87,22 @@ public class ZhihuFragment extends Fragment implements Observer<List<TopStory>> 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_zhihu, container, false);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
 
-        mTopStoryPagerAdapter = new TopStoryPagerAdapter(getFragmentManager());
-        mRollPagerView.setAdapter(mTopStoryPagerAdapter);
+        mTopNewsPagerAdapter = new TopNewsPagerAdapter(getFragmentManager());
+        mRollPagerView.setAdapter(mTopNewsPagerAdapter);
         mRollPagerView.setAnimationDurtion(500);
         mRollPagerView.setHintView(new ColorPointHintView(getContext(), Color.WHITE, Color.GRAY));
         mRollPagerView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                startActivity(ZhihuWebActivity.newIntent(getContext(), mTopStories.get(position).getId()));
+                startActivity(ZhihuWebActivity.newIntent(getContext(), mTopNewses.get(position).getId()));
             }
         });
-        // doRefreshTopStories();
+        // doRefreshTopNewses();
 
         mViewPager.setOffscreenPageLimit(PAGER_COUNT);
-        mViewPager.setAdapter(new StoryListPagerAdapter(getFragmentManager()));
+        mViewPager.setAdapter(new NewsListPagerAdapter(getFragmentManager()));
         mTabLayout.setupWithViewPager(mViewPager);
 
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -125,42 +125,18 @@ public class ZhihuFragment extends Fragment implements Observer<List<TopStory>> 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        doRefreshTopStories();
+        doRefreshTopNewses();
     }
 
-    // @Override
-    // public void setUserVisibleHint(boolean isVisibleToUser) {
-    //     super.setUserVisibleHint(isVisibleToUser);
-    //     doRefreshTopStories();
-    // }
-
-    /**
-     * RxJava
-     */
     @Override
-    public void onCompleted() {
-        mTopStoryPagerAdapter.updateTopStories(mTopStories);
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
-    /**
-     * RxJava
-     */
-    @Override
-    public void onError(Throwable e) {
-        // TODO: 2017/3/20
-    }
+    private class NewsListPagerAdapter extends FragmentStatePagerAdapter {
 
-    /**
-     * RxJava
-     */
-    @Override
-    public void onNext(List<TopStory> topStories) {
-        mTopStories = topStories;
-    }
-
-    private class StoryListPagerAdapter extends FragmentStatePagerAdapter {
-
-        StoryListPagerAdapter(FragmentManager fm) {
+        NewsListPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -189,34 +165,52 @@ public class ZhihuFragment extends Fragment implements Observer<List<TopStory>> 
         }
     }
 
-    private void doRefreshTopStories() {
-        getTopStories()
+    // TopNews
+    private void doRefreshTopNewses() {
+        getTopNewses()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this);
     }
 
-    private Observable<List<TopStory>> getTopStories() {
-        return ApiFactory.getZhihuApiSingleton()
-                .getLatestNews()
-                .map(new Func1<NewsTimeLine, List<TopStory>>() {
-                    @Override
-                    public List<TopStory> call(NewsTimeLine newsTimeLine) {
-                        return newsTimeLine.getTopStories();
-                    }
-                });
+    private Observable<List<News>> getTopNewses() {
+        return ZhihuHelper.getTopNews();
     }
 
-    private class TopStoryPagerAdapter extends FragmentStatePagerAdapter {
-        List<TopStory> list = new ArrayList<>();
+    /**
+     * RxJava
+     */
+    @Override
+    public void onCompleted() {
+        mTopNewsPagerAdapter.updateTopStories(mTopNewses);
+    }
 
-        public TopStoryPagerAdapter(FragmentManager fm) {
+    /**
+     * RxJava
+     */
+    @Override
+    public void onError(Throwable e) {
+        e.printStackTrace();
+    }
+
+    /**
+     * RxJava
+     */
+    @Override
+    public void onNext(List<News> topNewses) {
+        mTopNewses = topNewses;
+    }
+
+    private class TopNewsPagerAdapter extends FragmentStatePagerAdapter {
+        List<News> list = new ArrayList<>();
+
+        public TopNewsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
         public Fragment getItem(int position) {
-            return TopStoryFragment.newInstance(list.get(position));
+            return TopNewsFragment.newInstance(list.get(position));
         }
 
         @Override
@@ -224,13 +218,13 @@ public class ZhihuFragment extends Fragment implements Observer<List<TopStory>> 
             return list.size();
         }
 
-        public void updateTopStories(List<TopStory> topStories) {
-            setTopStories(topStories);
+        public void updateTopStories(List<News> topNewses) {
+            setTopNewses(topNewses);
             notifyDataSetChanged();
         }
 
-        private void setTopStories(List<TopStory> topStories) {
-            list = topStories;
+        private void setTopNewses(List<News> topNews) {
+            list = topNews;
         }
     }
 }

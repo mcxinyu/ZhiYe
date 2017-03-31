@@ -12,10 +12,12 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.about.zhiye.R;
+import com.about.zhiye.fragment.ReadLaterFragment;
 import com.about.zhiye.fragment.ZhihuFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by huangyuefeng on 2017/3/17.
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     FrameLayout mFragmentContent;
     @BindView(R.id.bottom_navigation)
     BottomNavigationView mBottomNavigation;
+    Unbinder unbinder;
 
     private ActionBar mSupportActionBar;
 
@@ -36,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ZhihuFragment mZhihuFragment;
     private ZhihuFragment mZhihuFragment1;
-    private ZhihuFragment mZhihuFragment2;
+    private ReadLaterFragment mReadLaterFragment;
     private Fragment currentFragment;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -46,16 +49,19 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    // mSupportActionBar.setTitle(getString(R.string.title_zhihu));
+                    if (mZhihuFragment == null){
+                        mZhihuFragment = ZhihuFragment.newInstance();
+                    }
                     switchFragment(mZhihuFragment);
                     return true;
                 case R.id.navigation_dashboard:
-                    // mSupportActionBar.setTitle(getString(R.string.title_dashboard));
                     switchFragment(mZhihuFragment1);
                     return true;
                 case R.id.navigation_read_later:
-                    // mSupportActionBar.setTitle(getString(R.string.title_notifications));
-                    switchFragment(mZhihuFragment2);
+                    if (mReadLaterFragment == null){
+                        mReadLaterFragment = ReadLaterFragment.newInstance();
+                    }
+                    switchFragment(mReadLaterFragment);
                     return true;
             }
             return false;
@@ -67,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
 
         initToolbar();
 
@@ -86,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void switchFragment(Fragment fragment) {
         if (null == fragment){
+            // TODO: 2017/3/30 后续需要移除 放入 BottomNavigationView 点击事件里
             fragment = ZhihuFragment.newInstance();
         }
 
@@ -111,4 +118,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
+    }
 }

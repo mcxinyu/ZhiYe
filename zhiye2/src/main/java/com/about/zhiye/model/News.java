@@ -1,10 +1,23 @@
 package com.about.zhiye.model;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.SerializedName;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.about.zhiye.support.Constants.Information.ZHIHU_QUESTION_LINK_PREFIX;
+import static com.about.zhiye.support.Constants.NewsHelper.QUESTION_LINKS_SELECTOR;
+import static com.about.zhiye.support.Constants.NewsHelper.QUESTION_SELECTOR;
+import static com.about.zhiye.support.Constants.NewsHelper.QUESTION_TITLES_SELECTOR;
 
 /**
  * Created by 跃峰 on 2016/9/19.
@@ -49,6 +62,7 @@ public class News implements Serializable{
     private String id;
     @SerializedName("css")
     private String[] css;
+    private List<Question> questions;
 
     public String getBody() {
         return body;
@@ -146,6 +160,28 @@ public class News implements Serializable{
         this.css = css;
     }
 
+    public List<Question> getQuestions() {
+        if (questions == null) {
+            questions = new ArrayList<>();
+            Document document = Jsoup.parse(body);
+            Elements questionElements = getQuestionElements(document);
+
+            for (Element element : questionElements) {
+                String questionTitle = getQuestionTitleFromQuestionElement(element);
+                String questionUrl = getQuestionUrlFromQuestionElement(element);
+
+                questions.add(new Question(
+                        TextUtils.isEmpty(questionTitle) ? title : questionTitle,
+                        questionUrl));
+            }
+        }
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
+
     public class Recommender implements Serializable {
         private String avatar;
 
@@ -209,6 +245,33 @@ public class News implements Serializable{
                     ", id='" + id + '\'' +
                     ", name='" + name + '\'' +
                     '}';
+        }
+    }
+
+    private Elements getQuestionElements(Document document) {
+        return document.select(QUESTION_SELECTOR);
+    }
+
+    private String getQuestionTitleFromQuestionElement(Element element) {
+        Element questionTitleElement = element.select(QUESTION_TITLES_SELECTOR).first();
+
+        if (questionTitleElement == null) {
+            return null;
+        } else {
+            return questionTitleElement.text();
+        }
+    }
+
+    private String getQuestionUrlFromQuestionElement(Element element) {
+        Element viewMoreElement = element.select(QUESTION_LINKS_SELECTOR).first();
+
+        if (viewMoreElement == null) {
+            return null;
+        } else {
+            String url = viewMoreElement.attr("href");
+
+            return (url != null && url.startsWith(ZHIHU_QUESTION_LINK_PREFIX))
+                    ? url : null;
         }
     }
 

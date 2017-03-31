@@ -11,10 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.about.zhiye.R;
-import com.about.zhiye.activity.ZhihuWebActivity;
 import com.about.zhiye.api.ZhihuHelper;
 import com.about.zhiye.db.DBLab;
-import com.about.zhiye.model.Story;
+import com.about.zhiye.model.News;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
@@ -29,11 +28,13 @@ import butterknife.ButterKnife;
  */
 public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardViewHolder> {
     private Context mContext;
-    private List<Story> mStories;
+    private List<News> mNewses;
+    private Callbacks mCallbacks;
 
-    public NewsListAdapter(Context context, List<Story> stories) {
+    public NewsListAdapter(Context context, List<News> newses, Callbacks callbacks) {
         mContext = context;
-        mStories = stories;
+        mNewses = newses;
+        mCallbacks = callbacks;
     }
 
     @Override
@@ -45,20 +46,20 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
 
     @Override
     public void onBindViewHolder(CardViewHolder holder, int position) {
-        holder.BindView(mStories.get(position));
+        holder.BindView(mNewses.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return null == mStories ? 0 : mStories.size();
+        return null == mNewses ? 0 : mNewses.size();
     }
 
-    private void setStories(List<Story> stories) {
-        this.mStories = stories;
+    private void setNewses(List<News> newses) {
+        this.mNewses = newses;
     }
 
-    public void updateStories(List<Story> stories) {
-        setStories(stories);
+    public void updateStories(List<News> newses) {
+        setNewses(newses);
         notifyDataSetChanged();
     }
 
@@ -83,24 +84,24 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
             ButterKnife.bind(this, itemView);
         }
 
-        public void BindView(final Story story) {
-            if (TextUtils.isEmpty(story.getQuestionTitle())) {
-                mQuestionTitle.setText(story.getTitle());
-                mDailyTitle.setText(story.getTitle());
+        public void BindView(final News news) {
+            if (TextUtils.isEmpty(news.getQuestions().get(0).getTitle())) {
+                mQuestionTitle.setText(news.getTitle());
+                mDailyTitle.setText(news.getTitle());
             } else {
-                mQuestionTitle.setText(story.getQuestionTitle());
-                mDailyTitle.setText(story.getTitle());
+                mQuestionTitle.setText(news.getQuestions().get(0).getTitle());
+                mDailyTitle.setText(news.getTitle());
             }
 
-            if (DBLab.get(mContext).queryReadLaterHave(story.getId())) {
+            if (DBLab.get(mContext).queryReadLaterHave(news.getId())) {
                 mReadLaterImageView.setImageResource(R.drawable.ic_action_read_later_selected_black);
             } else {
                 mReadLaterImageView.setImageResource(R.drawable.ic_action_read_later_unselected_black);
             }
 
-            if (null != story.getImages() && story.getImages().length > 0) {
+            if (null != news.getImage()) {
                 Glide.with(mContext)
-                        .load(story.getImages()[0])
+                        .load(news.getImage())
                         .crossFade()
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .centerCrop()
@@ -110,24 +111,24 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
             mNewsListCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mContext.startActivity(ZhihuWebActivity.newIntent(mContext, story.getId()));
+                    mCallbacks.startZhihuWebActivity(news.getId());
                 }
             });
             mShareImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ZhihuHelper.shareNews(mContext, story.getTitle(), story.getShareUrl());
+                    ZhihuHelper.shareNews(mContext, news.getTitle(), news.getShareUrl());
                 }
             });
             mReadLaterImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     DBLab dbLab = DBLab.get(mContext);
-                    if (dbLab.queryReadLaterHave(story.getId())) {
-                        dbLab.deleteReadLaterNews(story.getId());
+                    if (dbLab.queryReadLaterHave(news.getId())) {
+                        dbLab.deleteReadLaterNews(news.getId());
                         ((ImageView) v).setImageResource(R.drawable.ic_action_read_later_unselected_black);
                     } else {
-                        dbLab.insertReadLaterNews(story.getId());
+                        dbLab.insertReadLaterNews(news.getId());
                         ((ImageView) v).setImageResource(R.drawable.ic_action_read_later_selected_black);
                     }
                 }
@@ -135,9 +136,13 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
             mBrowserImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ZhihuHelper.shareToBrowser(mContext, story.getShareUrl());
+                    ZhihuHelper.shareToBrowser(mContext, news.getShareUrl());
                 }
             });
         }
+    }
+
+    public interface Callbacks {
+        void startZhihuWebActivity(String newsId);
     }
 }

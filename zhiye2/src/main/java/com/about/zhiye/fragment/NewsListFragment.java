@@ -1,6 +1,7 @@
 package com.about.zhiye.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,19 +16,23 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.about.zhiye.R;
+import com.about.zhiye.activity.ZhihuWebActivity;
 import com.about.zhiye.adapter.NewsListAdapter;
 import com.about.zhiye.api.ZhihuHelper;
-import com.about.zhiye.model.Story;
+import com.about.zhiye.db.DBLab;
+import com.about.zhiye.model.News;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static android.app.Activity.RESULT_OK;
 
 
 /**
@@ -35,26 +40,37 @@ import rx.schedulers.Schedulers;
  * Contact me : mcxinyu@foxmail.com
  * 一天的 NewsList
  */
-public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, Observer<List<Story>> {
-    private static final String ARGS_DATE = "mDate";
+public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
+        Observer<List<News>>,
+        NewsListAdapter.Callbacks {
 
-    @BindView(R.id.news_list_recycler_view)
+    private static final String ARGS_DATE = "date";
+    private static final int REQUEST_CODE = 1024;
+
+    @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout mSwipeRefreshLayout;
     @BindView(R.id.container)
     FrameLayout mContainer;
+    Unbinder unbinder;
 
-    private List<Story> mStories = new ArrayList<>();
+    private List<News> mNewses;
+    private List<String> ids;
 
     private OnFragmentInteractionListener mListener;
     private NewsListAdapter mNewsAdapter;
     private String mDate;
     private boolean isRefreshed = false;
     private boolean isGetStoryFailure = false;
+    private boolean isReadLaterFragment = false;
 
-    public static NewsListFragment newInstance(String date) {
+    public static NewsListFragment newInstance(@Nullable String date) {
         NewsListFragment fragment = new NewsListFragment();
+        if (date == null){
+            return fragment;
+        }
+
         Bundle args = new Bundle();
         args.putString(ARGS_DATE, date);
 
@@ -67,18 +83,24 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mDate = getArguments().getString(ARGS_DATE);
+        } else {
+            isReadLaterFragment = true;
+            ids = DBLab.get(getContext()).queryAllReadLater();
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
 
-        // mRecyclerView.setHasFixedSize(true);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        mRecyclerView.setLayoutManager(linearLayoutManager);
-        mNewsAdapter = new NewsListAdapter(getContext(), mStories);
+        boolean reverseLayout = false;
+        if (isReadLaterFragment){
+            reverseLayout = true;
+            mRecyclerView.setHasFixedSize(true);
+        }
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, reverseLayout));
+        mNewsAdapter = new NewsListAdapter(getContext(), mNewses, this);
         mRecyclerView.setAdapter(mNewsAdapter);
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
@@ -98,8 +120,8 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
                 .findFirstCompletelyVisibleItemPosition();
     }
 
-    public void setRecyclerScrollTo(int position){
-        if (mStories.size() > position) {
+    public void setRecyclerScrollTo(int position) {
+        if (mNewses.size() > position) {
             mRecyclerView.smoothScrollToPosition(position);
             // mRecyclerView.scrollToPosition(position);
         }
@@ -119,7 +141,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (isGetStoryFailure){
+        if (isGetStoryFailure) {
             refreshIf(shouldRefreshOnVisibilityChange(true));
         }
     }
@@ -153,27 +175,39 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void onRefresh() {
+        ids = DBLab.get(getContext()).queryAllReadLater();
         doRefresh();
     }
 
     private void doRefresh() {
-        // date 有可能为空，因为 setUserVisibleHint 可能在 onCreate 之前调用。
-        if (mDate == null){
-            isGetStoryFailure = true;
-            return;
+        if (isReadLaterFragment) {
+            getReadLaterNewsesObservable()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this);
+        } else {
+            // date 有可能为空，因为 setUserVisibleHint 可能在 onCreate 之前调用。
+            if (mDate == null) {
+                isGetStoryFailure = true;
+                return;
+            }
+            getNewsesObservableOfDate()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this);
         }
-        getStoryObservable()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this);
 
         if (mSwipeRefreshLayout != null) {
             mSwipeRefreshLayout.setRefreshing(true);
         }
     }
 
-    private Observable<List<Story>> getStoryObservable() {
-        return ZhihuHelper.ofDate(mDate);
+    private Observable<List<News>> getNewsesObservableOfDate() {
+        return ZhihuHelper.getNewsesOfDate(mDate);
+    }
+
+    private Observable<List<News>> getReadLaterNewsesObservable() {
+        return ZhihuHelper.getNewsesOfIds(ids);
     }
 
     /**
@@ -183,7 +217,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     public void onCompleted() {
         isRefreshed = true;
         mSwipeRefreshLayout.setRefreshing(false);
-        mNewsAdapter.updateStories(mStories);
+        mNewsAdapter.updateStories(mNewses);
     }
 
     /**
@@ -202,8 +236,37 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
      * RxJava
      */
     @Override
-    public void onNext(List<Story> stories) {
-        mStories = stories;
+    public void onNext(List<News> newses) {
+        mNewses = newses;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE) {
+            switch (resultCode) {
+                case RESULT_OK:
+                    boolean change = data.getBooleanExtra("change", false);
+                    if (change) {
+                        // TODO: 2017/3/29 添加了稍后阅读需要修改刘表中相对应的 item 的显示，
+                        // 阅读过的 item 也需要修改以表示已经阅读过了，或者直接在点击事件中修改
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void startZhihuWebActivity(String newsId) {
+        startActivityForResult(ZhihuWebActivity.newIntent(getContext(), newsId), REQUEST_CODE);
     }
 
     public interface OnFragmentInteractionListener {

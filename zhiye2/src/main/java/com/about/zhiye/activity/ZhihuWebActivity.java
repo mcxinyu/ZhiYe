@@ -9,14 +9,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.about.zhiye.R;
+import com.about.zhiye.db.DBLab;
 import com.about.zhiye.fragment.ZhihuWebFragment;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
-public class ZhihuWebActivity extends AppCompatActivity {
+public class ZhihuWebActivity extends AppCompatActivity
+        implements ZhihuWebFragment.OnFragmentInteractionListener{
     private static final String EXTRA_NEWS_ID = "news_id";
 
     private String mNewsId;
+    private Unbinder unbinder;
+    private boolean isReadLaterAdd;
 
     public static Intent newIntent(Context context, String newsId) {
 
@@ -29,9 +34,10 @@ public class ZhihuWebActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zhihu_web);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
 
         mNewsId = getIntent().getStringExtra(EXTRA_NEWS_ID);
+        isReadLaterAdd = DBLab.get(this).queryReadLaterHave(mNewsId);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
@@ -53,5 +59,18 @@ public class ZhihuWebActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
+    }
+
+    @Override
+    public void readLaterStatusChange(boolean added) {
+        Intent intent = new Intent();
+        intent.putExtra("change", !(isReadLaterAdd == added));
+        setResult(RESULT_OK, intent);
     }
 }

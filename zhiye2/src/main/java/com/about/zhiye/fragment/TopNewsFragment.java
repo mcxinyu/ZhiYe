@@ -10,32 +10,34 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.about.zhiye.R;
-import com.about.zhiye.model.TopStory;
+import com.about.zhiye.model.News;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by huangyuefeng on 2017/3/20.
  * Contact me : mcxinyu@foxmail.com
  */
-public class TopStoryFragment extends Fragment {
-    private static final String ARG_STORY = "top_story";
+public class TopNewsFragment extends Fragment {
+    private static final String ARG_NEWS = "top_news";
 
     @BindView(R.id.image_view)
     ImageView mImageView;
     @BindView(R.id.top_title_text_view)
     TextView mTopTitleTextView;
+    private Unbinder unbinder;
 
-    private TopStory mTopStory;
+    private News mNews;
 
-    public static TopStoryFragment newInstance(TopStory topStory) {
+    public static TopNewsFragment newInstance(News news) {
 
         Bundle args = new Bundle();
-        args.putSerializable(ARG_STORY, topStory);
-        TopStoryFragment fragment = new TopStoryFragment();
+        args.putSerializable(ARG_NEWS, news);
+        TopNewsFragment fragment = new TopNewsFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -44,7 +46,7 @@ public class TopStoryFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mTopStory = (TopStory) getArguments().getSerializable(ARG_STORY);
+            mNews = (News) getArguments().getSerializable(ARG_NEWS);
         }
     }
 
@@ -52,15 +54,21 @@ public class TopStoryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.item_zhihu_top_story, container, false);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
 
-        mTopTitleTextView.setText(mTopStory.getTitle());
+        mTopTitleTextView.setText(mNews.getTitle());
         Glide.with(this)
-                .load(mTopStory.getImage())
+                .load(mNews.getImage())
                 .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(mImageView);
 
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

@@ -1,5 +1,6 @@
 package com.about.zhiye.fragment;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -36,6 +37,7 @@ import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -65,9 +67,11 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
     TextView mTitleTextView;
     @BindView(R.id.scroll_view)
     NestedScrollView mScrollView;
+    private Unbinder unbinder;
 
     private String mNewsId;
     private News mNews;
+    private OnFragmentInteractionListener mListener;
 
     public static ZhihuWebFragment newInstance(String newsId) {
         Bundle args = new Bundle();
@@ -100,7 +104,7 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_zhihu_web, container, false);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
@@ -139,6 +143,12 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
@@ -164,9 +174,11 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
                 if (dbLab.queryReadLaterHave(mNews.getId())) {
                     dbLab.deleteReadLaterNews(mNews.getId());
                     item.setIcon(R.drawable.ic_action_read_later_unselected);
+                    mListener.readLaterStatusChange(false);
                 } else {
                     dbLab.insertReadLaterNews(mNews.getId());
                     item.setIcon(R.drawable.ic_action_read_later_selected);
+                    mListener.readLaterStatusChange(true);
                 }
                 return false;
             case R.id.action_browser:
@@ -177,11 +189,16 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
         }
     }
 
-    // @Override
-    // public void setUserVisibleHint(boolean isVisibleToUser) {
-    //     super.setUserVisibleHint(isVisibleToUser);
-    //     loadDetailNews(mNewsId);
-    // }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
 
     private void loadDetailNews(String id) {
         ApiFactory.getZhihuApiSingleton().getDetailNews(id)
@@ -242,5 +259,9 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void onNext(News news) {
         mNews = news;
+    }
+
+    public interface OnFragmentInteractionListener {
+        void readLaterStatusChange(boolean added);
     }
 }

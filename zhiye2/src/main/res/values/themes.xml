@@ -16,6 +16,9 @@
         </item>
         <item name="colorControlNormal">@color/colorWhite</item>
         <!--<item name="actionMenuTextColor">@color/colorWhite</item>-->
+    </style>
+
+    <style name="Theme.Zhiye.Light.NoActionbar.Translucent" parent="Theme.Zhiye.Light.NoActionbar">
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
