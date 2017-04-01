@@ -28,8 +28,12 @@ public class ReadLaterFragment extends Fragment {
     @BindView(R.id.fragment_container)
     FrameLayout mFragmentContainer;
     Unbinder unbinder;
+    // @BindView(R.id.collapsing_layout)
+    // CollapsingToolbarLayout mCollapsingLayout;
 
     private NewsListFragment mNewsListFragment;
+    private boolean isVisibleToUser;
+    private boolean isPreloadFailure;
 
     public static ReadLaterFragment newInstance() {
 
@@ -54,11 +58,15 @@ public class ReadLaterFragment extends Fragment {
         FragmentManager fragmentManager = getFragmentManager();
         mNewsListFragment = (NewsListFragment) fragmentManager.findFragmentById(R.id.fragment_container);
 
-        if (mNewsListFragment == null){
+        if (mNewsListFragment == null) {
             mNewsListFragment = new NewsListFragment();
             fragmentManager.beginTransaction()
                     .add(R.id.fragment_container, mNewsListFragment)
                     .commit();
+        }
+
+        if (isVisibleToUser && isPreloadFailure) {
+            mNewsListFragment.doRefresh(true);
         }
 
         initToolbar();
@@ -66,7 +74,22 @@ public class ReadLaterFragment extends Fragment {
     }
 
     private void initToolbar() {
+        mToolbar.setTitle(getString(R.string.title_read_later));
+        // mCollapsingLayout.setTitle(getString(R.string.title_read_later));
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        this.isVisibleToUser = isVisibleToUser;
+        if (mNewsListFragment == null) {
+            // 加载的时候可能 mNewsListFragment 还没创建
+            isPreloadFailure = true;
+        } else {
+            // 每次 ReadLaterFragment 可见都去加载数据
+            mNewsListFragment.doRefresh(true);
+        }
     }
 
     @Override

@@ -5,15 +5,18 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 
 import com.about.zhiye.R;
 import com.about.zhiye.fragment.ReadLaterFragment;
 import com.about.zhiye.fragment.ZhihuFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,47 +30,14 @@ import butterknife.Unbinder;
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
 
-    @BindView(R.id.fragment_content)
-    FrameLayout mFragmentContent;
     @BindView(R.id.bottom_navigation)
     BottomNavigationView mBottomNavigation;
+    @BindView(R.id.view_pager)
+    ViewPager mViewPager;
     Unbinder unbinder;
 
     private ActionBar mSupportActionBar;
-
-    private FragmentManager mFragmentManager;
-
-    private ZhihuFragment mZhihuFragment;
-    private ZhihuFragment mZhihuFragment1;
-    private ReadLaterFragment mReadLaterFragment;
-    private Fragment currentFragment;
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    if (mZhihuFragment == null){
-                        mZhihuFragment = ZhihuFragment.newInstance();
-                    }
-                    switchFragment(mZhihuFragment);
-                    return true;
-                case R.id.navigation_dashboard:
-                    switchFragment(mZhihuFragment1);
-                    return true;
-                case R.id.navigation_read_later:
-                    if (mReadLaterFragment == null){
-                        mReadLaterFragment = ReadLaterFragment.newInstance();
-                    }
-                    switchFragment(mReadLaterFragment);
-                    return true;
-            }
-            return false;
-        }
-
-    };
+    private MenuItem menuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,40 +45,58 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         unbinder = ButterKnife.bind(this);
 
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (menuItem != null) {
+                    menuItem.setChecked(false);
+                } else {
+                    mBottomNavigation.getMenu().getItem(0).setChecked(false);
+                }
+                menuItem = mBottomNavigation.getMenu().getItem(position);
+                menuItem.setChecked(true);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        setupViewPager();
+
+        mBottomNavigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.navigation_home:
+                        mViewPager.setCurrentItem(0, false);
+                        return true;
+                    case R.id.navigation_dashboard:
+                        mViewPager.setCurrentItem(0, false);
+                        return true;
+                    case R.id.navigation_read_later:
+                        mViewPager.setCurrentItem(1, false);
+                        return true;
+                }
+                return false;
+            }
+        });
+
         initToolbar();
-
-        mFragmentManager = getSupportFragmentManager();
-        currentFragment = mFragmentManager.findFragmentById(R.id.fragment_content);
-
-        if (currentFragment == null){
-            currentFragment = mZhihuFragment = ZhihuFragment.newInstance();
-            mFragmentManager.beginTransaction()
-                    .add(R.id.fragment_content, currentFragment)
-                    .commit();
-        }
-
-        mBottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
-    private void switchFragment(Fragment fragment) {
-        if (null == fragment){
-            // TODO: 2017/3/30 后续需要移除 放入 BottomNavigationView 点击事件里
-            fragment = ZhihuFragment.newInstance();
-        }
+    private void setupViewPager() {
+        MainViewPagerAdapter adapter = new MainViewPagerAdapter(getSupportFragmentManager());
 
-        if (currentFragment != fragment){
-            FragmentTransaction transaction = mFragmentManager.beginTransaction();
-            if (fragment.isAdded()){
-                transaction.hide(currentFragment)
-                        .show(fragment)
-                        .commit();
-            } else {
-                transaction.hide(currentFragment)
-                        .add(R.id.fragment_content, fragment)
-                        .commit();
-            }
-            currentFragment = fragment;
-        }
+        adapter.addFragment(ZhihuFragment.newInstance());
+        adapter.addFragment(ReadLaterFragment.newInstance());
+        mViewPager.setAdapter(adapter);
     }
 
     private void initToolbar() {
@@ -122,5 +110,28 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
+    }
+
+    private class MainViewPagerAdapter extends FragmentStatePagerAdapter{
+        List<Fragment> mFragmentList = new ArrayList<>();
+
+        public MainViewPagerAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        private void addFragment(Fragment fragment) {
+            mFragmentList.add(fragment);
+            notifyDataSetChanged();
+        }
     }
 }

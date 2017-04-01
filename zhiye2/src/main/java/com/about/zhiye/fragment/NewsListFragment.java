@@ -19,7 +19,6 @@ import com.about.zhiye.R;
 import com.about.zhiye.activity.ZhihuWebActivity;
 import com.about.zhiye.adapter.NewsListAdapter;
 import com.about.zhiye.api.ZhihuHelper;
-import com.about.zhiye.db.DBLab;
 import com.about.zhiye.model.News;
 
 import java.util.List;
@@ -56,13 +55,12 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     Unbinder unbinder;
 
     private List<News> mNewses;
-    private List<String> ids;
 
     private OnFragmentInteractionListener mListener;
     private NewsListAdapter mNewsAdapter;
     private String mDate;
     private boolean isRefreshed = false;
-    private boolean isGetStoryFailure = false;
+    private boolean isPreloadingFailure = false;
     private boolean isReadLaterFragment = false;
 
     public static NewsListFragment newInstance(@Nullable String date) {
@@ -85,7 +83,6 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
             mDate = getArguments().getString(ARGS_DATE);
         } else {
             isReadLaterFragment = true;
-            ids = DBLab.get(getContext()).queryAllReadLater();
         }
     }
 
@@ -141,7 +138,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (isGetStoryFailure) {
+        if (isPreloadingFailure) {
             refreshIf(shouldRefreshOnVisibilityChange(true));
         }
     }
@@ -169,18 +166,21 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     private void refreshIf(boolean need) {
         if (need) {
-            doRefresh();
+            doRefresh(false);
         }
     }
 
     @Override
     public void onRefresh() {
-        ids = DBLab.get(getContext()).queryAllReadLater();
-        doRefresh();
+        doRefresh(false);
     }
 
-    private void doRefresh() {
-        if (isReadLaterFragment) {
+    /**
+     * 获取数据后刷新
+     * @param isManualCall 手动调用该方法刷新 ReadLaterNewses
+     */
+    public void doRefresh(boolean isManualCall) {
+        if (isManualCall || isReadLaterFragment) {
             getReadLaterNewsesObservable()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -188,7 +188,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
         } else {
             // date 有可能为空，因为 setUserVisibleHint 可能在 onCreate 之前调用。
             if (mDate == null) {
-                isGetStoryFailure = true;
+                isPreloadingFailure = true;
                 return;
             }
             getNewsesObservableOfDate()
@@ -207,7 +207,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     private Observable<List<News>> getReadLaterNewsesObservable() {
-        return ZhihuHelper.getNewsesOfIds(ids);
+        return ZhihuHelper.getNewsesOfIds(getContext());
     }
 
     /**

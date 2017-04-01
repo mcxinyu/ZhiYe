@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.widget.Toast;
 
 import com.about.zhiye.R;
+import com.about.zhiye.db.DBLab;
 import com.about.zhiye.model.News;
 import com.about.zhiye.model.NewsTimeLine;
 import com.about.zhiye.model.Story;
@@ -81,11 +82,11 @@ public class ZhihuHelper {
 
     /**
      * 获取稍后阅读 News
-     * @param ids 要获取的新闻 id
+     * @param context
      * @return
      */
-    public static Observable<List<News>> getNewsesOfIds(List<String> ids) {
-        return Observable.from(ids)
+    public static Observable<List<News>> getNewsesOfIds(Context context) {
+        return Observable.from(DBLab.get(context).queryAllReadLater())
                 .flatMap(new Func1<String, Observable<News>>() {
                     @Override
                     public Observable<News> call(String id) {

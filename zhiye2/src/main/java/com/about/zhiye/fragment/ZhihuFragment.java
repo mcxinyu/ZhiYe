@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -68,6 +69,7 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
 
     private TopNewsPagerAdapter mTopNewsPagerAdapter;
     private List<News> mTopNewses;
+    private NewsListPagerAdapter mNewsListPagerAdapter;
 
     public static ZhihuFragment newInstance() {
 
@@ -99,16 +101,17 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
                 startActivity(ZhihuWebActivity.newIntent(getContext(), mTopNewses.get(position).getId()));
             }
         });
-        // doRefreshTopNewses();
 
         mViewPager.setOffscreenPageLimit(PAGER_COUNT);
-        mViewPager.setAdapter(new NewsListPagerAdapter(getFragmentManager()));
+        mNewsListPagerAdapter = new NewsListPagerAdapter(getFragmentManager());
+        mViewPager.setAdapter(mNewsListPagerAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
 
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO: 2017/3/19 选择日期
+                Snackbar.make(mViewPager, getString(R.string.test_text), Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -132,6 +135,14 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (mNewsListPagerAdapter != null) {
+            mNewsListPagerAdapter.notifyDataSetChanged();
+        }
     }
 
     private class NewsListPagerAdapter extends FragmentStatePagerAdapter {

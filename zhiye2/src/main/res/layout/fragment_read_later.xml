@@ -4,18 +4,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <!--<android.support.design.widget.CollapsingToolbarLayout-->
+            <!--android:id="@+id/collapsing_layout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:minHeight="?attr/actionBarSize"-->
+            <!--app:contentScrim="@color/colorPrimary"-->
+            <!--app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"-->
+            <!--app:statusBarScrim="@color/colorPrimary">-->
+
+        <!--</android.support.design.widget.CollapsingToolbarLayout>-->
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
+            app:contentScrim="@color/colorPrimary"
+            app:statusBarScrim="@color/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:title="@string/action_read_later"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:layout_scrollFlags="scroll|enterAlways"/>
+            android:layout_height="?attr/actionBarSize"/>
 
     </android.support.design.widget.AppBarLayout>
 
