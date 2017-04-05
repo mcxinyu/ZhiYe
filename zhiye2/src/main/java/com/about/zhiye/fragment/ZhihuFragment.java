@@ -140,8 +140,8 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (mNewsListPagerAdapter != null) {
-            mNewsListPagerAdapter.notifyDataSetChanged();
+        if (mViewPager != null){
+            mViewPager.getCurrentItem();
         }
     }
 
@@ -215,7 +215,7 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
     private class TopNewsPagerAdapter extends FragmentStatePagerAdapter {
         List<News> list = new ArrayList<>();
 
-        public TopNewsPagerAdapter(FragmentManager fm) {
+        TopNewsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -229,7 +229,7 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
             return list.size();
         }
 
-        public void updateTopStories(List<News> topNewses) {
+        private void updateTopStories(List<News> topNewses) {
             setTopNewses(topNewses);
             notifyDataSetChanged();
         }

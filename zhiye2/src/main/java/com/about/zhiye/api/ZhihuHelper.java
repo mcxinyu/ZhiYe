@@ -81,7 +81,7 @@ public class ZhihuHelper {
     }
 
     /**
-     * 获取稍后阅读 News
+     * 获取稍后阅读 News，存储的 ID 可能在服务器已经被删除，所有要做好检查
      * @param context
      * @return
      */

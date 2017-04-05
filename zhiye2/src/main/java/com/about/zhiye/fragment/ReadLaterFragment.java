@@ -28,8 +28,6 @@ public class ReadLaterFragment extends Fragment {
     @BindView(R.id.fragment_container)
     FrameLayout mFragmentContainer;
     Unbinder unbinder;
-    // @BindView(R.id.collapsing_layout)
-    // CollapsingToolbarLayout mCollapsingLayout;
 
     private NewsListFragment mNewsListFragment;
     private boolean isVisibleToUser;
@@ -67,6 +65,7 @@ public class ReadLaterFragment extends Fragment {
 
         if (isVisibleToUser && isPreloadFailure) {
             mNewsListFragment.doRefresh(true);
+            isPreloadFailure = false;
         }
 
         initToolbar();
@@ -75,7 +74,6 @@ public class ReadLaterFragment extends Fragment {
 
     private void initToolbar() {
         mToolbar.setTitle(getString(R.string.title_read_later));
-        // mCollapsingLayout.setTitle(getString(R.string.title_read_later));
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
     }
 
