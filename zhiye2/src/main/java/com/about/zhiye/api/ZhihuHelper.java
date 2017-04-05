@@ -93,6 +93,19 @@ public class ZhihuHelper {
                         return ZHIHU_API.getDetailNews(id);
                     }
                 })
+                .onErrorReturn(new Func1<Throwable, News>() {
+                    @Override
+                    public News call(Throwable throwable) {
+                        throwable.printStackTrace();
+                        return null;
+                    }
+                })
+                .filter(new Func1<News, Boolean>() {
+                    @Override
+                    public Boolean call(News news) {
+                        return null != news;
+                    }
+                })
                 .toList();
     }
 

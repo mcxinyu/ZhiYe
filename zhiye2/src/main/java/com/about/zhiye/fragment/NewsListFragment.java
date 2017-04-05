@@ -227,7 +227,6 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
-        System.out.println(e.getMessage());
         mSwipeRefreshLayout.setRefreshing(false);
         if (isAdded()) {
             Snackbar.make(mContainer, getString(R.string.network_error), Snackbar.LENGTH_SHORT).show();
