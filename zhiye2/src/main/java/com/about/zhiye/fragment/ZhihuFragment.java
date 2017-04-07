@@ -140,7 +140,7 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (mViewPager != null){
+        if (mViewPager != null) {
             mViewPager.getCurrentItem();
         }
     }
