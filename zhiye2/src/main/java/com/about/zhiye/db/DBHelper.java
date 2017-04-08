@@ -6,11 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import static com.about.zhiye.db.DBScheme.DATABASE_NAME;
 import static com.about.zhiye.db.DBScheme.DATABASE_VERSION;
-import static com.about.zhiye.db.DBScheme.ReadLaterTable.Columns.DATE;
-import static com.about.zhiye.db.DBScheme.ReadLaterTable.Columns.DELETED_DATE;
-import static com.about.zhiye.db.DBScheme.ReadLaterTable.Columns.NEWS_ID;
-import static com.about.zhiye.db.DBScheme.ReadLaterTable.Columns.DELETED;
-import static com.about.zhiye.db.DBScheme.ReadLaterTable.TABLE_NAME;
+import static com.about.zhiye.db.DBScheme.*;
 
 /**
  * Created by huangyuefeng on 2017/3/28.
@@ -18,13 +14,20 @@ import static com.about.zhiye.db.DBScheme.ReadLaterTable.TABLE_NAME;
  */
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final String DATABASE_CREATE_STATEMENT
-            = "create table " + TABLE_NAME + "(" +
+    private static final String READ_LATER_TABLE_CREATE_STATEMENT
+            = "create table " + ReadLaterTable.TABLE_NAME + "(" +
             "_id integer primary key autoincrement," +
-            DATE + "," +
-            NEWS_ID + "," +
-            DELETED + "," +
-            DELETED_DATE +
+            ReadLaterTable.Columns.DATE + "," +
+            ReadLaterTable.Columns.NEWS_ID + "," +
+            ReadLaterTable.Columns.DELETED + "," +
+            ReadLaterTable.Columns.DELETED_DATE +
+            ");";
+
+    private static final String HAVE_READ_TABLE_CREATE_STATEMENT
+            = "create table " + HaveReadTable.TABLE_NAME + "(" +
+            "_id integer primary key autoincrement," +
+            HaveReadTable.Columns.READ_DATE + "," +
+            HaveReadTable.Columns.NEWS_ID +
             ");";
 
     public DBHelper(Context context) {
@@ -33,10 +36,14 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(DATABASE_CREATE_STATEMENT);
+        db.execSQL(READ_LATER_TABLE_CREATE_STATEMENT);
+        db.execSQL(HAVE_READ_TABLE_CREATE_STATEMENT);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (oldVersion < newVersion && newVersion == 2){
+            db.execSQL(HAVE_READ_TABLE_CREATE_STATEMENT);
+        }
     }
 }
