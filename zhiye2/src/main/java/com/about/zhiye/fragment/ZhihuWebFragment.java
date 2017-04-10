@@ -156,7 +156,7 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         MenuItem readLaterItem = menu.findItem(R.id.action_read_later);
         DBLab dbLab = DBLab.get(getContext());
-        if (dbLab.queryReadLaterHave(mNewsId)) {
+        if (dbLab.queryReadLaterExist(mNewsId)) {
             readLaterItem.setIcon(R.drawable.ic_action_read_later_selected);
         } else {
             readLaterItem.setIcon(R.drawable.ic_action_read_later_unselected);
@@ -165,13 +165,13 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        DBLab dbLab = DBLab.get(getContext());
         switch (item.getItemId()) {
             case R.id.action_share:
                 ZhihuHelper.shareNews(getContext(), mNews.getTitle(), mNews.getShareUrl());
                 return false;
             case R.id.action_read_later:
-                DBLab dbLab = DBLab.get(getContext());
-                if (dbLab.queryReadLaterHave(mNews.getId())) {
+                if (dbLab.queryReadLaterExist(mNews.getId())) {
                     dbLab.deleteReadLaterNews(mNews.getId());
                     item.setIcon(R.drawable.ic_action_read_later_unselected);
                     mListener.readLaterStatusChange(false);
@@ -183,6 +183,9 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
                 return false;
             case R.id.action_browser:
                 ZhihuHelper.shareToBrowser(getContext(), mNews.getShareUrl());
+                return false;
+            case R.id.mark_as_unread:
+                dbLab.deleteHaveReadNews(mNews.getId());
                 return false;
             default:
                 return super.onOptionsItemSelected(item);

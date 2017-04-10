@@ -21,4 +21,5 @@
     <string name="title_read_later">Read Later</string>
     <string name="no_zhihu_client">Not Found The Zhihu Client</string>
     <string name="test_text">TEST TEXT</string>
+    <string name="action_mark_as_unread">Mark As Unread</string>
 </resources>

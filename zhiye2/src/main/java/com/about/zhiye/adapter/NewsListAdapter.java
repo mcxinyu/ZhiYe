@@ -1,6 +1,7 @@
 package com.about.zhiye.adapter;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -93,7 +94,18 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
                 mDailyTitle.setText(news.getTitle());
             }
 
-            if (DBLab.get(mContext).queryReadLaterHave(news.getId())) {
+            mQuestionTitle.setTypeface(null, Typeface.BOLD);
+            if (mCallbacks.isReadLaterFragment()){
+                if (DBLab.get(mContext).queryHaveReadExistForReadLater(news.getId())){
+                    mQuestionTitle.setTypeface(null, Typeface.NORMAL);
+                }
+            } else {
+                if (DBLab.get(mContext).queryHaveReadExist(news.getId())){
+                    mQuestionTitle.setTypeface(null, Typeface.NORMAL);
+                }
+            }
+
+            if (DBLab.get(mContext).queryReadLaterExist(news.getId())) {
                 mReadLaterImageView.setImageResource(R.drawable.ic_action_read_later_selected_black);
             } else {
                 mReadLaterImageView.setImageResource(R.drawable.ic_action_read_later_unselected_black);
@@ -111,7 +123,9 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
             mNewsListCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    mQuestionTitle.setTypeface(null, Typeface.NORMAL);
                     mCallbacks.startZhihuWebActivity(news.getId());
+                    mCallbacks.haveReadNews(news.getId());
                 }
             });
             mShareImageView.setOnClickListener(new View.OnClickListener() {
@@ -124,7 +138,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
                 @Override
                 public void onClick(View v) {
                     DBLab dbLab = DBLab.get(mContext);
-                    if (dbLab.queryReadLaterHave(news.getId())) {
+                    if (dbLab.queryReadLaterExist(news.getId())) {
                         dbLab.deleteReadLaterNews(news.getId());
                         ((ImageView) v).setImageResource(R.drawable.ic_action_read_later_unselected_black);
                     } else {
@@ -144,5 +158,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
 
     public interface Callbacks {
         void startZhihuWebActivity(String newsId);
+        void haveReadNews(String newsId);
+        boolean isReadLaterFragment();
     }
 }

@@ -26,8 +26,9 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String HAVE_READ_TABLE_CREATE_STATEMENT
             = "create table " + HaveReadTable.TABLE_NAME + "(" +
             "_id integer primary key autoincrement," +
+            HaveReadTable.Columns.NEWS_ID + "," +
             HaveReadTable.Columns.READ_DATE + "," +
-            HaveReadTable.Columns.NEWS_ID +
+            HaveReadTable.Columns.READ_LATER_READ_DATE +
             ");";
 
     public DBHelper(Context context) {
@@ -42,8 +43,18 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < newVersion && newVersion == 2){
-            db.execSQL(HAVE_READ_TABLE_CREATE_STATEMENT);
+        switch (oldVersion) {
+            case 1:
+                db.execSQL(HAVE_READ_TABLE_CREATE_STATEMENT);
+            case 2:
+                try {
+                    db.execSQL("alter table " + HaveReadTable.TABLE_NAME +
+                            " add column " + HaveReadTable.Columns.READ_LATER_READ_DATE);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            default:
+                break;
         }
     }
 }

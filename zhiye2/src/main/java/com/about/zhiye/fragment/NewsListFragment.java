@@ -19,6 +19,7 @@ import com.about.zhiye.R;
 import com.about.zhiye.activity.ZhihuWebActivity;
 import com.about.zhiye.adapter.NewsListAdapter;
 import com.about.zhiye.api.ZhihuHelper;
+import com.about.zhiye.db.DBLab;
 import com.about.zhiye.model.News;
 
 import java.util.List;
@@ -268,6 +269,20 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void startZhihuWebActivity(String newsId) {
         startActivityForResult(ZhihuWebActivity.newIntent(getContext(), newsId), REQUEST_CODE);
+    }
+
+    @Override
+    public void haveReadNews(String newsId) {
+        if (isReadLaterFragment){
+            DBLab.get(getContext()).insertHaveReadNewsForReadLater(newsId);
+        } else {
+            DBLab.get(getContext()).insertHaveReadNews(newsId);
+        }
+    }
+
+    @Override
+    public boolean isReadLaterFragment() {
+        return isReadLaterFragment;
     }
 
     public interface OnFragmentInteractionListener {

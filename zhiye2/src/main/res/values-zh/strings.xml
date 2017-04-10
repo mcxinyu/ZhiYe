@@ -22,4 +22,5 @@
     <string name="title_read_later">稍后阅读</string>
     <string name="no_zhihu_client">未找到知乎客户端</string>
     <string name="test_text">调试中</string>
+    <string name="action_mark_as_unread">标记为未读</string>
 </resources>

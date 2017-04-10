@@ -19,10 +19,9 @@
         android:orderInCategory="300"
         app:showAsAction="never"
         android:title="@string/action_title_open_browser"/>
-    <!--<item-->
-        <!--android:id="@+id/action_zhihu"-->
-        <!--android:icon="@drawable/ic_action_zhihu"-->
-        <!--android:orderInCategory="400"-->
-        <!--app:showAsAction="ifRoom"-->
-        <!--android:title="@string/action_title_open_zhihu"/>-->
+    <item
+        android:id="@+id/mark_as_unread"
+        android:orderInCategory="400"
+        app:showAsAction="never"
+        android:title="@string/action_mark_as_unread"/>
 </menu>

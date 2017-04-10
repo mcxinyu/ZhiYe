@@ -4,9 +4,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 
+import com.about.zhiye.db.DBScheme.HaveReadTable;
 import com.about.zhiye.db.DBScheme.ReadLaterTable;
-import com.about.zhiye.db.DBScheme.ReadLaterTable.Columns;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,8 +24,8 @@ public class DBLab {
     private SQLiteDatabase mDatabase;
     private DBHelper mDBHelper;
 
-    public static DBLab get(Context context){
-        if (dbLab == null){
+    public static DBLab get(Context context) {
+        if (dbLab == null) {
             dbLab = new DBLab(context);
         }
         return dbLab;
@@ -39,22 +40,23 @@ public class DBLab {
         mDatabase = mDBHelper.getWritableDatabase();
     }
 
+    ////////////////////
+    // Read Later Table
+    ////////////////////
     public void insertReadLaterNews(String newsId) {
-        try (Cursor cursor = queryReadLater(newsId)) {
-            if (cursor.getCount() == 0) {
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd HH:mm:ss", Locale.PRC);
-                String currentDate = formatter.format(new Date(System.currentTimeMillis()));
+        if (queryReadLaterExist(newsId)) {
+            updateReadLaterNews(newsId, false);
+        } else {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd HH:mm:ss", Locale.PRC);
+            String currentDate = formatter.format(new Date(System.currentTimeMillis()));
 
-                ContentValues values = new ContentValues();
-                values.put(Columns.DATE, currentDate);
-                values.put(Columns.NEWS_ID, newsId);
-                values.put(Columns.DELETED, false);
-                values.put(Columns.DELETED_DATE, "");
+            ContentValues values = new ContentValues();
+            values.put(ReadLaterTable.Columns.DATE, currentDate);
+            values.put(ReadLaterTable.Columns.NEWS_ID, newsId);
+            values.put(ReadLaterTable.Columns.DELETED, false);
+            values.put(ReadLaterTable.Columns.DELETED_DATE, "");
 
-                mDatabase.insert(ReadLaterTable.TABLE_NAME, null, values);
-            } else {
-                updateReadLaterNews(newsId, false);
-            }
+            mDatabase.insert(ReadLaterTable.TABLE_NAME, null, values);
         }
     }
 
@@ -62,22 +64,28 @@ public class DBLab {
         updateReadLaterNews(newsId, true);
     }
 
+    /**
+     * 包括再次添加为稍后阅读
+     *
+     * @param newsId
+     * @param delete 删除实际只是标记，并非真正删除，所有需要判断是不是又一次添加为稍后阅读
+     */
     private void updateReadLaterNews(String newsId, boolean delete) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd HH:mm:ss", Locale.PRC);
         String currentDate = formatter.format(new Date(System.currentTimeMillis()));
 
         ContentValues values = new ContentValues();
-        values.put(Columns.DELETED, delete);
-        if (delete){
+        values.put(ReadLaterTable.Columns.DELETED, delete);
+        if (delete) {
             // 要删除就要更新 删除时间，保留历史时间
-            values.put(Columns.DELETED_DATE, currentDate);
+            values.put(ReadLaterTable.Columns.DELETED_DATE, currentDate);
         } else {
             // 不删除说明是重新添加的，要更新 添加时间
-            values.put(Columns.DATE, currentDate);
-            values.put(Columns.DELETED_DATE, "");
+            values.put(ReadLaterTable.Columns.DATE, currentDate);
+            values.put(ReadLaterTable.Columns.DELETED_DATE, "");
         }
 
-        mDatabase.update(ReadLaterTable.TABLE_NAME, values, Columns.NEWS_ID + "=?", new String[]{newsId});
+        mDatabase.update(ReadLaterTable.TABLE_NAME, values, ReadLaterTable.Columns.NEWS_ID + "=?", new String[]{newsId});
     }
 
     public List<String> queryAllReadLater() {
@@ -89,8 +97,8 @@ public class DBLab {
             List<String> list = new ArrayList<>();
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
-                if (cursor.getInt(cursor.getColumnIndex(Columns.DELETED)) == 0) {
-                    list.add(cursor.getString(cursor.getColumnIndex(Columns.NEWS_ID)));
+                if (cursor.getInt(cursor.getColumnIndex(ReadLaterTable.Columns.DELETED)) == 0) {
+                    list.add(cursor.getString(cursor.getColumnIndex(ReadLaterTable.Columns.NEWS_ID)));
                 }
                 cursor.moveToNext();
             }
@@ -100,19 +108,115 @@ public class DBLab {
 
     private Cursor queryReadLater(String newsId) {
         return mDatabase.query(ReadLaterTable.TABLE_NAME, null,
-                Columns.NEWS_ID + "=?",
+                ReadLaterTable.Columns.NEWS_ID + "=?",
                 new String[]{newsId},
                 null, null, null);
     }
 
-    public boolean queryReadLaterHave(String newsId) {
+    public boolean queryReadLaterExist(String newsId) {
         try (Cursor cursor = queryReadLater(newsId)) {
             if (cursor.getCount() == 0) {
                 return false;
             }
 
             cursor.moveToFirst();
-            return cursor.getInt(cursor.getColumnIndex(Columns.DELETED)) == 0;
+            return cursor.getInt(cursor.getColumnIndex(ReadLaterTable.Columns.DELETED)) == 0;
+        }
+    }
+
+    ////////////////////
+    // Have Read Table
+    ////////////////////
+    public void insertHaveReadNews(String newsId) {
+        if (queryHaveReadExist(newsId)) {
+            updateHaveReadNews(newsId, false);
+        } else {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd HH:mm:ss", Locale.PRC);
+            String currentDate = formatter.format(new Date(System.currentTimeMillis()));
+
+            ContentValues values = new ContentValues();
+            values.put(HaveReadTable.Columns.NEWS_ID, newsId);
+            values.put(HaveReadTable.Columns.READ_DATE, currentDate);
+
+            mDatabase.insert(HaveReadTable.TABLE_NAME, null, values);
+        }
+    }
+
+    public void insertHaveReadNewsForReadLater(String newsId) {
+        if (queryHaveReadExist(newsId)) {
+            updateHaveReadNews(newsId, true);
+        } else {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd HH:mm:ss", Locale.PRC);
+            String currentDate = formatter.format(new Date(System.currentTimeMillis()));
+
+            ContentValues values = new ContentValues();
+            values.put(HaveReadTable.Columns.NEWS_ID, newsId);
+            values.put(HaveReadTable.Columns.READ_DATE, currentDate);
+            values.put(HaveReadTable.Columns.READ_LATER_READ_DATE, currentDate);
+
+            mDatabase.insert(HaveReadTable.TABLE_NAME, null, values);
+        }
+    }
+
+    private void updateHaveReadNews(String newsId, boolean isReadLater) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd HH:mm:ss", Locale.PRC);
+        String currentDate = formatter.format(new Date(System.currentTimeMillis()));
+
+        ContentValues values = new ContentValues();
+        values.put(HaveReadTable.Columns.READ_DATE, currentDate);
+        if (isReadLater) {
+            values.put(HaveReadTable.Columns.READ_LATER_READ_DATE, currentDate);
+        }
+
+        mDatabase.update(HaveReadTable.TABLE_NAME, values, HaveReadTable.Columns.NEWS_ID + "=?", new String[]{newsId});
+    }
+
+    public void deleteHaveReadNews(String newsId) {
+        mDatabase.delete(HaveReadTable.TABLE_NAME, HaveReadTable.Columns.NEWS_ID + "=?", new String[]{newsId});
+    }
+
+    public List<String> queryAllHaveRead() {
+        try (Cursor cursor = mDatabase.query(HaveReadTable.TABLE_NAME, null, null, null, null, null, null)) {
+            if (cursor.getCount() == 0) {
+                return null;
+            }
+
+            List<String> list = new ArrayList<>();
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                list.add(cursor.getString(cursor.getColumnIndex(HaveReadTable.Columns.NEWS_ID)));
+                cursor.moveToNext();
+            }
+            return list;
+        }
+    }
+
+    private Cursor queryHaveRead(String newsId) {
+        return mDatabase.query(HaveReadTable.TABLE_NAME, null,
+                HaveReadTable.Columns.NEWS_ID + "=?",
+                new String[]{newsId},
+                null, null, null);
+    }
+
+    public boolean queryHaveReadExist(String newsId) {
+        try (Cursor cursor = queryHaveRead(newsId)) {
+            if (cursor.getCount() == 0) {
+                return false;
+            }
+
+            cursor.moveToFirst();
+            return !TextUtils.isEmpty(cursor.getString(cursor.getColumnIndex(HaveReadTable.Columns.READ_DATE)));
+        }
+    }
+
+    public boolean queryHaveReadExistForReadLater(String newsId) {
+        try (Cursor cursor = queryHaveRead(newsId)) {
+            if (cursor.getCount() == 0) {
+                return false;
+            }
+
+            cursor.moveToFirst();
+            return !TextUtils.isEmpty(cursor.getString(cursor.getColumnIndex(HaveReadTable.Columns.READ_LATER_READ_DATE)));
         }
     }
 }

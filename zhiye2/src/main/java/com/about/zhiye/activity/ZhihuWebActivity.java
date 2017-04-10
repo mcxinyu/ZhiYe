@@ -37,7 +37,7 @@ public class ZhihuWebActivity extends AppCompatActivity
         unbinder = ButterKnife.bind(this);
 
         mNewsId = getIntent().getStringExtra(EXTRA_NEWS_ID);
-        isReadLaterAdd = DBLab.get(this).queryReadLaterHave(mNewsId);
+        isReadLaterAdd = DBLab.get(this).queryReadLaterExist(mNewsId);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
