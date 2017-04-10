@@ -51,6 +51,20 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
     }
 
     @Override
+    public void onBindViewHolder(CardViewHolder holder, int position, List<Object> payloads) {
+        if (payloads.isEmpty()) {
+            onBindViewHolder(holder, position);
+        } else {
+            String id = mNewses.get(position).getId();
+            if (DBLab.get(mContext).queryReadLaterExist(id)) {
+                holder.mReadLaterImageView.setImageResource(R.drawable.ic_action_read_later_selected_black);
+            } else {
+                holder.mReadLaterImageView.setImageResource(R.drawable.ic_action_read_later_unselected_black);
+            }
+        }
+    }
+
+    @Override
     public int getItemCount() {
         return null == mNewses ? 0 : mNewses.size();
     }

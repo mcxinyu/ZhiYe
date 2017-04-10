@@ -16,7 +16,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 public class ZhihuWebActivity extends AppCompatActivity
-        implements ZhihuWebFragment.OnFragmentInteractionListener{
+        implements ZhihuWebFragment.Callbacks {
     private static final String EXTRA_NEWS_ID = "news_id";
 
     private String mNewsId;
@@ -70,7 +70,7 @@ public class ZhihuWebActivity extends AppCompatActivity
     @Override
     public void readLaterStatusChange(boolean added) {
         Intent intent = new Intent();
-        intent.putExtra("change", !(isReadLaterAdd == added));
+        intent.putExtra("newsId", mNewsId);
         setResult(RESULT_OK, intent);
     }
 }

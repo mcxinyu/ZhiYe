@@ -57,7 +57,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     private List<News> mNewses;
 
-    private OnFragmentInteractionListener mListener;
+    private Callbacks mListener;
     private NewsListAdapter mNewsAdapter;
     private String mDate;
     private boolean isRefreshed = false;
@@ -66,7 +66,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     public static NewsListFragment newInstance(@Nullable String date) {
         NewsListFragment fragment = new NewsListFragment();
-        if (date == null){
+        if (date == null) {
             return fragment;
         }
 
@@ -94,7 +94,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
         unbinder = ButterKnife.bind(this, view);
 
         boolean reverseLayout = false;
-        if (isReadLaterFragment){
+        if (isReadLaterFragment) {
             reverseLayout = true;
             mRecyclerView.setHasFixedSize(true);
         }
@@ -129,11 +129,11 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        // if (context instanceof OnFragmentInteractionListener) {
-        //     mListener = (OnFragmentInteractionListener) context;
+        // if (context instanceof Callbacks) {
+        //     mListener = (Callbacks) context;
         // } else {
         //     throw new RuntimeException(context.toString()
-        //             + " must implement OnFragmentInteractionListener");
+        //             + " must implement Callbacks");
         // }
     }
 
@@ -179,6 +179,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     /**
      * 获取数据后刷新
+     *
      * @param isRefreshReadLater 外部手动调用该方法刷新 ReadLaterNewses
      */
     public void doRefresh(boolean isRefreshReadLater) {
@@ -254,10 +255,11 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
         if (requestCode == REQUEST_CODE) {
             switch (resultCode) {
                 case RESULT_OK:
-                    boolean change = data.getBooleanExtra("change", false);
-                    if (change) {
-                        // TODO: 2017/3/29 添加了稍后阅读需要修改刘表中相对应的 item 的显示，
-                        // 阅读过的 item 也需要修改以表示已经阅读过了，或者直接在点击事件中修改
+                    String newsId = data.getStringExtra("newsId");
+                    for (int i = 0; i < mNewses.size(); i++) {
+                        if (mNewses.get(i).getId().equals(newsId)) {
+                            mNewsAdapter.notifyItemChanged(i, "newsId");
+                        }
                     }
                     break;
                 default:
@@ -273,7 +275,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void haveReadNews(String newsId) {
-        if (isReadLaterFragment){
+        if (isReadLaterFragment) {
             DBLab.get(getContext()).insertHaveReadNewsForReadLater(newsId);
         } else {
             DBLab.get(getContext()).insertHaveReadNews(newsId);
@@ -285,7 +287,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
         return isReadLaterFragment;
     }
 
-    public interface OnFragmentInteractionListener {
+    public interface Callbacks {
         void onFragmentInteraction(Uri uri);
     }
 }

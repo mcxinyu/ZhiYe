@@ -71,7 +71,7 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     private String mNewsId;
     private News mNews;
-    private OnFragmentInteractionListener mListener;
+    private Callbacks mListener;
 
     public static ZhihuWebFragment newInstance(String newsId) {
         Bundle args = new Bundle();
@@ -195,11 +195,11 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof Callbacks) {
+            mListener = (Callbacks) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement Callbacks");
         }
     }
 
@@ -264,7 +264,7 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
         mNews = news;
     }
 
-    public interface OnFragmentInteractionListener {
+    public interface Callbacks {
         void readLaterStatusChange(boolean added);
     }
 }
