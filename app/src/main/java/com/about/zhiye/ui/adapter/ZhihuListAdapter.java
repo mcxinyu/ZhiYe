@@ -156,7 +156,6 @@ public class ZhihuListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             mTopStoriesViewPager.init(top_stories, mTopTitleTextView, new TopStoriesViewPager.ViewPagerClickListener() {
                 @Override
                 public void onClick(TopStories item) {
-                    // TODO: 2017/3/14 goto ZhihuWebActivity
                     // mContext.startActivity();
                 }
             });
@@ -195,7 +194,6 @@ public class ZhihuListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             mStoriesCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO: 2017/3/14 goto ZhihuWebActivity
                     // mContext.startActivity();
                 }
             });

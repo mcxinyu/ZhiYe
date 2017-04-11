@@ -255,15 +255,18 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
         if (requestCode == REQUEST_CODE) {
             switch (resultCode) {
                 case RESULT_OK:
-                    String newsId = data.getStringExtra("newsId");
-                    for (int i = 0; i < mNewses.size(); i++) {
-                        if (mNewses.get(i).getId().equals(newsId)) {
-                            mNewsAdapter.notifyItemChanged(i, "newsId");
-                        }
-                    }
+                    notifyItemChangeOfNewsId(data.getStringExtra("newsId"));
                     break;
                 default:
                     break;
+            }
+        }
+    }
+
+    private void notifyItemChangeOfNewsId(String newsId) {
+        for (int i = 0; i < mNewses.size(); i++) {
+            if (mNewses.get(i).getId().equals(newsId)) {
+                mNewsAdapter.notifyItemChanged(i, "newsId");
             }
         }
     }
@@ -285,6 +288,31 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public boolean isReadLaterFragment() {
         return isReadLaterFragment;
+    }
+
+    @Override
+    public void addReadLater(final String newsId, boolean added) {
+        if (added){
+            Snackbar.make(mContainer, getString(R.string.added_read_later), Snackbar.LENGTH_SHORT)
+                    .setAction(getString(R.string.undo), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            DBLab.get(getContext()).deleteReadLaterNews(newsId);
+                            notifyItemChangeOfNewsId(newsId);
+                        }
+                    })
+                    .show();
+        } else {
+            Snackbar.make(mContainer, getString(R.string.removed_read_later), Snackbar.LENGTH_SHORT)
+                    .setAction(getString(R.string.undo), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            DBLab.get(getContext()).insertReadLaterNews(newsId);
+                            notifyItemChangeOfNewsId(newsId);
+                        }
+                    })
+                    .show();
+        }
     }
 
     public interface Callbacks {

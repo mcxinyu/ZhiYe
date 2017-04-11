@@ -4,7 +4,6 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="news_image_preview">Image Preview</string>
     <string name="zhihu_question_link_prefix">http://www.zhihu.com/question/</string>
     <string name="title_activity_zhihu_web">News</string>
@@ -22,4 +21,7 @@
     <string name="no_zhihu_client">Not Found The Zhihu Client</string>
     <string name="test_text">TEST TEXT</string>
     <string name="action_mark_as_unread">Mark As Unread</string>
+    <string name="added_read_later">Has been added to Read Later</string>
+    <string name="undo">Undo</string>
+    <string name="removed_read_later">Has been removed from Read Later</string>
 </resources>

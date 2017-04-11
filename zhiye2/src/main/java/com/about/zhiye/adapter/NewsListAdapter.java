@@ -155,9 +155,11 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
                     if (dbLab.queryReadLaterExist(news.getId())) {
                         dbLab.deleteReadLaterNews(news.getId());
                         ((ImageView) v).setImageResource(R.drawable.ic_action_read_later_unselected_black);
+                        mCallbacks.addReadLater(news.getId(), false);
                     } else {
                         dbLab.insertReadLaterNews(news.getId());
                         ((ImageView) v).setImageResource(R.drawable.ic_action_read_later_selected_black);
+                        mCallbacks.addReadLater(news.getId(), true);
                     }
                 }
             });
@@ -174,5 +176,6 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
         void startZhihuWebActivity(String newsId);
         void haveReadNews(String newsId);
         boolean isReadLaterFragment();
+        void addReadLater(String newsId, boolean added);
     }
 }

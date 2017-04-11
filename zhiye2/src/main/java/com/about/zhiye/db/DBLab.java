@@ -44,19 +44,21 @@ public class DBLab {
     // Read Later Table
     ////////////////////
     public void insertReadLaterNews(String newsId) {
-        if (queryReadLaterExist(newsId)) {
-            updateReadLaterNews(newsId, false);
-        } else {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd HH:mm:ss", Locale.PRC);
-            String currentDate = formatter.format(new Date(System.currentTimeMillis()));
+        try (Cursor cursor = queryReadLater(newsId)) {
+            if (cursor.getCount() == 0) {
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd HH:mm:ss", Locale.PRC);
+                String currentDate = formatter.format(new Date(System.currentTimeMillis()));
 
-            ContentValues values = new ContentValues();
-            values.put(ReadLaterTable.Columns.DATE, currentDate);
-            values.put(ReadLaterTable.Columns.NEWS_ID, newsId);
-            values.put(ReadLaterTable.Columns.DELETED, false);
-            values.put(ReadLaterTable.Columns.DELETED_DATE, "");
+                ContentValues values = new ContentValues();
+                values.put(ReadLaterTable.Columns.DATE, currentDate);
+                values.put(ReadLaterTable.Columns.NEWS_ID, newsId);
+                values.put(ReadLaterTable.Columns.DELETED, false);
+                values.put(ReadLaterTable.Columns.DELETED_DATE, "");
 
-            mDatabase.insert(ReadLaterTable.TABLE_NAME, null, values);
+                mDatabase.insert(ReadLaterTable.TABLE_NAME, null, values);
+            } else {
+                updateReadLaterNews(newsId, false);
+            }
         }
     }
 
