@@ -91,7 +91,8 @@ public class DBLab {
     }
 
     public List<String> queryAllReadLater() {
-        try (Cursor cursor = mDatabase.query(ReadLaterTable.TABLE_NAME, null, null, null, null, null, null)) {
+        try (Cursor cursor = mDatabase.query(ReadLaterTable.TABLE_NAME, null, null, null, null, null,
+                ReadLaterTable.Columns.DATE + " DESC")) {
             if (cursor.getCount() == 0) {
                 return null;
             }

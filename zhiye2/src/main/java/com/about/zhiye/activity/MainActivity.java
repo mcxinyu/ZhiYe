@@ -114,6 +114,8 @@ public class MainActivity extends AppCompatActivity {
                         .add(R.id.fragment_content, fragment)
                         .commit();
             }
+            currentFragment.setUserVisibleHint(false);
+            fragment.setUserVisibleHint(true);
             currentFragment = fragment;
         }
     }

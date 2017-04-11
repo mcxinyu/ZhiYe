@@ -141,23 +141,27 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (mViewPager != null) {
-            mViewPager.getCurrentItem();
+            int currentItem = mViewPager.getCurrentItem();
+            mNewsListPagerAdapter.getItem(currentItem).notifyDataSetChanged();
         }
     }
 
     private class NewsListPagerAdapter extends FragmentStatePagerAdapter {
+        List<NewsListFragment> mFragmentList = new ArrayList<>();
 
         NewsListPagerAdapter(FragmentManager fm) {
             super(fm);
+            for (int i = 0; i < PAGER_COUNT; i++) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.add(Calendar.DAY_OF_YEAR, 1 - i);
+                String date = SIMPLE_DATE_FORMAT.format(calendar.getTime());
+                mFragmentList.add(NewsListFragment.newInstance(date));
+            }
         }
 
         @Override
-        public Fragment getItem(int position) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.DAY_OF_YEAR, 1 - position);
-            String date = SIMPLE_DATE_FORMAT.format(calendar.getTime());
-
-            return NewsListFragment.newInstance(date);
+        public NewsListFragment getItem(int position) {
+            return mFragmentList.get(position);
         }
 
         @Override

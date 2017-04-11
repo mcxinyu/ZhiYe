@@ -93,12 +93,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
         View view = inflater.inflate(R.layout.fragment_news_list, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        boolean reverseLayout = false;
-        if (isReadLaterFragment) {
-            reverseLayout = true;
-            mRecyclerView.setHasFixedSize(true);
-        }
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, reverseLayout));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         mNewsAdapter = new NewsListAdapter(getContext(), mNewses, this);
         mRecyclerView.setAdapter(mNewsAdapter);
 
@@ -175,6 +170,10 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void onRefresh() {
         doRefresh(false);
+    }
+
+    public void notifyDataSetChanged() {
+        mNewsAdapter.notifyDataSetChanged();
     }
 
     /**
