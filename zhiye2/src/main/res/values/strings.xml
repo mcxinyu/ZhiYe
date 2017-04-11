@@ -24,4 +24,8 @@
     <string name="added_read_later">Has been added to Read Later</string>
     <string name="undo">Undo</string>
     <string name="removed_read_later">Has been removed from Read Later</string>
+    <string name="not_coming">That day has not come yet!</string>
+    <string name="not_born">Zhihu Daily not born that day!</string>
+    <string name="pick_date">Pick Date</string>
+    <string name="back">back</string>
 </resources>

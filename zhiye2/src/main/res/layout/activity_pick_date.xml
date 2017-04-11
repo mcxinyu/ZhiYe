@@ -2,30 +2,29 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:orientation="vertical">
+    tools:context="com.about.zhiye.activity.PickDateActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
-            app:contentScrim="@color/colorPrimary"
-            app:statusBarScrim="@color/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways"
-            android:title="@string/action_read_later"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"/>
-
+            android:layout_height="?attr/actionBarSize"
+            android:title="@string/action_read_later"
+            app:contentScrim="@color/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:statusBarScrim="@color/colorPrimary"/>
     </android.support.design.widget.AppBarLayout>
 
-    <FrameLayout
-        android:id="@+id/fragment_container"
+    <com.squareup.timessquare.CalendarPickerView
+        android:id="@+id/calendar_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
+        android:layout_height="match_parent"/>
 </android.support.design.widget.CoordinatorLayout>

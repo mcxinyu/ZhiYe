@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -18,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.about.zhiye.R;
+import com.about.zhiye.activity.PickDateActivity;
 import com.about.zhiye.activity.ZhihuWebActivity;
 import com.about.zhiye.api.ZhihuHelper;
 import com.about.zhiye.model.News;
@@ -110,8 +110,7 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 2017/3/19 选择日期
-                Snackbar.make(mViewPager, getString(R.string.test_text), Snackbar.LENGTH_SHORT).show();
+                startActivity(PickDateActivity.newIntent(getContext()));
             }
         });
 
