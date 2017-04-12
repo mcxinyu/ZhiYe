@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -107,6 +108,13 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
             @Override
             public void onClick(View v) {
                 startActivity(PickDateActivity.newIntent(getContext()));
+            }
+        });
+        mFloatingActionButton.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Snackbar.make(mViewPager, getString(R.string.pick_date), Snackbar.LENGTH_SHORT).show();
+                return false;
             }
         });
 
