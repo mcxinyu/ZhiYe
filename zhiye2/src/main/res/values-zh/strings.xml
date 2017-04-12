@@ -30,4 +30,5 @@
     <string name="not_born">过去到过去！</string>
     <string name="pick_date">选择日期</string>
     <string name="back">返回</string>
+    <string name="ramdom_data">随机选择</string>
 </resources>

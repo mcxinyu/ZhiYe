@@ -26,12 +26,9 @@ import com.jude.rollviewpager.RollPagerView;
 import com.jude.rollviewpager.hintview.ColorPointHintView;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,15 +38,14 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.about.zhiye.util.DateUtil.SIMPLE_DATE_FORMAT;
+
 /**
  * Created by huangyuefeng on 2017/3/17.
  * Contact me : mcxinyu@foxmail.com
  * 管理按日期排列的 ViewPager 里面存放最近一周各个日期的 NewsListFragment
  */
 public class ZhihuFragment extends Fragment implements Observer<List<News>> {
-    @SuppressWarnings("deprecation")
-    public static final Date ZHIHU_DAILY_BIRTHDAY = new Date(113, 4, 19); // May 19th, 2013
-    public static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd", Locale.US);
 
     private static final int PAGER_COUNT = 7;
 
