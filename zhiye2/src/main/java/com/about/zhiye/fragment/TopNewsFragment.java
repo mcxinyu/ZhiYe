@@ -58,7 +58,7 @@ public class TopNewsFragment extends Fragment {
 
         mTopTitleTextView.setText(mNews.getTitle());
         Glide.with(this)
-                .load(mNews.getImage())
+                .load(mNews.getImage()).centerCrop()
                 .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(mImageView);
