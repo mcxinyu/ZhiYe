@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 
 import com.about.zhiye.R;
 import com.about.zhiye.fragment.ReadLaterFragment;
+import com.about.zhiye.fragment.ThemeFragment;
 import com.about.zhiye.fragment.ZhihuFragment;
 import com.about.zhiye.util.StateUtils;
 
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager mFragmentManager;
 
     private ZhihuFragment mZhihuFragment;
-    private ZhihuFragment mZhihuFragment1;
+    private ThemeFragment mThemeFragment;
     private ReadLaterFragment mReadLaterFragment;
     private Fragment currentFragment;
 
@@ -58,9 +59,12 @@ public class MainActivity extends AppCompatActivity {
                     mStatusBarView.setVisibility(View.GONE);
                     switchFragment(mZhihuFragment);
                     return true;
-                case R.id.navigation_dashboard:
-                    mStatusBarView.setVisibility(View.GONE);
-                    switchFragment(mZhihuFragment1);
+                case R.id.navigation_themes:
+                    if (mThemeFragment == null) {
+                        mThemeFragment = ThemeFragment.newInstance();
+                    }
+                    mStatusBarView.setVisibility(View.VISIBLE);
+                    switchFragment(mThemeFragment);
                     return true;
                 case R.id.navigation_read_later:
                     if (mReadLaterFragment == null) {
@@ -98,10 +102,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void switchFragment(Fragment fragment) {
-        if (null == fragment) {
-            // TODO: 2017/3/30 后续需要移除 放入 BottomNavigationView 点击事件里
-            fragment = ZhihuFragment.newInstance();
-        }
 
         if (currentFragment != fragment) {
             FragmentTransaction transaction = mFragmentManager.beginTransaction();

@@ -5,6 +5,8 @@ import com.about.zhiye.model.News;
 import com.about.zhiye.model.NewsTimeLine;
 import com.about.zhiye.model.StartImage;
 import com.about.zhiye.model.StoryExtra;
+import com.about.zhiye.model.Theme;
+import com.about.zhiye.model.Themes;
 
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -71,4 +73,19 @@ public interface ZhihuApi {
      */
     @GET("api/4/story/{id}/short-comments")
     Observable<Comments> getStoryExtraShortComments(@Path("id") String id);
+
+    /**
+     * 主题日报列表查看
+     * @return
+     */
+    @GET("api/4/themes")
+    Observable<Themes> getThemes();
+
+    /**
+     * 主题日报内容查看
+     * @param id 主题日报 ID
+     * @return
+     */
+    @GET("api/4/theme/{id}")
+    Observable<Theme> getTheme(@Path("id") String id);
 }

@@ -256,6 +256,7 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
     public void onError(Throwable e) {
         e.printStackTrace();
         mSwipeRefreshLayout.setRefreshing(false);
+        mSwipeRefreshLayout.setEnabled(true);
         Snackbar.make(mCoordinatorLayout, getString(R.string.network_error), Snackbar.LENGTH_SHORT).show();
     }
 

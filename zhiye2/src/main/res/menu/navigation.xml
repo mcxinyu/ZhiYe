@@ -8,9 +8,9 @@
         android:title="@string/title_zhihu"/>
 
     <item
-        android:id="@+id/navigation_dashboard"
-        android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_dashboard"/>
+        android:id="@+id/navigation_themes"
+        android:icon="@drawable/ic_themes_black_24dp"
+        android:title="@string/title_themes"/>
     <item
         android:id="@+id/navigation_read_later"
         android:icon="@drawable/ic_read_later_black_24dp"

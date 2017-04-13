@@ -64,6 +64,11 @@ public class News implements Serializable{
     private String[] css;
     private List<Question> questions;
 
+    @SerializedName("theme")
+    private ThemeBean theme;
+    @SerializedName("images")
+    private List<String> images;
+
     public String getBody() {
         return body;
     }
@@ -180,6 +185,61 @@ public class News implements Serializable{
 
     public void setQuestions(List<Question> questions) {
         this.questions = questions;
+    }
+
+    public ThemeBean getTheme() {
+        return theme;
+    }
+
+    public void setTheme(ThemeBean theme) {
+        this.theme = theme;
+    }
+
+    public List<String> getImages() {
+        return images;
+    }
+
+    public void setImages(List<String> images) {
+        this.images = images;
+    }
+
+    public static class ThemeBean {
+        /**
+         * thumbnail : http://pic4.zhimg.com/2c38a96e84b5cc8331a901920a87ea71.jpg
+         * id : 12
+         * name : 用户推荐日报
+         */
+
+        @SerializedName("thumbnail")
+        private String thumbnail;
+        @SerializedName("id")
+        private int idX;
+        @SerializedName("name")
+        private String name;
+
+        public String getThumbnail() {
+            return thumbnail;
+        }
+
+        public void setThumbnail(String thumbnail) {
+            this.thumbnail = thumbnail;
+        }
+
+        public int getIdX() {
+            return idX;
+        }
+
+        public void setIdX(int idX) {
+            this.idX = idX;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
     }
 
     public class Recommender implements Serializable {

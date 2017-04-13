@@ -10,6 +10,7 @@ import com.about.zhiye.db.DBLab;
 import com.about.zhiye.model.News;
 import com.about.zhiye.model.NewsTimeLine;
 import com.about.zhiye.model.Story;
+import com.about.zhiye.model.Themes;
 import com.about.zhiye.model.TopStory;
 
 import java.util.List;
@@ -107,6 +108,16 @@ public class ZhihuHelper {
                     }
                 })
                 .toList();
+    }
+
+    public static Observable<List<Themes.OthersBean>> getThemes() {
+         return ZHIHU_API.getThemes()
+                .map(new Func1<Themes, List<Themes.OthersBean>>() {
+                    @Override
+                    public List<Themes.OthersBean> call(Themes themes) {
+                        return themes.getOthers();
+                    }
+                });
     }
 
     /**

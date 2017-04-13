@@ -81,12 +81,14 @@ public class ReadLaterFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         this.isVisibleToUser = isVisibleToUser;
-        if (mNewsListFragment == null) {
-            // 加载的时候可能 mNewsListFragment 还没创建
-            isPreloadFailure = true;
-        } else {
-            // 每次 ReadLaterFragment 可见都去加载数据
-            mNewsListFragment.doRefresh(true);
+        if (isVisibleToUser) {
+            if (mNewsListFragment == null) {
+                // 加载的时候可能 mNewsListFragment 还没创建
+                isPreloadFailure = true;
+            } else {
+                // 每次 ReadLaterFragment 可见都去加载数据
+                mNewsListFragment.doRefresh(true);
+            }
         }
     }
 
