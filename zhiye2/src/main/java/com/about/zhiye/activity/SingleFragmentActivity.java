@@ -27,7 +27,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
     FrameLayout mFragmentContainer;
 
     protected abstract Fragment createFragment();
-    protected abstract boolean setHaveToolbar();
+    protected abstract boolean setHasToolbar();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,7 +44,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
                     .commit();
         }
 
-        if (setHaveToolbar()){
+        if (setHasToolbar()){
             initToolbar();
         }
     }

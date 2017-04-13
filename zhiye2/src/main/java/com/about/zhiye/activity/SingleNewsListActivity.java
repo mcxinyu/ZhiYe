@@ -34,7 +34,7 @@ public class SingleNewsListActivity extends SingleFragmentActivity {
     }
 
     @Override
-    protected boolean setHaveToolbar() {
+    protected boolean setHasToolbar() {
         mToolbar.setTitle(SIMPLE_DATE_FORMAT.format(mDate));
         return true;
     }

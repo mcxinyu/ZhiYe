@@ -25,7 +25,7 @@ public class PickDateActivity extends SingleFragmentActivity {
     }
 
     @Override
-    protected boolean setHaveToolbar() {
+    protected boolean setHasToolbar() {
         mToolbar.setTitle(getString(R.string.title_pick_date));
         return true;
     }
