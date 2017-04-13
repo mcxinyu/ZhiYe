@@ -14,7 +14,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:title="@string/pick_date"
+            android:title="@string/title_zhihu"
             app:contentScrim="@color/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways"
             app:statusBarScrim="@color/colorPrimary"/>

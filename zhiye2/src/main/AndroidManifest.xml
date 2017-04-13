@@ -37,7 +37,7 @@
         <activity
             android:name=".activity.PickDateActivity"
             android:theme="@style/Theme.Zhiye.Light.NoActionbar"
-            android:label="@string/pick_date">
+            android:label="@string/title_pick_date">
         </activity>
         <activity android:name=".activity.SingleNewsListActivity"
             android:theme="@style/Theme.Zhiye.Light.NoActionbar">

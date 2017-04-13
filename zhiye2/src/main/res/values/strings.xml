@@ -26,7 +26,7 @@
     <string name="removed_read_later">Has been removed from Read Later</string>
     <string name="not_coming">That day has not come yet!</string>
     <string name="not_born">Zhihu Daily not born that day!</string>
-    <string name="pick_date">Pick Date</string>
+    <string name="title_pick_date">Pick Date</string>
     <string name="back">back</string>
     <string name="ramdom_data">Random Selection</string>
     <string name="title_themes">Daily Themes</string>
