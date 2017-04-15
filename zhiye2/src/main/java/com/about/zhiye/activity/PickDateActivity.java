@@ -2,6 +2,7 @@ package com.about.zhiye.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 
 import com.about.zhiye.R;
@@ -26,6 +27,9 @@ public class PickDateActivity extends SingleFragmentActivity {
 
     @Override
     protected boolean setHasToolbar() {
+        // 关闭 Toolbar 的滚动。
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mToolbar.getLayoutParams();
+        params.setScrollFlags(0);
         mToolbar.setTitle(getString(R.string.title_pick_date));
         return true;
     }

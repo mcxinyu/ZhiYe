@@ -2,6 +2,7 @@ package com.about.zhiye.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
@@ -21,12 +22,15 @@ import butterknife.ButterKnife;
  */
 public abstract class SingleFragmentActivity extends AppCompatActivity {
 
+    @BindView(R.id.app_bar_layout)
+    AppBarLayout mAppBarLayout;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     @BindView(R.id.fragment_container)
     FrameLayout mFragmentContainer;
 
     protected abstract Fragment createFragment();
+
     protected abstract boolean setHasToolbar();
 
     @Override
@@ -44,7 +48,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
                     .commit();
         }
 
-        if (setHasToolbar()){
+        if (setHasToolbar()) {
             initToolbar();
         }
     }
