@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.about.zhiye.R;
+import com.about.zhiye.activity.ThemeActivity;
 import com.about.zhiye.model.Themes;
 import com.about.zhiye.util.StateUtils;
 import com.bumptech.glide.Glide;
@@ -73,7 +74,7 @@ public class ThemesAdapter extends RecyclerView.Adapter<ThemesAdapter.ThemeViewH
             ButterKnife.bind(this, itemView);
         }
 
-        public void BindView(Themes.OthersBean othersBean) {
+        public void BindView(final Themes.OthersBean othersBean) {
             int screenWidth = StateUtils.getScreenWidth(mContext);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((screenWidth / 2 - 16), (screenWidth / 2 - 16));
             mThemeLayout.setLayoutParams(params);
@@ -91,7 +92,7 @@ public class ThemesAdapter extends RecyclerView.Adapter<ThemesAdapter.ThemeViewH
             mThemeLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO: 2017/4/13
+                    mContext.startActivity(ThemeActivity.newIntent(mContext, othersBean.getName(), othersBean.getId()));
                 }
             });
         }

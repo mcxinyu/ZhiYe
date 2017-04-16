@@ -87,5 +87,5 @@ public interface ZhihuApi {
      * @return
      */
     @GET("api/4/theme/{id}")
-    Observable<Theme> getTheme(@Path("id") String id);
+    Observable<Theme> getTheme(@Path("id") int id);
 }

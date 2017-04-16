@@ -111,6 +111,10 @@ public class ZhihuHelper {
                 .toList();
     }
 
+    /**
+     * 获取主题日报列表
+     * @return 各个主题日报分类
+     */
     public static Observable<List<Themes.OthersBean>> getThemes() {
          return ZHIHU_API.getThemes()
                 .map(new Func1<Themes, List<Themes.OthersBean>>() {
@@ -121,7 +125,12 @@ public class ZhihuHelper {
                 });
     }
 
-    public static Observable<Theme> getTheme(String id){
+    /**
+     * 获取主题日报内容
+     * @param id
+     * @return 主题日报的内容列表
+     */
+    public static Observable<Theme> getTheme(int id){
         return ZHIHU_API.getTheme(id);
     }
 
