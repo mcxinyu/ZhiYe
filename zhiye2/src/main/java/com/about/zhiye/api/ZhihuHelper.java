@@ -10,6 +10,7 @@ import com.about.zhiye.db.DBLab;
 import com.about.zhiye.model.News;
 import com.about.zhiye.model.NewsTimeLine;
 import com.about.zhiye.model.Story;
+import com.about.zhiye.model.Theme;
 import com.about.zhiye.model.Themes;
 import com.about.zhiye.model.TopStory;
 
@@ -118,6 +119,10 @@ public class ZhihuHelper {
                         return themes.getOthers();
                     }
                 });
+    }
+
+    public static Observable<Theme> getTheme(String id){
+        return ZHIHU_API.getTheme(id);
     }
 
     /**
