@@ -13,6 +13,7 @@ import com.about.zhiye.R;
 /**
  * Created by huangyuefeng on 2017/4/15.
  * Contact me : mcxinyu@foxmail.com
+ * 具有一个简单的 FrameLayout 来存放 Fragment 的 Activity 抽象类
  */
 public abstract class BaseActivity extends AppCompatActivity {
 

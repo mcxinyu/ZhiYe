@@ -16,6 +16,7 @@ import butterknife.ButterKnife;
 /**
  * Created by huangyuefeng on 2017/4/13.
  * Contact me : mcxinyu@foxmail.com
+ * 默认具有 Toolbar 的 Activity 抽象类
  */
 public abstract class SingleFragmentActivity extends BaseActivity {
 
