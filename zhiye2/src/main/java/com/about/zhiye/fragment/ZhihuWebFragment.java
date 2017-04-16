@@ -23,6 +23,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.about.zhiye.R;
 import com.about.zhiye.api.ApiFactory;
@@ -174,10 +175,26 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
                 if (dbLab.queryReadLaterExist(mNews.getId())) {
                     dbLab.deleteReadLaterNews(mNews.getId());
                     item.setIcon(R.drawable.ic_action_read_later_unselected);
+                    Snackbar.make(mSwipeRefreshLayout, getString(R.string.removed_read_later), Snackbar.LENGTH_SHORT)
+                            .setAction(getString(R.string.undo), new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    DBLab.get(getContext()).insertReadLaterNews(mNewsId);
+                                }
+                            })
+                            .show();
                     mListener.readLaterStatusChange(false);
                 } else {
                     dbLab.insertReadLaterNews(mNews.getId());
                     item.setIcon(R.drawable.ic_action_read_later_selected);
+                    Snackbar.make(mSwipeRefreshLayout, getString(R.string.added_read_later), Snackbar.LENGTH_SHORT)
+                            .setAction(getString(R.string.undo), new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    DBLab.get(getContext()).deleteReadLaterNews(mNewsId);
+                                }
+                            })
+                            .show();
                     mListener.readLaterStatusChange(true);
                 }
                 return false;
@@ -186,6 +203,7 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
                 return false;
             case R.id.mark_as_unread:
                 dbLab.deleteHaveReadNews(mNews.getId());
+                Toast.makeText(getContext(), getString(R.string.action_marked_as_unread), Toast.LENGTH_SHORT).show();
                 return false;
             default:
                 return super.onOptionsItemSelected(item);
