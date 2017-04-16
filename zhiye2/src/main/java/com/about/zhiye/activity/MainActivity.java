@@ -15,7 +15,7 @@ import android.widget.LinearLayout;
 
 import com.about.zhiye.R;
 import com.about.zhiye.fragment.ReadLaterFragment;
-import com.about.zhiye.fragment.ThemeFragment;
+import com.about.zhiye.fragment.ThemeListFragment;
 import com.about.zhiye.fragment.ZhihuFragment;
 import com.about.zhiye.util.StateUtils;
 
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager mFragmentManager;
 
     private ZhihuFragment mZhihuFragment;
-    private ThemeFragment mThemeFragment;
+    private ThemeListFragment mThemeFragment;
     private ReadLaterFragment mReadLaterFragment;
     private Fragment currentFragment;
 
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 case R.id.navigation_themes:
                     if (mThemeFragment == null) {
-                        mThemeFragment = ThemeFragment.newInstance();
+                        mThemeFragment = ThemeListFragment.newInstance();
                     }
                     mStatusBarView.setVisibility(View.VISIBLE);
                     switchFragment(mThemeFragment);

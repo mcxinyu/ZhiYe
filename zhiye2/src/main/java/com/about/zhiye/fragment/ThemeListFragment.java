@@ -32,7 +32,7 @@ import rx.schedulers.Schedulers;
  * Created by huangyuefeng on 2017/4/12.
  * Contact me : mcxinyu@foxmail.com
  */
-public class ThemeFragment extends Fragment implements Observer<List<Themes.OthersBean>>, SwipeRefreshLayout.OnRefreshListener {
+public class ThemeListFragment extends Fragment implements Observer<List<Themes.OthersBean>>, SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -46,11 +46,11 @@ public class ThemeFragment extends Fragment implements Observer<List<Themes.Othe
     private ThemesAdapter mAdapter;
     private boolean isRefreshed;
 
-    public static ThemeFragment newInstance() {
+    public static ThemeListFragment newInstance() {
 
         Bundle args = new Bundle();
 
-        ThemeFragment fragment = new ThemeFragment();
+        ThemeListFragment fragment = new ThemeListFragment();
         fragment.setArguments(args);
         return fragment;
     }
