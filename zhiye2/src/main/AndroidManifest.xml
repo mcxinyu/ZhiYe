@@ -36,10 +36,13 @@
         </activity>
         <activity
             android:name=".activity.PickDateActivity"
-            android:theme="@style/Theme.Zhiye.Light.NoActionbar"
-            android:label="@string/title_pick_date">
+            android:label="@string/title_pick_date"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Zhiye.Light.NoActionbar">
         </activity>
-        <activity android:name=".activity.SingleNewsListActivity"
+        <activity
+            android:name=".activity.SingleNewsListActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Zhiye.Light.NoActionbar">
         </activity>
     </application>
