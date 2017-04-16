@@ -94,7 +94,7 @@ public class DBLab {
         try (Cursor cursor = mDatabase.query(ReadLaterTable.TABLE_NAME, null, null, null, null, null,
                 ReadLaterTable.Columns.DATE + " DESC")) {
             if (cursor.getCount() == 0) {
-                return null;
+                return new ArrayList<>();
             }
 
             List<String> list = new ArrayList<>();
@@ -181,7 +181,7 @@ public class DBLab {
     public List<String> queryAllHaveRead() {
         try (Cursor cursor = mDatabase.query(HaveReadTable.TABLE_NAME, null, null, null, null, null, null)) {
             if (cursor.getCount() == 0) {
-                return null;
+                return new ArrayList<>();
             }
 
             List<String> list = new ArrayList<>();
