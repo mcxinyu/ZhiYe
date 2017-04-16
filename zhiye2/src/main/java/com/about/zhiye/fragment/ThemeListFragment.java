@@ -58,7 +58,7 @@ public class ThemeListFragment extends Fragment implements Observer<List<Themes.
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_theme, container, false);
+        View view = inflater.inflate(R.layout.fragment_theme_list, container, false);
         unbinder = ButterKnife.bind(this, view);
         initToolbar();
 
