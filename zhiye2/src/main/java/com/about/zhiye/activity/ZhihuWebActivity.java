@@ -4,51 +4,35 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import com.about.zhiye.R;
 import com.about.zhiye.db.DBLab;
 import com.about.zhiye.fragment.ZhihuWebFragment;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
-public class ZhihuWebActivity extends AppCompatActivity
+public class ZhihuWebActivity extends BaseActivity
         implements ZhihuWebFragment.Callbacks {
     private static final String EXTRA_NEWS_ID = "news_id";
 
     private String mNewsId;
-    private Unbinder unbinder;
     private boolean isReadLaterAdd;
 
     public static Intent newIntent(Context context, String newsId) {
-
         Intent intent = new Intent(context, ZhihuWebActivity.class);
         intent.putExtra(EXTRA_NEWS_ID, newsId);
         return intent;
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_zhihu_web);
-        unbinder = ButterKnife.bind(this);
+    protected Fragment createFragment() {
+        return ZhihuWebFragment.newInstance(mNewsId);
+    }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         mNewsId = getIntent().getStringExtra(EXTRA_NEWS_ID);
         isReadLaterAdd = DBLab.get(this).queryReadLaterExist(mNewsId);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-
-        Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_container);
-
-        if (fragment == null) {
-            fragment = ZhihuWebFragment.newInstance(mNewsId);
-            fragmentManager.beginTransaction()
-                    .add(R.id.fragment_container, fragment)
-                    .commit();
-        }
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -59,12 +43,6 @@ public class ZhihuWebActivity extends AppCompatActivity
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unbinder.unbind();
     }
 
     @Override
