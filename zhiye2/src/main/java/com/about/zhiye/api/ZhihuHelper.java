@@ -131,7 +131,7 @@ public class ZhihuHelper {
      * @return 主题日报的内容列表
      */
     public static Observable<Theme> getTheme(int id){
-        return ZHIHU_API.getTheme(id);
+        return ZHIHU_API.getTheme("" + id);
     }
 
     /**
