@@ -45,7 +45,9 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Zhiye.Light.NoActionbar">
         </activity>
-        <activity android:name=".activity.ThemeActivity">
+        <activity
+            android:name=".activity.ThemeActivity"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

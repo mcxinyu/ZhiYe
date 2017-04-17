@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +50,7 @@ import rx.schedulers.Schedulers;
 public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, Observer<News> {
     private static final String ARGS_NEWS_ID = "news_id";
     private static final String KEY_NEWS = "news_save";
+    private static final String ARGS_TYPE = "type";
 
     @BindView(R.id.image_view)
     ImageView mImageView;
@@ -71,12 +73,14 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
     private Unbinder unbinder;
 
     private String mNewsId;
+    private String mType;
     private News mNews;
     private Callbacks mListener;
 
-    public static ZhihuWebFragment newInstance(String newsId) {
+    public static ZhihuWebFragment newInstance(String newsId, String type) {
         Bundle args = new Bundle();
         args.putString(ARGS_NEWS_ID, newsId);
+        args.putString(ARGS_TYPE, type);
         ZhihuWebFragment fragment = new ZhihuWebFragment();
         fragment.setArguments(args);
         return fragment;
@@ -94,9 +98,11 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
         if (savedInstanceState != null) {
             mNews = (News) savedInstanceState.getSerializable(KEY_NEWS);
             mNewsId = mNews.getId();
+            mType = mNews.getType();
         } else {
             if (getArguments() != null) {
                 mNewsId = getArguments().getString(ARGS_NEWS_ID);
+                mType = getArguments().getString(ARGS_TYPE);
             }
         }
         setHasOptionsMenu(true);
@@ -234,27 +240,59 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     private void setWebView(final News news) {
         mTitleTextView.setText(news.getTitle());
-        Glide.with(this)
-                .load(news.getImage()).centerCrop()
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(new GlideDrawableImageViewTarget(mImageView) {
+        if (null == news.getImage()) {
+            Glide.with(this)
+                    .load(news.getTheme().getThumbnail()).centerCrop()
+                    .crossFade()
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(new GlideDrawableImageViewTarget(mImageView) {
+                        @Override
+                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
+                            super.onResourceReady(resource, animation);
+                            mImageSource.setText(news.getImageSource());
+                        }
+                    });
+        } else {
+            Glide.with(this)
+                    .load(news.getImage()).centerCrop()
+                    .crossFade()
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(new GlideDrawableImageViewTarget(mImageView) {
+                        @Override
+                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
+                            super.onResourceReady(resource, animation);
+                            mImageSource.setText(news.getImageSource());
+                        }
+                    });
+        }
+        setWebSettings(news);
+    }
+
+    private void setWebSettings(News news) {
+        switch (mType) {
+            case "1":
+                mWebView.loadUrl(news.getShareUrl());
+                mWebView.setWebViewClient(new WebViewClient() {
                     @Override
-                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
-                        super.onResourceReady(resource, animation);
-                        mImageSource.setText(news.getImageSource());
+                    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                        view.loadUrl(url);
+                        return super.shouldOverrideUrlLoading(view, url);
                     }
                 });
+                break;
+            case "0":
+            case "2":
+                WebSettings settings = mWebView.getSettings();
+                // settings.setJavaScriptEnabled(true);
+                settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 
-        WebSettings settings = mWebView.getSettings();
-        // settings.setJavaScriptEnabled(true);
-        settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-
-        String head = "<head>\n\t<link rel=\"stylesheet\" href=\""
-                + news.getCss()[0] + "\"/>\n</head>";
-        String image = "<div class=\"headline\">";
-        String html = head + news.getBody().replace(image, " ");
-        mWebView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
+                String head = "<head>\n\t<link rel=\"stylesheet\" href=\""
+                        + news.getCss()[0] + "\"/>\n</head>";
+                String image = "<div class=\"headline\">";
+                String html = head + news.getBody().replace(image, " ");
+                mWebView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
+                break;
+        }
     }
 
     @Override

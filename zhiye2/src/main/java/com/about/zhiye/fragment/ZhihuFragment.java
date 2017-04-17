@@ -95,7 +95,9 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
         mRollPagerView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                startActivity(ZhihuWebActivity.newIntent(getContext(), mTopNewses.get(position).getId()));
+                startActivity(ZhihuWebActivity.newIntent(getContext(),
+                        mTopNewses.get(position).getId(),
+                        mTopNewses.get(position).getType()));
             }
         });
 

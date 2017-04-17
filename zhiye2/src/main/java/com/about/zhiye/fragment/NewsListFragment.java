@@ -272,7 +272,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void startZhihuWebActivity(String newsId) {
-        startActivityForResult(ZhihuWebActivity.newIntent(getContext(), newsId), REQUEST_CODE);
+        startActivityForResult(ZhihuWebActivity.newIntent(getContext(), newsId, "0"), REQUEST_CODE);
     }
 
     @Override

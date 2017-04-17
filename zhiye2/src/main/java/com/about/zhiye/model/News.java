@@ -32,7 +32,7 @@ import static com.about.zhiye.support.Constants.NewsHelper.QUESTION_TITLES_SELEC
  * recommenders : 这篇文章的推荐者
  * ga_prefix : 供 Google Analytics 使用
  * section : 栏目的信息
- * type : 新闻的类型
+ * type : 新闻的类型，0、有body，有图片；1、无body，无图片；2、有body，无图片；
  * id : 新闻的 id
  * css : 供手机端的 WebView(UIWebView) 使用。可知，知乎日报的文章浏览界面利用 WebView(UIWebView) 实现
  *

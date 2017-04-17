@@ -7,6 +7,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -69,6 +70,8 @@ public class ThemeFragment extends Fragment implements Observer<Theme>, SwipeRef
     SwipeRefreshLayout mSwipeRefreshLayout;
     @BindView(R.id.coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
+    @BindView(R.id.scroll_view)
+    NestedScrollView mScrollView;
     Unbinder unbinder;
 
     private int mThemeId;
@@ -149,7 +152,7 @@ public class ThemeFragment extends Fragment implements Observer<Theme>, SwipeRef
         mToolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mRecyclerView.smoothScrollToPosition(0);
+                mScrollView.fullScroll(View.FOCUS_UP);
             }
         });
     }

@@ -12,24 +12,28 @@ import com.about.zhiye.fragment.ZhihuWebFragment;
 public class ZhihuWebActivity extends BaseActivity
         implements ZhihuWebFragment.Callbacks {
     private static final String EXTRA_NEWS_ID = "news_id";
+    private static final String EXTRA_TYPE = "type";
 
     private String mNewsId;
+    private String mType;
     private boolean isReadLaterAdd;
 
-    public static Intent newIntent(Context context, String newsId) {
+    public static Intent newIntent(Context context, String newsId, String type) {
         Intent intent = new Intent(context, ZhihuWebActivity.class);
         intent.putExtra(EXTRA_NEWS_ID, newsId);
+        intent.putExtra(EXTRA_TYPE, type);
         return intent;
     }
 
     @Override
     protected Fragment createFragment() {
-        return ZhihuWebFragment.newInstance(mNewsId);
+        return ZhihuWebFragment.newInstance(mNewsId, mType);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mNewsId = getIntent().getStringExtra(EXTRA_NEWS_ID);
+        mType = getIntent().getStringExtra(EXTRA_TYPE);
         isReadLaterAdd = DBLab.get(this).queryReadLaterExist(mNewsId);
 
         super.onCreate(savedInstanceState);

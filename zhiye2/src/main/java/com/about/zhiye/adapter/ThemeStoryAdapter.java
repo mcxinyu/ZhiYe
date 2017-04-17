@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.about.zhiye.R;
+import com.about.zhiye.activity.ZhihuWebActivity;
 import com.about.zhiye.model.Theme;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -71,7 +72,7 @@ public class ThemeStoryAdapter extends RecyclerView.Adapter<ThemeStoryAdapter.Th
             ButterKnife.bind(this, itemView);
         }
 
-        void bindView(Theme.StoriesBean storiesBean){
+        void bindView(final Theme.StoriesBean storiesBean){
             mThumbnailImage.setVisibility(View.VISIBLE);
             if (storiesBean.getImages() != null){
                 Glide.with(mContext)
@@ -89,6 +90,9 @@ public class ThemeStoryAdapter extends RecyclerView.Adapter<ThemeStoryAdapter.Th
                 @Override
                 public void onClick(View v) {
                     // TODO: 2017/4/16
+                    mContext.startActivity(ZhihuWebActivity.newIntent(mContext,
+                            "" + storiesBean.getId(),
+                            "" + storiesBean.getType()));
                 }
             });
         }
