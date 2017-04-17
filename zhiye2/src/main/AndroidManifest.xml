@@ -49,6 +49,11 @@
             android:name=".activity.ThemeActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".activity.EditorActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Zhiye.Light.NoActionbar">
+        </activity>
     </application>
 
 </manifest>

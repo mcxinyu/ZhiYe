@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.about.zhiye.R;
+import com.about.zhiye.activity.EditorActivity;
 import com.about.zhiye.model.Theme;
 import com.about.zhiye.util.GlideCircleTransform;
 import com.bumptech.glide.Glide;
@@ -72,7 +73,7 @@ public class ThemeEditorAdapter extends RecyclerView.Adapter<ThemeEditorAdapter.
             ButterKnife.bind(this, itemView);
         }
 
-        void bindView(Theme.EditorsBean bean) {
+        void bindView(final Theme.EditorsBean bean) {
             if (!TextUtils.isEmpty(bean.getAvatar())) {
                 Glide.with(mContext)
                         .load(bean.getAvatar())
@@ -88,7 +89,7 @@ public class ThemeEditorAdapter extends RecyclerView.Adapter<ThemeEditorAdapter.
             mLinearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO: 2017/4/16
+                    mContext.startActivity(EditorActivity.newIntent(mContext, "" + bean.getId()));
                 }
             });
         }

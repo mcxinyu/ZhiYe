@@ -89,7 +89,6 @@ public class ThemeStoryAdapter extends RecyclerView.Adapter<ThemeStoryAdapter.Th
             mThemeStoryListCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO: 2017/4/16
                     mContext.startActivity(ZhihuWebActivity.newIntent(mContext,
                             "" + storiesBean.getId(),
                             "" + storiesBean.getType()));
