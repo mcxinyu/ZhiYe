@@ -276,7 +276,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     @Override
-    public void haveReadNews(String newsId) {
+    public void hasRead(String newsId) {
         if (isReadLaterFragment) {
             DBLab.get(getContext()).insertHaveReadNewsForReadLater(newsId);
         } else {

@@ -139,7 +139,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
                 public void onClick(View v) {
                     mQuestionTitle.setTypeface(null, Typeface.NORMAL);
                     mCallbacks.startZhihuWebActivity(news.getId());
-                    mCallbacks.haveReadNews(news.getId());
+                    mCallbacks.hasRead(news.getId());
                 }
             });
             mShareImageView.setOnClickListener(new View.OnClickListener() {
@@ -174,7 +174,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
 
     public interface Callbacks {
         void startZhihuWebActivity(String newsId);
-        void haveReadNews(String newsId);
+        void hasRead(String newsId);
         boolean isReadLaterFragment();
         void addReadLater(String newsId, boolean added);
     }

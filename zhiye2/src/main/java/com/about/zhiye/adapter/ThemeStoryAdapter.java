@@ -1,6 +1,7 @@
 package com.about.zhiye.adapter;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.about.zhiye.R;
 import com.about.zhiye.activity.ZhihuWebActivity;
+import com.about.zhiye.db.DBLab;
 import com.about.zhiye.model.Theme;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -84,11 +86,18 @@ public class ThemeStoryAdapter extends RecyclerView.Adapter<ThemeStoryAdapter.Th
             } else {
                 mThumbnailImage.setVisibility(View.GONE);
             }
+
+            mStoryTitle.setTypeface(null, Typeface.BOLD);
+            if (DBLab.get(mContext).queryHaveReadExist("" + storiesBean.getId())){
+                mStoryTitle.setTypeface(null, Typeface.NORMAL);
+            }
             mStoryTitle.setText(storiesBean.getTitle());
 
             mThemeStoryListCardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    mStoryTitle.setTypeface(null, Typeface.NORMAL);
+                    DBLab.get(mContext).insertHaveReadNews("" + storiesBean.getId());
                     mContext.startActivity(ZhihuWebActivity.newIntent(mContext,
                             "" + storiesBean.getId(),
                             "" + storiesBean.getType()));
