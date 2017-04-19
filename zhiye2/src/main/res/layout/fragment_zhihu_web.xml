@@ -10,6 +10,8 @@
     tools:context="com.about.zhiye.fragment.ZhihuWebFragment">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        app:expanded="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true">
@@ -19,6 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
+            android:minHeight="?attr/actionBarSize"
             app:contentScrim="@color/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlwaysCollapsed|enterAlways|snap"
             app:statusBarScrim="@color/colorPrimary">

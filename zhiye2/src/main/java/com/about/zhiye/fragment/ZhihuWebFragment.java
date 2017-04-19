@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -70,6 +71,8 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
     TextView mTitleTextView;
     @BindView(R.id.scroll_view)
     NestedScrollView mScrollView;
+    @BindView(R.id.app_bar_layout)
+    AppBarLayout mAppBarLayout;
     private Unbinder unbinder;
 
     private String mNewsId;
@@ -241,17 +244,11 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
     private void setWebView(final News news) {
         mTitleTextView.setText(news.getTitle());
         if (null == news.getImage()) {
-            Glide.with(this)
-                    .load(news.getTheme().getThumbnail()).centerCrop()
-                    .crossFade()
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(new GlideDrawableImageViewTarget(mImageView) {
-                        @Override
-                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
-                            super.onResourceReady(resource, animation);
-                            mImageSource.setText(news.getImageSource());
-                        }
-                    });
+            mScrollView.setNestedScrollingEnabled(false);
+            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mAppBarLayout.getChildAt(0).getLayoutParams();
+            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL |
+                    AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED |
+                    AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
         } else {
             Glide.with(this)
                     .load(news.getImage()).centerCrop()
@@ -262,6 +259,7 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
                         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
                             super.onResourceReady(resource, animation);
                             mImageSource.setText(news.getImageSource());
+                            mAppBarLayout.setExpanded(true);
                         }
                     });
         }
