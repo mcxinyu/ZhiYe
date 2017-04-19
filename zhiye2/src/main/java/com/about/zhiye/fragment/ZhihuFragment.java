@@ -3,6 +3,7 @@ package com.about.zhiye.fragment;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -62,6 +63,8 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
     CollapsingToolbarLayout mCollapsingLayout;
     @BindView(R.id.roll_pager_view)
     RollPagerView mRollPagerView;
+    @BindView(R.id.app_bar_layout)
+    AppBarLayout mAppBarLayout;
     private Unbinder unbinder;
 
     private TopNewsPagerAdapter mTopNewsPagerAdapter;
@@ -128,6 +131,7 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         mCollapsingLayout.setTitle(getString(R.string.title_zhihu));
         mCollapsingLayout.setExpandedTitleColor(Color.TRANSPARENT);
+        mAppBarLayout.setExpanded(false);
     }
 
     @Override
@@ -203,6 +207,7 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
     @Override
     public void onCompleted() {
         mTopNewsPagerAdapter.updateTopStories(mTopNewses);
+        mAppBarLayout.setExpanded(true);
     }
 
     /**
