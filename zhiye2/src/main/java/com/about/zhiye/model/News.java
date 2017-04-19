@@ -22,7 +22,7 @@ import static com.about.zhiye.support.Constants.NewsHelper.QUESTION_TITLES_SELEC
 /**
  * Created by 跃峰 on 2016/9/19.
  * Contact Me : mcxinyu@foxmail.com
- *
+ * <p>
  * body : HTML 格式的新闻
  * image-source : 图片的内容提供方。为了避免被起诉非法使用图片，在显示图片时最好附上其版权信息。
  * title : 新闻标题
@@ -35,9 +35,8 @@ import static com.about.zhiye.support.Constants.NewsHelper.QUESTION_TITLES_SELEC
  * type : 新闻的类型，0、有body，有图片；1、无body，无图片；2、有body，无图片；
  * id : 新闻的 id
  * css : 供手机端的 WebView(UIWebView) 使用。可知，知乎日报的文章浏览界面利用 WebView(UIWebView) 实现
- *
  */
-public class News implements Serializable{
+public class News implements Serializable {
     @SerializedName("body")
     private String body;
     @SerializedName("image_source")
@@ -203,7 +202,7 @@ public class News implements Serializable{
         this.images = images;
     }
 
-    public static class ThemeBean {
+    public static class ThemeBean implements Serializable {
         /**
          * thumbnail : http://pic4.zhimg.com/2c38a96e84b5cc8331a901920a87ea71.jpg
          * id : 12
@@ -263,11 +262,10 @@ public class News implements Serializable{
 
     /**
      * 栏目的信息
-     *
+     * <p>
      * thumbnail : 栏目的缩略图
      * id : 该栏目的 id
      * name : 该栏目的名称
-     *
      */
     public class Section implements Serializable {
         private String thumbnail;

@@ -2,17 +2,18 @@ package com.about.zhiye.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by huangyuefeng on 2017/4/13.
  * Contact me : mcxinyu@foxmail.com
- *
+ * <p>
  * limit : 返回数目之限制（仅为猜测）
  * subscribed : 已订阅条目
  * others : 其他条目
  */
-public class Themes {
+public class Themes implements Serializable {
 
     @SerializedName("limit")
     private int limit;
@@ -53,7 +54,7 @@ public class Themes {
      * id : 该主题日报的编号
      * name : 供显示的主题日报名称
      */
-    public static class OthersBean {
+    public static class OthersBean implements Serializable {
 
         @SerializedName("color")
         private int color;

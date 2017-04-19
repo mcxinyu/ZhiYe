@@ -1,12 +1,14 @@
 package com.about.zhiye.model;
 
+import java.io.Serializable;
+
 import static com.about.zhiye.support.Constants.Information.ZHIHU_QUESTION_LINK_PREFIX;
 
 /**
  * Created by huangyuefeng on 2017/3/25.
  * Contact me : mcxinyu@foxmail.com
  */
-public class Question {
+public class Question implements Serializable {
     private String title;
     private String url;
 

@@ -2,12 +2,13 @@ package com.about.zhiye.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by huangyuefeng on 2017/4/13.
  * Contact me : mcxinyu@foxmail.com
- *
+ * <p>
  * description : 该主题日报的介绍
  * background : 该主题日报的背景图片（大图）
  * color : 颜色，作用未知
@@ -16,9 +17,8 @@ import java.util.List;
  * image_source : 图像的版权信息
  * stories : 该主题日报中的文章列表
  * editors : 该主题日报的编辑（『用户推荐日报』中此项的指是一个空数组，在 App 中的主编栏显示为『许多人』，点击后访问该主题日报的介绍页面，请留意）
- *
  */
-public class Theme {
+public class Theme implements Serializable {
 
     @SerializedName("description")
     private String description;
@@ -109,7 +109,7 @@ public class Theme {
      * multiPic : 多图片，建议 wifi 下观看
      * images : 图像地址（其类型为数组。请留意在代码中处理无该属性与数组长度为 0 的情况）
      */
-    public static class StoriesBean {
+    public static class StoriesBean implements Serializable {
 
         @SerializedName("type")
         private int type;
@@ -171,7 +171,7 @@ public class Theme {
      * avatar : 主编的头像
      * name : 主编的姓名
      */
-    public static class EditorsBean {
+    public static class EditorsBean implements Serializable {
 
         @SerializedName("url")
         private String url;

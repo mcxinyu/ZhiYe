@@ -7,14 +7,13 @@ import java.io.Serializable;
 /**
  * Created by 跃峰 on 2016/9/19.
  * Contact Me : mcxinyu@foxmail.com
- *
+ * <p>
  * 启动界面图像获取
- *
+ * <p>
  * text : 供显示的图片版权信息
  * img : 图像的 URL
- *
  */
-public class StartImage implements Serializable{
+public class StartImage implements Serializable {
     @SerializedName("text")
     private String text;
     @SerializedName("img")
@@ -38,6 +37,6 @@ public class StartImage implements Serializable{
 
     @Override
     public String toString() {
-        return "StartImage{text='"+ text + '\'' +",image='"+ image + '\'' +"}";
+        return "StartImage{text='" + text + '\'' + ",image='" + image + '\'' + "}";
     }
 }

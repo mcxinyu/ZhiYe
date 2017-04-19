@@ -2,12 +2,13 @@ package com.about.zhiye.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by huangyuefeng on 2017/3/15.
  * Contact me : mcxinyu@foxmail.com
- *
+ * <p>
  * comments : 长评论列表，形式为数组（请注意，其长度可能为 0）
  * author : 评论作者
  * content : 评论的内容
@@ -16,9 +17,8 @@ import java.util.List;
  * likes : 评论所获『赞』的数量
  * time : 评论时间
  * reply_to : 所回复的消息
- *
  */
-public class Comments {
+public class Comments implements Serializable {
     @SerializedName("comments")
     private List<CommentsBean> comments;
 
@@ -30,7 +30,7 @@ public class Comments {
         this.comments = comments;
     }
 
-    public static class CommentsBean {
+    public static class CommentsBean implements Serializable {
         /**
          * author : 巨型黑娃儿
          * content : 也不算逻辑问题。其实小时候刚刚听说这个玩意的时候我也奇...
@@ -114,15 +114,13 @@ public class Comments {
 
         public static class ReplyToBean {
             /**
-             *
              * reply_to : 所回复的消息
-             *
+             * <p>
              * content : 原消息的内容
              * status : 消息状态，0为正常，非0为已被删除
              * id : 被回复者的唯一标识符
              * author : 被回复者
              * err_msg: 错误消息，仅当status非0时出现
-             *
              */
 
             @SerializedName("content")
