@@ -109,12 +109,12 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
             }
 
             mQuestionTitle.setTypeface(null, Typeface.BOLD);
-            if (mCallbacks.isReadLaterFragment()){
-                if (DBLab.get(mContext).queryHaveReadExistForReadLater(news.getId())){
+            if (mCallbacks.isReadLaterFragment()) {
+                if (DBLab.get(mContext).queryHaveReadExistForReadLater(news.getId())) {
                     mQuestionTitle.setTypeface(null, Typeface.NORMAL);
                 }
             } else {
-                if (DBLab.get(mContext).queryHaveReadExist(news.getId())){
+                if (DBLab.get(mContext).queryHaveReadExist(news.getId())) {
                     mQuestionTitle.setTypeface(null, Typeface.NORMAL);
                 }
             }
@@ -125,13 +125,23 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
                 mReadLaterImageView.setImageResource(R.drawable.ic_action_read_later_unselected_black);
             }
 
-            if (null != news.getImage()) {
+            mThumbnailImage.setVisibility(View.VISIBLE);
+            if (null != news.getThumbnail()) {
+                Glide.with(mContext)
+                        .load(news.getThumbnail())
+                        .crossFade()
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .centerCrop()
+                        .into(mThumbnailImage);
+            } else if (null != news.getImage()) {
                 Glide.with(mContext)
                         .load(news.getImage())
                         .crossFade()
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .centerCrop()
                         .into(mThumbnailImage);
+            } else {
+                mThumbnailImage.setVisibility(View.GONE);
             }
 
             mNewsListCardView.setOnClickListener(new View.OnClickListener() {
@@ -174,8 +184,11 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
 
     public interface Callbacks {
         void startZhihuWebActivity(String newsId);
+
         void hasRead(String newsId);
+
         boolean isReadLaterFragment();
+
         void addReadLater(String newsId, boolean added);
     }
 }

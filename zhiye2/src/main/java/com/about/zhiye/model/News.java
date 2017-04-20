@@ -68,6 +68,8 @@ public class News implements Serializable {
     @SerializedName("images")
     private List<String> images;
 
+    private String thumbnail;
+
     public String getBody() {
         return body;
     }
@@ -200,6 +202,14 @@ public class News implements Serializable {
 
     public void setImages(List<String> images) {
         this.images = images;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     public static class ThemeBean implements Serializable {

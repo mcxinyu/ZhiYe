@@ -17,6 +17,7 @@ import com.about.zhiye.model.TopStory;
 import java.util.List;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -27,27 +28,41 @@ public class ZhihuHelper {
 
     private static final ZhihuApi ZHIHU_API = ApiFactory.getZhihuApiSingleton();
 
-    /**
-     * 按天获取 News 列表
-     * @param date
-     * @return
-     */
-    public static Observable<List<News>> getNewsesOfDate(String date) {
+    public static Observable<List<Story>> getNewses(String date) {
         return ZHIHU_API.getBeforeNews(date)
                 .map(new Func1<NewsTimeLine, List<Story>>() {
                     @Override
                     public List<Story> call(NewsTimeLine newsTimeLine) {
                         return newsTimeLine.getStories();
                     }
-                })
+                });
+    }
+
+    /**
+     * 按天获取 News 列表
+     *
+     * @param date
+     * @return
+     */
+    public static Observable<List<News>> getNewsesOfDate(String date) {
+        return getNewses(date)
                 .flatMap(new Func1<List<Story>, Observable<List<News>>>() {
                     @Override
-                    public Observable<List<News>> call(List<Story> stories) {
+                    public Observable<List<News>> call(final List<Story> stories) {
                         return Observable.from(stories)
                                 .flatMap(new Func1<Story, Observable<News>>() {
                                     @Override
-                                    public Observable<News> call(Story story) {
-                                        return ZHIHU_API.getDetailNews(story.getId());
+                                    public Observable<News> call(final Story story) {
+                                        return ZHIHU_API.getDetailNews(story.getId())
+                                                .doOnNext(new Action1<News>() {
+                                                    @Override
+                                                    public void call(News news) {
+                                                        if (null != story.getImages() &&
+                                                                story.getImages().length > 0) {
+                                                            news.setThumbnail(story.getImages()[0]);
+                                                        }
+                                                    }
+                                                });
                                     }
                                 })
                                 .toList();
@@ -57,6 +72,7 @@ public class ZhihuHelper {
 
     /**
      * 获取置顶 News
+     *
      * @return
      */
     public static Observable<List<News>> getTopNews() {
@@ -84,6 +100,7 @@ public class ZhihuHelper {
 
     /**
      * 获取稍后阅读 News，存储的 ID 可能在服务器已经被删除，所有要做好检查
+     *
      * @param context
      * @return
      */
@@ -113,10 +130,11 @@ public class ZhihuHelper {
 
     /**
      * 获取主题日报列表
+     *
      * @return 各个主题日报分类
      */
     public static Observable<List<Themes.OthersBean>> getThemes() {
-         return ZHIHU_API.getThemes()
+        return ZHIHU_API.getThemes()
                 .map(new Func1<Themes, List<Themes.OthersBean>>() {
                     @Override
                     public List<Themes.OthersBean> call(Themes themes) {
@@ -127,15 +145,17 @@ public class ZhihuHelper {
 
     /**
      * 获取主题日报内容
+     *
      * @param id
      * @return 主题日报的内容列表
      */
-    public static Observable<Theme> getTheme(int id){
+    public static Observable<Theme> getTheme(int id) {
         return ZHIHU_API.getTheme("" + id);
     }
 
     /**
      * 用浏览器打开
+     *
      * @param context
      * @param url
      */
@@ -153,6 +173,7 @@ public class ZhihuHelper {
 
     /**
      * 分享新闻
+     *
      * @param context
      * @param newsTitle
      * @param newsUrl
