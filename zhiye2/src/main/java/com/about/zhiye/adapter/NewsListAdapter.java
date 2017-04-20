@@ -127,6 +127,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
 
             mThumbnailImage.setVisibility(View.VISIBLE);
             if (null != news.getThumbnail()) {
+                // 性能优化，使用缩略图
                 Glide.with(mContext)
                         .load(news.getThumbnail())
                         .crossFade()
@@ -134,6 +135,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
                         .centerCrop()
                         .into(mThumbnailImage);
             } else if (null != news.getImage()) {
+                // 如果没有缩略图，可以使用大图
                 Glide.with(mContext)
                         .load(news.getImage())
                         .crossFade()
@@ -141,6 +143,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
                         .centerCrop()
                         .into(mThumbnailImage);
             } else {
+                // 如果连大图也没有，例如主题日报，那么不显示图片
                 mThumbnailImage.setVisibility(View.GONE);
             }
 
