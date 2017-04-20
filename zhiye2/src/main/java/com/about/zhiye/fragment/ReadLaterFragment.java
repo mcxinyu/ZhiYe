@@ -50,6 +50,7 @@ public class ReadLaterFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        // TODO: 2017/4/20 增加空白页
         View view = inflater.inflate(R.layout.fragment_read_later, container, false);
         unbinder = ButterKnife.bind(this, view);
 
@@ -64,7 +65,7 @@ public class ReadLaterFragment extends Fragment {
         }
 
         if (isVisibleToUser && isPreloadFailure) {
-            mNewsListFragment.doRefresh(true);
+            mNewsListFragment.setUserVisibleHint(isVisibleToUser);
             isPreloadFailure = false;
         }
 
