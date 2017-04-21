@@ -49,7 +49,7 @@ import static com.about.zhiye.util.DateUtil.SIMPLE_DATE_FORMAT;
  */
 public class ZhihuFragment extends Fragment implements Observer<List<News>> {
 
-    private static final int PAGER_COUNT = 7;
+    private static final int PAGER_COUNT = 5;
 
     @BindView(R.id.zhihu_tab_layout)
     TabLayout mTabLayout;

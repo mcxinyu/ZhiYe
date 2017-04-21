@@ -9,17 +9,20 @@
     android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        app:expanded="false">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
+            android:minHeight="?attr/actionBarSize"
             app:contentScrim="@color/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlwaysCollapsed|enterAlways|snap"
+            app:layout_scrollFlags="scroll|enterAlwaysCollapsed|exitUntilCollapsed|snap"
             app:statusBarScrim="@color/colorPrimary">
 
             <RelativeLayout
@@ -107,10 +110,12 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/editor_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/view_padding"
-                        android:text="@string/title_editor"/>
+                        android:text="@string/title_editor"
+                        android:visibility="invisible"/>
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/editor_recycler_view"

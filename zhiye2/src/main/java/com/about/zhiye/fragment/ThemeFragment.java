@@ -3,6 +3,7 @@ package com.about.zhiye.fragment;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -72,7 +73,11 @@ public class ThemeFragment extends Fragment implements Observer<Theme>, SwipeRef
     CoordinatorLayout mCoordinatorLayout;
     @BindView(R.id.scroll_view)
     NestedScrollView mScrollView;
-    Unbinder unbinder;
+    @BindView(R.id.app_bar_layout)
+    AppBarLayout mAppBarLayout;
+    @BindView(R.id.editor_text_view)
+    TextView mEditorTextView;
+    private Unbinder unbinder;
 
     private int mThemeId;
     private String mThemeName;
@@ -142,6 +147,7 @@ public class ThemeFragment extends Fragment implements Observer<Theme>, SwipeRef
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         mCollapsingLayout.setTitle(mThemeName);
         mCollapsingLayout.setExpandedTitleColor(Color.TRANSPARENT);
+        mAppBarLayout.setExpanded(false);
 
         ActionBar supportActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (supportActionBar != null) {
@@ -175,6 +181,7 @@ public class ThemeFragment extends Fragment implements Observer<Theme>, SwipeRef
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
                         super.onResourceReady(resource, animation);
                         mImageSource.setText(theme.getImageSource());
+                        mAppBarLayout.setExpanded(true);
                     }
                 });
     }
@@ -186,6 +193,7 @@ public class ThemeFragment extends Fragment implements Observer<Theme>, SwipeRef
 
         mStoryAdapter.updateStories(mStoriesBeen);
         mEditorAdapter.updateEditors(mEditorsBeen);
+        mEditorTextView.setVisibility(View.VISIBLE);
 
         setView(mTheme);
     }
