@@ -69,6 +69,7 @@ public class News implements Serializable {
     private List<String> images;
 
     private String thumbnail;
+    private String multiPic;
 
     public String getBody() {
         return body;
@@ -210,6 +211,14 @@ public class News implements Serializable {
 
     public void setThumbnail(String thumbnail) {
         this.thumbnail = thumbnail;
+    }
+
+    public String getMultiPic() {
+        return multiPic;
+    }
+
+    public void setMultiPic(String multiPic) {
+        this.multiPic = multiPic;
     }
 
     public static class ThemeBean implements Serializable {

@@ -61,6 +61,9 @@ public class ZhihuHelper {
                                                                 story.getImages().length > 0) {
                                                             news.setThumbnail(story.getImages()[0]);
                                                         }
+                                                        if (null != story.getMultiPic()) {
+                                                            news.setMultiPic(story.getMultiPic());
+                                                        }
                                                     }
                                                 });
                                     }

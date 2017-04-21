@@ -20,9 +20,23 @@
             android:layout_width="96dp"
             android:layout_height="96dp"
             android:layout_alignParentStart="true"
+            android:layout_margin="@dimen/view_padding"
             android:contentDescription="@string/news_image_preview"
-            android:padding="@dimen/view_padding"
             tools:src="@mipmap/ic_launcher"/>
+
+        <TextView
+            android:id="@+id/multi_picture_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/thumbnail_image"
+            android:layout_alignEnd="@id/thumbnail_image"
+            android:background="@color/translucenceBlack"
+            android:paddingLeft="@dimen/view_padding_min"
+            android:paddingRight="@dimen/view_padding_min"
+            android:text="@string/multiple_picture"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/title_text_min_size"
+            android:visibility="invisible"/>
 
         <TextView
             android:id="@+id/question_title"
@@ -60,8 +74,8 @@
                 android:id="@+id/share_image_view"
                 android:layout_width="@dimen/action_size"
                 android:layout_height="@dimen/action_size"
-                android:foreground="?attr/selectableItemBackground"
                 android:contentDescription="@string/action_title_share"
+                android:foreground="?attr/selectableItemBackground"
                 android:padding="@dimen/view_padding"
                 android:src="@drawable/ic_action_share_black"/>
 
@@ -69,8 +83,8 @@
                 android:id="@+id/read_later_image_view"
                 android:layout_width="@dimen/action_size"
                 android:layout_height="@dimen/action_size"
-                android:foreground="?attr/selectableItemBackground"
                 android:contentDescription="@string/action_read_later"
+                android:foreground="?attr/selectableItemBackground"
                 android:padding="@dimen/view_padding"
                 android:src="@drawable/ic_action_read_later_unselected_black"/>
 
@@ -78,8 +92,8 @@
                 android:id="@+id/browser_image_view"
                 android:layout_width="@dimen/action_size"
                 android:layout_height="@dimen/action_size"
-                android:foreground="?attr/selectableItemBackground"
                 android:contentDescription="@string/action_title_open_browser"
+                android:foreground="?attr/selectableItemBackground"
                 android:padding="@dimen/view_padding"
                 android:src="@drawable/ic_action_browser_black"/>
         </LinearLayout>

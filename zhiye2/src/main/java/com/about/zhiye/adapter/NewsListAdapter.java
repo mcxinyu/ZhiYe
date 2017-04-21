@@ -93,6 +93,8 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
         ImageView mReadLaterImageView;
         @BindView(R.id.browser_image_view)
         ImageView mBrowserImageView;
+        @BindView(R.id.multi_picture_text_view)
+        TextView mMultiPictureTextView;
 
         public CardViewHolder(View itemView) {
             super(itemView);
@@ -123,6 +125,12 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
                 mReadLaterImageView.setImageResource(R.drawable.ic_action_read_later_selected_black);
             } else {
                 mReadLaterImageView.setImageResource(R.drawable.ic_action_read_later_unselected_black);
+            }
+
+            if (null != news.getMultiPic()) {
+                mMultiPictureTextView.setVisibility(View.VISIBLE);
+            } else {
+                mMultiPictureTextView.setVisibility(View.INVISIBLE);
             }
 
             mThumbnailImage.setVisibility(View.VISIBLE);

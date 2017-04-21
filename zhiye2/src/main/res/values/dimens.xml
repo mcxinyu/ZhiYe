@@ -4,6 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="view_padding">8dp</dimen>
+    <dimen name="view_padding_min">4dp</dimen>
 
     <dimen name="contact_padding">12dp</dimen>
     <dimen name="contact_text_size">14sp</dimen>
