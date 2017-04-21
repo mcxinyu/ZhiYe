@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.about.zhiye.R;
 import com.about.zhiye.api.ZhihuHelper;
@@ -170,6 +171,13 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
                     ZhihuHelper.shareNews(mContext, news.getTitle(), news.getShareUrl());
                 }
             });
+            mShareImageView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Toast.makeText(mContext, mContext.getString(R.string.action_title_share), Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            });
             mReadLaterImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -185,10 +193,24 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
                     }
                 }
             });
+            mReadLaterImageView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Toast.makeText(mContext, mContext.getString(R.string.action_title_read_later), Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            });
             mBrowserImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     ZhihuHelper.shareToBrowser(mContext, news.getShareUrl());
+                }
+            });
+            mBrowserImageView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Toast.makeText(mContext, mContext.getString(R.string.action_title_open_browser), Toast.LENGTH_SHORT).show();
+                    return true;
                 }
             });
         }

@@ -33,4 +33,5 @@
     <string name="title_themes">Daily Themes</string>
     <string name="title_editor">Editor</string>
     <string name="multiple_picture">Multi-Images</string>
+    <string name="action_title_read_later">Read Later</string>
 </resources>
