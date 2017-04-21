@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.about.zhiye.R;
@@ -93,8 +94,8 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
         ImageView mReadLaterImageView;
         @BindView(R.id.browser_image_view)
         ImageView mBrowserImageView;
-        @BindView(R.id.multi_picture_text_view)
-        TextView mMultiPictureTextView;
+        @BindView(R.id.multi_picture_view)
+        LinearLayout mMultiPictureView;
 
         public CardViewHolder(View itemView) {
             super(itemView);
@@ -128,9 +129,9 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
             }
 
             if (null != news.getMultiPic()) {
-                mMultiPictureTextView.setVisibility(View.VISIBLE);
+                mMultiPictureView.setVisibility(View.VISIBLE);
             } else {
-                mMultiPictureTextView.setVisibility(View.INVISIBLE);
+                mMultiPictureView.setVisibility(View.INVISIBLE);
             }
 
             mThumbnailImage.setVisibility(View.VISIBLE);

@@ -24,19 +24,32 @@
             android:contentDescription="@string/news_image_preview"
             tools:src="@mipmap/ic_launcher"/>
 
-        <TextView
-            android:id="@+id/multi_picture_text_view"
+        <LinearLayout
+            android:id="@+id/multi_picture_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/thumbnail_image"
             android:layout_alignEnd="@id/thumbnail_image"
             android:background="@color/translucenceBlack"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:paddingLeft="@dimen/view_padding_min"
             android:paddingRight="@dimen/view_padding_min"
-            android:text="@string/multiple_picture"
-            android:textColor="@color/colorWhite"
-            android:textSize="@dimen/title_text_min_size"
-            android:visibility="invisible"/>
+            android:visibility="invisible">
+
+            <ImageView
+                android:layout_width="@dimen/contact_padding"
+                android:layout_height="@dimen/contact_padding"
+                android:layout_marginEnd="@dimen/view_padding_min"
+                android:src="@drawable/ic_multi_pictures"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/multiple_picture"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/title_text_min_size"/>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/question_title"
