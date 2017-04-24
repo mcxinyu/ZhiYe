@@ -22,6 +22,8 @@ public class SingleNewsListActivity extends SingleFragmentActivity {
 
     private Date mDate;
 
+    private Fragment mFragment;
+
     public static Intent newIntent(Context context, Date date) {
         Intent intent = new Intent(context, SingleNewsListActivity.class);
         intent.putExtra(EXTRA_DATE, date != null ? date : new Date());
@@ -30,7 +32,8 @@ public class SingleNewsListActivity extends SingleFragmentActivity {
 
     @Override
     protected Fragment createFragment() {
-        return NewsListFragment.newInstance(getNextDate());
+        mFragment = NewsListFragment.newInstance(getNextDate());
+        return mFragment;
     }
 
     @Override
@@ -44,6 +47,8 @@ public class SingleNewsListActivity extends SingleFragmentActivity {
         mDate = (Date) getIntent().getSerializableExtra(EXTRA_DATE);
 
         super.onCreate(savedInstanceState);
+
+        mFragment.setUserVisibleHint(true);
     }
 
     private String getNextDate() {
