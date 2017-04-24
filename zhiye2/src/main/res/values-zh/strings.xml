@@ -35,4 +35,5 @@
     <string name="title_themes">主题日报</string>
     <string name="title_editor">主编</string>
     <string name="multiple_picture">多图</string>
+    <string name="title_read_later_empty">\"稍后阅读\"中空空如也</string>
 </resources>

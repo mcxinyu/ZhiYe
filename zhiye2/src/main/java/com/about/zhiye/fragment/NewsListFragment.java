@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.about.zhiye.R;
 import com.about.zhiye.activity.ZhihuWebActivity;
@@ -53,7 +54,9 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     SwipeRefreshLayout mSwipeRefreshLayout;
     @BindView(R.id.container)
     FrameLayout mContainer;
-    Unbinder unbinder;
+    @BindView(R.id.read_later_empty_layout)
+    RelativeLayout mReadLaterEmptyLayout;
+    private Unbinder unbinder;
 
     private List<News> mNewses;
 
@@ -152,6 +155,12 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
         refreshIf(shouldRefreshOnVisibilityChange(isVisibleToUser));
     }
 
+    private void setEmptyView(int visible) {
+        if (isReadLaterFragment) {
+            mReadLaterEmptyLayout.setVisibility(visible);
+        }
+    }
+
     private boolean UserWantsToRefreshAutomatically() {
         // TODO: 2017/3/19 用户首选项
         return true;
@@ -220,6 +229,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
         isRefreshed = true;
         mSwipeRefreshLayout.setRefreshing(false);
         mNewsAdapter.updateStories(mNewses);
+        setEmptyView(mNewses.size() > 0 ? View.INVISIBLE : View.VISIBLE);
     }
 
     /**
@@ -291,7 +301,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void addReadLater(final String newsId, boolean added) {
-        if (added){
+        if (added) {
             Snackbar.make(mContainer, getString(R.string.added_read_later), Snackbar.LENGTH_SHORT)
                     .setAction(getString(R.string.undo), new View.OnClickListener() {
                         @Override
