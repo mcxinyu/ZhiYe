@@ -20,10 +20,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,6 +75,8 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
     NestedScrollView mScrollView;
     @BindView(R.id.app_bar_layout)
     AppBarLayout mAppBarLayout;
+    @BindView(R.id.progress_bar)
+    ProgressBar mProgressBar;
     private Unbinder unbinder;
 
     private String mNewsId;
@@ -267,19 +271,31 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     private void setWebSettings(News news) {
+        mWebView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                mProgressBar.setProgress(newProgress);
+                if (newProgress >= 100) {
+                    mProgressBar.setVisibility(View.GONE);
+                }
+                super.onProgressChanged(view, newProgress);
+            }
+        });
+
         switch (mType) {
-            case "1":
+            case "1":   // 1、无body，无图片；
                 mWebView.loadUrl(news.getShareUrl());
                 mWebView.setWebViewClient(new WebViewClient() {
                     @Override
                     public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                        mProgressBar.setVisibility(View.VISIBLE);
                         view.loadUrl(url);
                         return super.shouldOverrideUrlLoading(view, url);
                     }
                 });
                 break;
-            case "0":
-            case "2":
+            case "0":   // 0、有body，有图片；
+            case "2":   // 2、有body，无图片；
                 WebSettings settings = mWebView.getSettings();
                 // settings.setJavaScriptEnabled(true);
                 settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
@@ -295,7 +311,7 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void onRefresh() {
-        // loadDetailNews(mNewsId);
+        loadDetailNews(mNewsId);
     }
 
     @Override
@@ -321,5 +337,9 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     public interface Callbacks {
         void readLaterStatusChange(boolean added);
+    }
+
+    public WebView getWebView() {
+        return mWebView;
     }
 }

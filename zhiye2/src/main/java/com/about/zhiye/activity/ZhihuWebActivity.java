@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 
 import com.about.zhiye.db.DBLab;
@@ -13,6 +14,8 @@ public class ZhihuWebActivity extends BaseActivity
         implements ZhihuWebFragment.Callbacks {
     private static final String EXTRA_NEWS_ID = "news_id";
     private static final String EXTRA_TYPE = "type";
+
+    private ZhihuWebFragment mFragment;
 
     private String mNewsId;
     private String mType;
@@ -27,7 +30,8 @@ public class ZhihuWebActivity extends BaseActivity
 
     @Override
     protected Fragment createFragment() {
-        return ZhihuWebFragment.newInstance(mNewsId, mType);
+        mFragment = ZhihuWebFragment.newInstance(mNewsId, mType);
+        return mFragment;
     }
 
     @Override
@@ -54,5 +58,14 @@ public class ZhihuWebActivity extends BaseActivity
         Intent intent = new Intent();
         intent.putExtra("newsId", mNewsId);
         setResult(RESULT_OK, intent);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && mFragment.getWebView().canGoBack()) {
+            mFragment.getWebView().goBack();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
