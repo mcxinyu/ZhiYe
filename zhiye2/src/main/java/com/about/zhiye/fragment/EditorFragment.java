@@ -7,9 +7,11 @@ import android.support.v4.widget.NestedScrollView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 import com.about.zhiye.R;
 import com.about.zhiye.api.ApiRetrofit;
@@ -29,7 +31,9 @@ public class EditorFragment extends Fragment {
     WebView mWebView;
     @BindView(R.id.scroll_view)
     NestedScrollView mScrollView;
-    Unbinder unbinder;
+    @BindView(R.id.progress_bar)
+    ProgressBar mProgressBar;
+    private Unbinder unbinder;
 
     private String mEditorId;
 
@@ -61,9 +65,20 @@ public class EditorFragment extends Fragment {
     private void initWebView() {
         mWebView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         mWebView.loadUrl(ApiRetrofit.ZHIHU_BASE_URL + "api/4/editor/" + mEditorId + "/profile-page/android");
+        mWebView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                mProgressBar.setProgress(newProgress);
+                if (newProgress >= 100) {
+                    mProgressBar.setVisibility(View.INVISIBLE);
+                }
+                super.onProgressChanged(view, newProgress);
+            }
+        });
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                mProgressBar.setVisibility(View.VISIBLE);
                 view.loadUrl(url);
                 return super.shouldOverrideUrlLoading(view, url);
             }
