@@ -129,7 +129,8 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
 
     private void initToolbar() {
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
-        mCollapsingLayout.setTitle(getString(R.string.title_zhihu));
+        // mCollapsingLayout.setTitle(getString(R.string.title_zhihu));
+        mCollapsingLayout.setTitle(" ");
         mCollapsingLayout.setExpandedTitleColor(Color.TRANSPARENT);
         mAppBarLayout.setExpanded(false);
     }

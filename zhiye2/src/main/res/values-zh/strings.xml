@@ -8,7 +8,7 @@
     <string name="zhihu_question_link_prefix">http://www.zhihu.com/question/</string>
     <string name="no_browser">未找到支持的浏览器</string>
     <string name="zhihu_daily_today">今日知乎日报</string>
-    <string name="network_error">网络异常</string>
+    <string name="load_failure">加载失败</string>
     <string name="share_from_zhihu">(分享自知乎网)</string>
     <string name="share_to">选择分享至…</string>
     <string name="the_left_brace">【</string>

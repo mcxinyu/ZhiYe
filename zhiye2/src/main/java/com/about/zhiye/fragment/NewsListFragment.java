@@ -230,7 +230,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
         e.printStackTrace();
         mSwipeRefreshLayout.setRefreshing(false);
         if (isAdded()) {
-            Snackbar.make(mContainer, getString(R.string.network_error), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(mContainer, getString(R.string.load_failure), Snackbar.LENGTH_SHORT).show();
         }
     }
 

@@ -203,7 +203,7 @@ public class ThemeFragment extends Fragment implements Observer<Theme>, SwipeRef
         e.printStackTrace();
         mSwipeRefreshLayout.setRefreshing(false);
         mSwipeRefreshLayout.setEnabled(true);
-        Snackbar.make(mCoordinatorLayout, getString(R.string.network_error), Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(mCoordinatorLayout, getString(R.string.load_failure), Snackbar.LENGTH_SHORT).show();
     }
 
     @Override

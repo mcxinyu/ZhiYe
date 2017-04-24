@@ -15,7 +15,7 @@
     <string name="the_right_brace">】</string>
     <string name="action_title_open_browser">Use The Browser Open</string>
     <string name="action_title_open_zhihu">Use The Zhihu Client Open</string>
-    <string name="network_error">Network Error</string>
+    <string name="load_failure">Load Failure</string>
     <string name="zhihu_daily_today">Zhihu Daily</string>
     <string name="title_read_later">Read Later</string>
     <string name="no_zhihu_client">Not Found The Zhihu Client</string>
