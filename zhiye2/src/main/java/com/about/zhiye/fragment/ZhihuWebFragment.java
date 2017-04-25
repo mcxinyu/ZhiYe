@@ -276,7 +276,7 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
             public void onProgressChanged(WebView view, int newProgress) {
                 mProgressBar.setProgress(newProgress);
                 if (newProgress >= 100) {
-                    mProgressBar.setVisibility(View.GONE);
+                    mProgressBar.setVisibility(View.INVISIBLE);
                 }
                 super.onProgressChanged(view, newProgress);
             }
