@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:orderInCategory="999"
+        android:title="@string/communicate_text">
+        <menu>
+            <item
+                android:id="@+id/menu_settings"
+                android:icon="@drawable/ic_settings"
+                android:title="@string/action_title_settings"/>
+            <item
+                android:id="@+id/menu_feedback"
+                android:icon="@drawable/ic_feedback"
+                android:title="@string/title_settings_feedback"/>
+        </menu>
+    </item>
+
+</menu>

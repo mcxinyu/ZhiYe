@@ -22,8 +22,9 @@
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
-    <style name="Theme.Zhiye.Light.Preferences" parent="Theme.Zhiye.Light.NoActionbar">
-        <item name="android:textColor">@color/titleGray</item>
+    <style name="Theme.Zhiye.Light.NoActionbar.Preferences" parent="Theme.Zhiye.Light.NoActionbar">
+        <item name="android:textColorPrimary">@color/colorWhite</item>
+        <item name="android:textColor">@color/titleGrayDark</item>
     </style>
 
     <style name="Theme.Zhiye.Light.PopupMenuTextAppearanceLarge" parent="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Large">

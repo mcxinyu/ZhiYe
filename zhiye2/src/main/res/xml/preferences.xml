@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="preferences_screen">
+
+    <PreferenceCategory
+        android:key="settings_general"
+        android:title="@string/title_settings_general_setting">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:enabled="true"
+            android:key="setting_auto_refresh"
+            android:summary="@string/auto_refresh_summary"
+            android:title="@string/title_settings_auto_refresh"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/title_settings_others">
+        <PreferenceScreen
+            android:key="setting_about"
+            android:summary="没有工作室 No own a house"
+            android:title="@string/title_settings_others_about"/>
+        <PreferenceScreen
+            android:key="setting_feedback"
+            android:title="@string/title_settings_feedback"/>
+    </PreferenceCategory>
+</PreferenceScreen>

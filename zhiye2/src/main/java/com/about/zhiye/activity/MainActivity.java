@@ -1,17 +1,24 @@
 package com.about.zhiye.activity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.about.zhiye.R;
 import com.about.zhiye.fragment.ReadLaterFragment;
@@ -37,7 +44,13 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView mBottomNavigation;
     @BindView(R.id.status_bar_view)
     View mStatusBarView;
-    Unbinder unbinder;
+    @BindView(R.id.nav_view)
+    NavigationView mNavView;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+    private Unbinder unbinder;
+    private TextView mEmailTextView;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     private FragmentManager mFragmentManager;
 
@@ -82,11 +95,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_drawer_layout);
         unbinder = ButterKnife.bind(this);
         setStatusBarView();
 
         initToolbar();
+        initDrawer();
 
         mFragmentManager = getSupportFragmentManager();
         currentFragment = mFragmentManager.findFragmentById(R.id.fragment_content);
@@ -120,14 +134,54 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void initDrawer() {
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open_drawer, R.string.close_drawer);
+        mDrawerToggle.syncState();
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
+
+        mNavView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menu_settings:
+                        startActivity(PreferencesActivity.newIntent(MainActivity.this));
+                        break;
+                    case R.id.menu_feedback:
+                        sendEmailFeedback();
+                        break;
+                }
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
+
+        // mEmailTextView = (TextView) findViewById(R.id.emailTextView);
+        // mEmailTextView.setOnClickListener(new View.OnClickListener() {
+        //     @Override
+        //     public void onClick(View v) {
+        //         sendEmailFeedback();
+        //     }
+        // });
+    }
+
+    private void sendEmailFeedback() {
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        String uriText = "mailto:mcxinyu@gmail.com?subject=Feedback&body=";
+        uriText = uriText.replace(" ", "%20");
+        Uri uri = Uri.parse(uriText);
+        intent.setData(uri);
+        startActivity(intent);
+    }
+
     private void initToolbar() {
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
             supportActionBar.setHomeButtonEnabled(true);
+            supportActionBar.setHomeButtonEnabled(true);
         }
     }
 
-    private void setStatusBarView(){
+    private void setStatusBarView() {
         // ViewGroup contentView = (ViewGroup) findViewById(android.R.id.content);
         // View statusBarView = new View(MainActivity.this);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
@@ -141,5 +195,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)){
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 }

@@ -53,6 +53,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Zhiye.Light.NoActionbar">
         </activity>
+        <activity
+            android:name=".activity.PreferencesActivity"
+            android:label="@string/action_title_settings"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Zhiye.Light.NoActionbar.Preferences">
+        </activity>
     </application>
 
 </manifest>
