@@ -23,10 +23,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.about.zhiye.R;
+import com.about.zhiye.ZhiYeApp;
 import com.about.zhiye.adapter.ThemeEditorAdapter;
 import com.about.zhiye.adapter.ThemeStoryAdapter;
 import com.about.zhiye.api.ZhihuHelper;
 import com.about.zhiye.model.Theme;
+import com.about.zhiye.util.QueryPreferences;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -125,10 +127,16 @@ public class ThemeFragment extends Fragment implements Observer<Theme>, SwipeRef
         mStoryAdapter = new ThemeStoryAdapter(getContext(), mStoriesBeen);
         mRecyclerView.setAdapter(mStoryAdapter);
 
-        loadTheme(mThemeId);
+        if (UserWantsToRefreshAutomatically()) {
+            loadTheme(mThemeId);
+        }
 
         initToolbar();
         return view;
+    }
+
+    private boolean UserWantsToRefreshAutomatically() {
+        return QueryPreferences.getAutoRefreshState(ZhiYeApp.getInstance());
     }
 
     private void loadTheme(int themeId) {

@@ -19,10 +19,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.about.zhiye.R;
+import com.about.zhiye.ZhiYeApp;
 import com.about.zhiye.activity.PickDateActivity;
 import com.about.zhiye.activity.ZhihuWebActivity;
 import com.about.zhiye.api.ZhihuHelper;
 import com.about.zhiye.model.News;
+import com.about.zhiye.util.QueryPreferences;
 import com.jude.rollviewpager.OnItemClickListener;
 import com.jude.rollviewpager.RollPagerView;
 import com.jude.rollviewpager.hintview.ColorPointHintView;
@@ -135,10 +137,16 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
         mAppBarLayout.setExpanded(false);
     }
 
+    private boolean UserWantsToRefreshAutomatically() {
+        return QueryPreferences.getAutoRefreshState(ZhiYeApp.getInstance());
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        doRefreshTopNewses();
+        if (UserWantsToRefreshAutomatically()) {
+            doRefreshTopNewses();
+        }
     }
 
     @Override
