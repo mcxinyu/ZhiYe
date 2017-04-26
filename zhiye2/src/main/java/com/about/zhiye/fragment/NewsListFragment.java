@@ -17,11 +17,13 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.about.zhiye.R;
+import com.about.zhiye.ZhiYeApp;
 import com.about.zhiye.activity.ZhihuWebActivity;
 import com.about.zhiye.adapter.NewsListAdapter;
 import com.about.zhiye.api.ZhihuHelper;
 import com.about.zhiye.db.DBLab;
 import com.about.zhiye.model.News;
+import com.about.zhiye.util.QueryPreferences;
 
 import java.util.List;
 
@@ -162,8 +164,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     private boolean UserWantsToRefreshAutomatically() {
-        // TODO: 2017/3/19 用户首选项
-        return true;
+        return QueryPreferences.getAutoRefreshState(ZhiYeApp.getInstance());
     }
 
     private boolean shouldRefreshOnVisibilityChange(boolean isVisibleToUser) {
