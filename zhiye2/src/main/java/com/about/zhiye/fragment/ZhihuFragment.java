@@ -135,7 +135,14 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
         mCollapsingLayout.setExpandedTitleColor(Color.TRANSPARENT);
         mAppBarLayout.setExpanded(false);
 
-        // TODO: 2017/4/26 下拉才刷新 TopNewses
+        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (verticalOffset == 0) {  // EXPANDED
+                    doRefreshTopNewses();
+                }
+            }
+        });
     }
 
     private boolean UserWantsToRefreshAutomatically() {
