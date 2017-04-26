@@ -127,6 +127,9 @@ public class ThemeFragment extends Fragment implements Observer<Theme>, SwipeRef
         mStoryAdapter = new ThemeStoryAdapter(getContext(), mStoriesBeen);
         mRecyclerView.setAdapter(mStoryAdapter);
 
+        // 为了让下拉刷新的时候不先打开 mCoordinatorLayout
+        mScrollView.setVisibility(View.INVISIBLE);
+
         if (UserWantsToRefreshAutomatically()) {
             loadTheme(mThemeId);
         }
@@ -199,9 +202,13 @@ public class ThemeFragment extends Fragment implements Observer<Theme>, SwipeRef
         mSwipeRefreshLayout.setRefreshing(false);
         mSwipeRefreshLayout.setEnabled(false);
 
-        mStoryAdapter.updateStories(mStoriesBeen);
         mEditorAdapter.updateEditors(mEditorsBeen);
         mEditorTextView.setVisibility(View.VISIBLE);
+        mStoryAdapter.updateStories(mStoriesBeen);
+
+        if (mStoriesBeen.size() > 0) {
+             mScrollView.setVisibility(View.VISIBLE);
+        }
 
         setView(mTheme);
     }

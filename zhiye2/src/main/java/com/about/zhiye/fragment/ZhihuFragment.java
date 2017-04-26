@@ -131,10 +131,11 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
 
     private void initToolbar() {
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
-        // mCollapsingLayout.setTitle(getString(R.string.title_zhihu));
-        mCollapsingLayout.setTitle(" ");
+        mCollapsingLayout.setTitle(getString(R.string.title_zhihu));
         mCollapsingLayout.setExpandedTitleColor(Color.TRANSPARENT);
         mAppBarLayout.setExpanded(false);
+
+        // TODO: 2017/4/26 下拉才刷新 TopNewses
     }
 
     private boolean UserWantsToRefreshAutomatically() {
@@ -200,10 +201,12 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
 
     // TopNews
     private void doRefreshTopNewses() {
-        getTopNewses()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this);
+        if (null == mTopNewses || mTopNewses.size() == 0) {
+            getTopNewses()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this);
+        }
     }
 
     private Observable<List<News>> getTopNewses() {

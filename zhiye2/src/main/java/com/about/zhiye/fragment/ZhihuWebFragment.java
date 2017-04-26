@@ -123,6 +123,9 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
 
+        // 为了让下拉刷新的时候不先打开 mCoordinatorLayout
+        mScrollView.setVisibility(View.INVISIBLE);
+
         loadDetailNews(mNewsId);
 
         initToolbar();
@@ -263,10 +266,15 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
                         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
                             super.onResourceReady(resource, animation);
                             mImageSource.setText(news.getImageSource());
+                            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mAppBarLayout.getChildAt(0).getLayoutParams();
+                            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL |
+                                    AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS |
+                                    AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
                             mAppBarLayout.setExpanded(true);
                         }
                     });
         }
+        mScrollView.setVisibility(View.VISIBLE);
         setWebSettings(news);
     }
 

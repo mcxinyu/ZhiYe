@@ -2,7 +2,6 @@ package com.about.zhiye.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -102,28 +101,13 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
         mNewsAdapter = new NewsListAdapter(getContext(), mNewses, this);
         mRecyclerView.setAdapter(mNewsAdapter);
 
+        // 为了让下拉刷新的时候不先打开 mCoordinatorLayout
+        mRecyclerView.setVisibility(View.INVISIBLE);
+
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
 
         return view;
-    }
-
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    public int getCurrentItem() {
-        return ((LinearLayoutManager) mRecyclerView.getLayoutManager())
-                .findFirstCompletelyVisibleItemPosition();
-    }
-
-    public void setRecyclerScrollTo(int position) {
-        if (mNewses.size() > position) {
-            mRecyclerView.smoothScrollToPosition(position);
-            // mRecyclerView.scrollToPosition(position);
-        }
     }
 
     @Override
@@ -161,6 +145,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
         if (isReadLaterFragment) {
             mReadLaterEmptyLayout.setVisibility(visible);
         }
+        if (mNewses.size() > 0) mRecyclerView.setVisibility(View.VISIBLE);
     }
 
     private boolean UserWantsToRefreshAutomatically() {
@@ -326,6 +311,6 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     public interface Callbacks {
-        void onFragmentInteraction(Uri uri);
+        void doRefresh();
     }
 }

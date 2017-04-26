@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
     private void initToolbar() {
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
-            supportActionBar.setHomeButtonEnabled(true);
+            supportActionBar.setDisplayHomeAsUpEnabled(true);
             supportActionBar.setHomeButtonEnabled(true);
         }
     }
