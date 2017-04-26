@@ -268,7 +268,7 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
                             mImageSource.setText(news.getImageSource());
                             AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mAppBarLayout.getChildAt(0).getLayoutParams();
                             params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL |
-                                    AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS |
+                                    AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS_COLLAPSED |
                                     AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
                             mAppBarLayout.setExpanded(true);
                         }
