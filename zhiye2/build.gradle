@@ -53,4 +53,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
     compile 'com.mikepenz:aboutlibraries:5.9.5'
+    compile 'com.aurelhubert:ahbottomnavigation:2.0.6'
 }
