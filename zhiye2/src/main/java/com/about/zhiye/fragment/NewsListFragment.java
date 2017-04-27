@@ -107,6 +107,19 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (!recyclerView.canScrollVertically(1)) {
+                        // 还可以向下滚动
+                    }
+                    if (!recyclerView.canScrollVertically(-1)) {
+                        // 还可以向上滚动
+                    }
+                }
+            }
+
+            @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 recyclerScrollY += dy;
@@ -182,6 +195,14 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     public void notifyDataSetChanged() {
         mNewsAdapter.notifyDataSetChanged();
+    }
+
+    public void scrollToTop() {
+        mRecyclerView.smoothScrollToPosition(0);
+    }
+
+    public boolean isFirstItemOnTop() {
+        return ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findFirstVisibleItemPosition() == 0;
     }
 
     /**

@@ -73,6 +73,7 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
     private TopNewsPagerAdapter mTopNewsPagerAdapter;
     private List<News> mTopNewses;
     private NewsListPagerAdapter mNewsListPagerAdapter;
+    private boolean isAppBarLayoutExpanded = false;
 
     public static ZhihuFragment newInstance() {
 
@@ -121,7 +122,29 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
         mFloatingActionButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Snackbar.make(mViewPager, getString(R.string.title_pick_date), Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(mViewPager, getString(R.string.title_pick_date), Snackbar.LENGTH_SHORT)
+                        .setAction(R.string.title_search, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                ZhihuHelper.withKeyword("中介")
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribeOn(Schedulers.io())
+                                        .subscribe(new Action1<List<News>>() {
+                                            @Override
+                                            public void call(List<News> newses) {
+                                                for (News newse : newses) {
+                                                    System.out.println(newse.getDailyTitle());
+                                                }
+                                            }
+                                        }, new Action1<Throwable>() {
+                                            @Override
+                                            public void call(Throwable throwable) {
+                                                throwable.printStackTrace();
+                                            }
+                                        });
+                            }
+                        })
+                        .show();
                 return false;
             }
         });
@@ -140,7 +163,33 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
                 if (verticalOffset == 0) {  // EXPANDED
+                    isAppBarLayoutExpanded = true;
                     doRefreshTopNewses();
+                } else {
+                    isAppBarLayoutExpanded = false;
+                }
+            }
+        });
+
+        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                if (mNewsListPagerAdapter.isFirstItemOnTop()) {
+                    if (isAppBarLayoutExpanded)
+                        mAppBarLayout.setExpanded(false);
+                    else
+                        mAppBarLayout.setExpanded(true);
+                } else {
+                    mNewsListPagerAdapter.scrollCurrentItemToTop();
                 }
             }
         });
@@ -206,9 +255,21 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
                     DateFormat.getDateInstance().format(calendar.getTime()));
         }
 
-        int getCurrentItemScrollY(){
+        int getCurrentItemScrollY() {
             // 获取 RecyclerView 的滚动距离
             return mFragmentList.get(mViewPager.getCurrentItem()).getRecyclerScrollY();
+        }
+
+        void scrollCurrentItemToTop() {
+            scrollItemToTop(mViewPager.getCurrentItem());
+        }
+
+        void scrollItemToTop(int position) {
+            mFragmentList.get(position).scrollToTop();
+        }
+
+        boolean isFirstItemOnTop() {
+            return mFragmentList.get(mViewPager.getCurrentItem()).isFirstItemOnTop();
         }
     }
 
