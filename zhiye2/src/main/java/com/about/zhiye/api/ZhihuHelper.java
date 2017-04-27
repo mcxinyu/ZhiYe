@@ -3,6 +3,7 @@ package com.about.zhiye.api;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.Html;
 import android.widget.Toast;
 
 import com.about.zhiye.R;
@@ -13,10 +14,20 @@ import com.about.zhiye.model.Story;
 import com.about.zhiye.model.Theme;
 import com.about.zhiye.model.Themes;
 import com.about.zhiye.model.TopStory;
+import com.about.zhiye.support.Http;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.List;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
@@ -154,6 +165,97 @@ public class ZhihuHelper {
      */
     public static Observable<Theme> getTheme(int id) {
         return ZHIHU_API.getTheme("" + id);
+    }
+
+    /**
+     * 关键词搜索
+     *
+     * @param keyword
+     * @return
+     */
+    public static Observable<List<News>> withKeyword(String keyword) {
+        return toNewsListObservable(getHtml(ApiRetrofit.ZHIHU_SEARCH, "q", keyword));
+    }
+
+    private static Observable<String> getHtml(final String baseUrl, final String key, final String value) {
+        return Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                try {
+                    subscriber.onNext(Http.get(baseUrl, key, value));
+                    subscriber.onCompleted();
+                } catch (IOException e) {
+                    subscriber.onError(e);
+                }
+            }
+        });
+    }
+
+    private static Observable<List<News>> toNewsListObservable(Observable<String> htmlObservable) {
+        return htmlObservable
+                .map(new Func1<String, String>() {
+                    @Override
+                    public String call(String s) {
+                        return decodeHtml(s);
+                    }
+                })
+                .flatMap(new Func1<String, Observable<JSONObject>>() {
+                    @Override
+                    public Observable<JSONObject> call(String s) {
+                        return toJSONObject(s);
+                    }
+                })
+                .flatMap(new Func1<JSONObject, Observable<JSONArray>>() {
+                    @Override
+                    public Observable<JSONArray> call(JSONObject jsonObject) {
+                        return getDailyNewsJSONArray(jsonObject);
+                    }
+                })
+                .map(new Func1<JSONArray, List<News>>() {
+                    @Override
+                    public List<News> call(JSONArray jsonArray) {
+                        return reflectNewsListFromJSON(jsonArray);
+                    }
+                });
+    }
+
+    private static List<News> reflectNewsListFromJSON(JSONArray newsListJsonArray) {
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(newsListJsonArray.toString(), new TypeToken<List<News>>() {
+        }.getType());
+    }
+
+    private static Observable<JSONArray> getDailyNewsJSONArray(final JSONObject dailyNewsJsonObject) {
+        return Observable.create(new Observable.OnSubscribe<JSONArray>() {
+            @Override
+            public void call(Subscriber<? super JSONArray> subscriber) {
+                try {
+                    subscriber.onNext(dailyNewsJsonObject.getJSONArray("news"));
+                    subscriber.onCompleted();
+                } catch (JSONException e) {
+                    subscriber.onError(e);
+                }
+            }
+        });
+    }
+
+    private static Observable<JSONObject> toJSONObject(final String data) {
+        return Observable.create(new Observable.OnSubscribe<JSONObject>() {
+            @Override
+            public void call(Subscriber<? super JSONObject> subscriber) {
+                try {
+                    subscriber.onNext(new JSONObject(data));
+                    subscriber.onCompleted();
+                } catch (JSONException e) {
+                    subscriber.onError(e);
+                }
+            }
+        });
+    }
+
+    @SuppressWarnings("deprecation")
+    private static String decodeHtml(String in) {
+        return Html.fromHtml(Html.fromHtml(in).toString()).toString();
     }
 
     /**

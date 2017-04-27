@@ -29,8 +29,7 @@ public class ApiRetrofit {
     public ZhihuApi ZhihuApiService;
 
     public static final String ZHIHU_BASE_URL = "http://news-at.zhihu.com/";
-    public static final String GANK_BASE_URL = "http://gank.io/api/";
-    public static final String DAILY_BASE_URL = "http://app3.qdaily.com/app3/";
+    public static final String ZHIHU_SEARCH = "http://zhihudailypurify.herokuapp.com/search/";
 
     public ZhihuApi getZhihuApiService() {
         return ZhihuApiService;
@@ -51,20 +50,6 @@ public class ApiRetrofit {
 
         Retrofit retrofitZhihu = new Retrofit.Builder()
                 .baseUrl(ZHIHU_BASE_URL)
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .build();
-
-        Retrofit retrofitGank = new Retrofit.Builder()
-                .baseUrl(GANK_BASE_URL)
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .build();
-
-        Retrofit retrofitDaily= new Retrofit.Builder()
-                .baseUrl(DAILY_BASE_URL)
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
