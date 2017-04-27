@@ -98,6 +98,7 @@ public class ThemeListFragment extends Fragment implements Observer<List<Themes.
 
     private void initToolbar() {
         mToolbar.setTitle(getString(R.string.title_themes));
+        mToolbar.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[1]);
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
     }
 

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -26,6 +25,7 @@ import com.about.zhiye.fragment.ThemeListFragment;
 import com.about.zhiye.fragment.ZhihuFragment;
 import com.about.zhiye.util.StateUtils;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,39 +60,6 @@ public class MainActivity extends AppCompatActivity {
     private ReadLaterFragment mReadLaterFragment;
     private Fragment currentFragment;
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    if (mZhihuFragment == null) {
-                        mZhihuFragment = ZhihuFragment.newInstance();
-                    }
-                    mStatusBarView.setVisibility(View.GONE);
-                    switchFragment(mZhihuFragment);
-                    return true;
-                case R.id.navigation_themes:
-                    if (mThemeFragment == null) {
-                        mThemeFragment = ThemeListFragment.newInstance();
-                    }
-                    mStatusBarView.setVisibility(View.VISIBLE);
-                    switchFragment(mThemeFragment);
-                    return true;
-                case R.id.navigation_read_later:
-                    if (mReadLaterFragment == null) {
-                        mReadLaterFragment = ReadLaterFragment.newInstance();
-                    }
-                    mStatusBarView.setVisibility(View.VISIBLE);
-                    switchFragment(mReadLaterFragment);
-                    return true;
-            }
-            return false;
-        }
-
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,7 +80,48 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         }
 
-        // mBottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        initBottomNavigation();
+    }
+
+    private void initBottomNavigation() {
+        AHBottomNavigationAdapter bottomNavigationAdapter = new AHBottomNavigationAdapter(this, R.menu.navigation);
+        bottomNavigationAdapter.setupWithBottomNavigation(mBottomNavigation, getResources().getIntArray(R.array.tab_colors));
+
+        mBottomNavigation.setTranslucentNavigationEnabled(true);
+        mBottomNavigation.setColored(true);
+        // mBottomNavigation.setSelectedBackgroundVisible(true);
+
+        mBottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
+            @Override
+            public boolean onTabSelected(int position, boolean wasSelected) {
+                switch (position) {
+                    case 0:
+                        if (mZhihuFragment == null) {
+                            mZhihuFragment = ZhihuFragment.newInstance();
+                        }
+                        mStatusBarView.setVisibility(View.GONE);
+                        switchFragment(mZhihuFragment);
+                        return true;
+                    case 1:
+                        if (mThemeFragment == null) {
+                            mThemeFragment = ThemeListFragment.newInstance();
+                        }
+                        mStatusBarView.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[1]);
+                        mStatusBarView.setVisibility(View.VISIBLE);
+                        switchFragment(mThemeFragment);
+                        return true;
+                    case 2:
+                        if (mReadLaterFragment == null) {
+                            mReadLaterFragment = ReadLaterFragment.newInstance();
+                        }
+                        mStatusBarView.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[2]);
+                        mStatusBarView.setVisibility(View.VISIBLE);
+                        switchFragment(mReadLaterFragment);
+                        return true;
+                }
+                return false;
+            }
+        });
     }
 
     private void switchFragment(Fragment fragment) {

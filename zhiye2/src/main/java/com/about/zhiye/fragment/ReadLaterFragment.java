@@ -74,6 +74,7 @@ public class ReadLaterFragment extends Fragment {
 
     private void initToolbar() {
         mToolbar.setTitle(getString(R.string.title_read_later));
+        mToolbar.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[2]);
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
     }
 

@@ -40,7 +40,6 @@ import butterknife.Unbinder;
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.about.zhiye.util.DateUtil.SIMPLE_DATE_FORMAT;
@@ -122,29 +121,7 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
         mFloatingActionButton.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Snackbar.make(mViewPager, getString(R.string.title_pick_date), Snackbar.LENGTH_SHORT)
-                        .setAction(R.string.title_search, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                ZhihuHelper.withKeyword("中介")
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribeOn(Schedulers.io())
-                                        .subscribe(new Action1<List<News>>() {
-                                            @Override
-                                            public void call(List<News> newses) {
-                                                for (News newse : newses) {
-                                                    System.out.println(newse.getDailyTitle());
-                                                }
-                                            }
-                                        }, new Action1<Throwable>() {
-                                            @Override
-                                            public void call(Throwable throwable) {
-                                                throwable.printStackTrace();
-                                            }
-                                        });
-                            }
-                        })
-                        .show();
+                Snackbar.make(mViewPager, getString(R.string.title_pick_date), Snackbar.LENGTH_SHORT).show();
                 return false;
             }
         });
