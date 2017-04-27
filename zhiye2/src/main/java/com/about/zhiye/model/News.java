@@ -63,13 +63,26 @@ public class News implements Serializable {
     private String[] css;
     private List<Question> questions;
 
+    /**
+     * 主题日报的模型
+     */
     @SerializedName("theme")
     private ThemeBean theme;
     @SerializedName("images")
     private List<String> images;
 
+    /**
+     * 附加，解决卡顿
+     */
     private String thumbnail;
     private String multiPic;
+
+    /**
+     * 关键词搜索的模型
+     */
+    private String date;
+    private String dailyTitle;
+    private String thumbnailUrl;
 
     public String getBody() {
         return body;
@@ -219,6 +232,30 @@ public class News implements Serializable {
 
     public void setMultiPic(String multiPic) {
         this.multiPic = multiPic;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getDailyTitle() {
+        return dailyTitle;
+    }
+
+    public void setDailyTitle(String dailyTitle) {
+        this.dailyTitle = dailyTitle;
+    }
+
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
+    }
+
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
     }
 
     public static class ThemeBean implements Serializable {
