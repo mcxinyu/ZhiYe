@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.View;
 
 import com.about.zhiye.fragment.NewsListFragment;
 
@@ -22,7 +23,7 @@ public class SingleNewsListActivity extends SingleFragmentActivity {
 
     private Date mDate;
 
-    private Fragment mFragment;
+    private NewsListFragment mFragment;
 
     public static Intent newIntent(Context context, Date date) {
         Intent intent = new Intent(context, SingleNewsListActivity.class);
@@ -39,6 +40,12 @@ public class SingleNewsListActivity extends SingleFragmentActivity {
     @Override
     protected boolean setHasToolbar() {
         mToolbar.setTitle(SIMPLE_DATE_FORMAT.format(mDate));
+        mToolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mFragment.scrollToTop();
+            }
+        });
         return true;
     }
 
