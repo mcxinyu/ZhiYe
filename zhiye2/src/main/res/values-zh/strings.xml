@@ -36,7 +36,7 @@
     <string name="title_themes">主题日报</string>
     <string name="title_editor">主编</string>
     <string name="multiple_picture">多图</string>
-    <string name="title_read_later_empty">\"稍后阅读\"中空空如也</string>
+    <string name="title_read_later_empty">“稍后阅读”中空空如也</string>
     <string name="title_settings_general_setting">常规</string>
     <string name="auto_refresh_summary">打开时，允许自动刷新？</string>
     <string name="title_settings_auto_refresh">自动刷新</string>
@@ -46,4 +46,5 @@
     <string name="communicate_text">帮助和反馈</string>
     <string name="open_drawer">打开</string>
     <string name="close_drawer">关闭</string>
+    <string name="title_search">搜索</string>
 </resources>
