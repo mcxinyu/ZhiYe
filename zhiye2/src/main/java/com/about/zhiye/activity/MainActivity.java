@@ -25,6 +25,7 @@ import com.about.zhiye.fragment.ReadLaterFragment;
 import com.about.zhiye.fragment.ThemeListFragment;
 import com.about.zhiye.fragment.ZhihuFragment;
 import com.about.zhiye.util.StateUtils;
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.fragment_content)
     FrameLayout mFragmentContent;
     @BindView(R.id.bottom_navigation)
-    BottomNavigationView mBottomNavigation;
+    AHBottomNavigation mBottomNavigation;
     @BindView(R.id.status_bar_view)
     View mStatusBarView;
     @BindView(R.id.nav_view)
@@ -112,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         }
 
-        mBottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        // mBottomNavigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
     private void switchFragment(Fragment fragment) {
