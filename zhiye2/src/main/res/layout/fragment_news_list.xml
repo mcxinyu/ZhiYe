@@ -15,10 +15,10 @@
 
         <ImageView
             android:id="@+id/image_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
             android:layout_centerInParent="true"
-            app:srcCompat="@drawable/ic_read_empty"/>
+            android:src="@drawable/ic_read_later_empty"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -27,7 +27,7 @@
             android:layout_centerInParent="true"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:text="@string/title_read_later_empty"
-            android:textColor="@color/titleDarkGray"/>
+            android:textColor="@color/titleGrayDark"/>
     </RelativeLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout
