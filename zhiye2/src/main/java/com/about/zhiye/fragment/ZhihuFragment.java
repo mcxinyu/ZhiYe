@@ -40,6 +40,7 @@ import butterknife.Unbinder;
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.about.zhiye.util.DateUtil.SIMPLE_DATE_FORMAT;
@@ -204,6 +205,11 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
                     getString(R.string.zhihu_daily_today) + " " :
                     DateFormat.getDateInstance().format(calendar.getTime()));
         }
+
+        int getCurrentItemScrollY(){
+            // 获取 RecyclerView 的滚动距离
+            return mFragmentList.get(mViewPager.getCurrentItem()).getRecyclerScrollY();
+        }
     }
 
     // TopNews
@@ -226,7 +232,10 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
     @Override
     public void onCompleted() {
         mTopNewsPagerAdapter.updateTopStories(mTopNewses);
-        mAppBarLayout.setExpanded(true);
+        if (!(mNewsListPagerAdapter.getCurrentItemScrollY() > 0)) {
+            // 如果 RecyclerView 滚动过就不展开了
+            mAppBarLayout.setExpanded(true);
+        }
     }
 
     /**

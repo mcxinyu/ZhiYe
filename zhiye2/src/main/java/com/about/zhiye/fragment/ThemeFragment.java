@@ -88,6 +88,7 @@ public class ThemeFragment extends Fragment implements Observer<Theme>, SwipeRef
     private ThemeEditorAdapter mEditorAdapter;
     private List<Theme.StoriesBean> mStoriesBeen;
     private List<Theme.EditorsBean> mEditorsBeen;
+    private boolean isUserTouch = false;
 
     public static ThemeFragment newInstance(String themeName, int themeId) {
 
@@ -129,6 +130,12 @@ public class ThemeFragment extends Fragment implements Observer<Theme>, SwipeRef
 
         // 为了让下拉刷新的时候不先打开 mCoordinatorLayout
         mScrollView.setVisibility(View.INVISIBLE);
+        mScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                isUserTouch = scrollY > 0;
+            }
+        });
 
         if (UserWantsToRefreshAutomatically()) {
             loadTheme(mThemeId);
@@ -192,7 +199,9 @@ public class ThemeFragment extends Fragment implements Observer<Theme>, SwipeRef
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
                         super.onResourceReady(resource, animation);
                         mImageSource.setText(theme.getImageSource());
-                        mAppBarLayout.setExpanded(true);
+                        if (!isUserTouch) {
+                            mAppBarLayout.setExpanded(true);
+                        }
                     }
                 });
     }

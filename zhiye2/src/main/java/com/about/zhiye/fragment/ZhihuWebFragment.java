@@ -83,6 +83,7 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
     private String mType;
     private News mNews;
     private Callbacks mListener;
+    private boolean isUserTouch = false;
 
     public static ZhihuWebFragment newInstance(String newsId, String type) {
         Bundle args = new Bundle();
@@ -125,6 +126,12 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
 
         // 为了让下拉刷新的时候不先打开 mCoordinatorLayout
         mScrollView.setVisibility(View.INVISIBLE);
+        mScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                isUserTouch = scrollY > 0;
+            }
+        });
 
         loadDetailNews(mNewsId);
 
@@ -271,7 +278,9 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
                                     AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS |
                                     AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS_COLLAPSED |
                                     AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
-                            mAppBarLayout.setExpanded(true);
+                            if (!isUserTouch) {
+                                mAppBarLayout.setExpanded(true);
+                            }
                         }
                     });
         }

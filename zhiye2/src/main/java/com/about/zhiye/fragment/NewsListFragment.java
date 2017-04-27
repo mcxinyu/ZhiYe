@@ -67,6 +67,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     private boolean isRefreshed = false;
     private boolean isPreloadFailure = false;
     private boolean isReadLaterFragment = false;
+    private int recyclerScrollY = 0;
 
     public static NewsListFragment newInstance(@Nullable String date) {
         NewsListFragment fragment = new NewsListFragment();
@@ -104,10 +105,22 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
         // 为了让下拉刷新的时候不先打开 mCoordinatorLayout
         mRecyclerView.setVisibility(View.INVISIBLE);
 
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                recyclerScrollY += dy;
+            }
+        });
+
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
 
         return view;
+    }
+
+    public int getRecyclerScrollY() {
+        return recyclerScrollY;
     }
 
     @Override
