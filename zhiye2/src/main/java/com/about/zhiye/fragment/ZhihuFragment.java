@@ -151,6 +151,8 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                if (isAppBarLayoutExpanded)
+                    mAppBarLayout.setExpanded(false);
             }
 
             @Override
