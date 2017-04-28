@@ -23,6 +23,7 @@ import com.about.zhiye.R;
 import com.about.zhiye.fragment.ReadLaterFragment;
 import com.about.zhiye.fragment.ThemeListFragment;
 import com.about.zhiye.fragment.ZhihuFragment;
+import com.about.zhiye.util.QueryPreferences;
 import com.about.zhiye.util.StateUtils;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
@@ -87,9 +88,14 @@ public class MainActivity extends AppCompatActivity {
         AHBottomNavigationAdapter bottomNavigationAdapter = new AHBottomNavigationAdapter(this, R.menu.navigation);
         bottomNavigationAdapter.setupWithBottomNavigation(mBottomNavigation, getResources().getIntArray(R.array.tab_colors));
 
+        final boolean isColorful = QueryPreferences.getColorfulState(this);
         mBottomNavigation.setTranslucentNavigationEnabled(true);
-        mBottomNavigation.setColored(true);
-        // mBottomNavigation.setSelectedBackgroundVisible(true);
+        if (isColorful) {
+            mBottomNavigation.setColored(true);
+        } else {
+            mBottomNavigation.setAccentColor(getResources().getColor(R.color.colorPrimary));
+        }
+        mBottomNavigation.setSelectedBackgroundVisible(true);
 
         mBottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
             @Override
@@ -106,7 +112,9 @@ public class MainActivity extends AppCompatActivity {
                         if (mThemeFragment == null) {
                             mThemeFragment = ThemeListFragment.newInstance();
                         }
-                        mStatusBarView.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[1]);
+                        if (isColorful) {
+                            mStatusBarView.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[1]);
+                        }
                         mStatusBarView.setVisibility(View.VISIBLE);
                         switchFragment(mThemeFragment);
                         return true;
@@ -114,7 +122,9 @@ public class MainActivity extends AppCompatActivity {
                         if (mReadLaterFragment == null) {
                             mReadLaterFragment = ReadLaterFragment.newInstance();
                         }
-                        mStatusBarView.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[2]);
+                        if (isColorful) {
+                            mStatusBarView.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[2]);
+                        }
                         mStatusBarView.setVisibility(View.VISIBLE);
                         switchFragment(mReadLaterFragment);
                         return true;
@@ -208,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)){
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();

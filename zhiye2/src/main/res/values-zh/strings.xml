@@ -49,4 +49,6 @@
     <string name="title_search">搜索</string>
     <string name="start">开始</string>
     <string name="retry">重试</string>
+    <string name="colorful_summary">使用多彩导航和标题栏（需重启）</string>
+    <string name="title_settings_colorful">多彩生活</string>
 </resources>

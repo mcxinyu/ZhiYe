@@ -17,6 +17,7 @@ import com.about.zhiye.R;
 import com.about.zhiye.adapter.ThemesAdapter;
 import com.about.zhiye.api.ZhihuHelper;
 import com.about.zhiye.model.Themes;
+import com.about.zhiye.util.QueryPreferences;
 
 import java.util.List;
 
@@ -98,7 +99,9 @@ public class ThemeListFragment extends Fragment implements Observer<List<Themes.
 
     private void initToolbar() {
         mToolbar.setTitle(getString(R.string.title_themes));
-        mToolbar.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[1]);
+        if (QueryPreferences.getColorfulState(getContext())) {
+            mToolbar.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[1]);
+        }
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
     }
 

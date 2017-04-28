@@ -51,4 +51,6 @@
     <string name="title_search">Search</string>
     <string name="start">Start</string>
     <string name="retry">Retry</string>
+    <string name="colorful_summary">Use colorful navigation and title bar(need to restart)</string>
+    <string name="title_settings_colorful">Colorful Life</string>
 </resources>

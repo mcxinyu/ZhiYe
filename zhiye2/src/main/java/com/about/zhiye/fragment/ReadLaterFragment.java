@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.about.zhiye.R;
+import com.about.zhiye.util.QueryPreferences;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -74,7 +75,9 @@ public class ReadLaterFragment extends Fragment {
 
     private void initToolbar() {
         mToolbar.setTitle(getString(R.string.title_read_later));
-        mToolbar.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[2]);
+        if (QueryPreferences.getColorfulState(getContext())) {
+            mToolbar.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[2]);
+        }
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
     }
 
