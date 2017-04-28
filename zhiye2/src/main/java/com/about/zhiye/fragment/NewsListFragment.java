@@ -211,7 +211,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
      * @param isRefreshReadLater 外部手动调用该方法刷新 ReadLaterNewses
      */
     public void doRefresh(boolean isRefreshReadLater) {
-        if (isRefreshReadLater || isReadLaterFragment) {
+        if (isReadLaterFragment) {
             getReadLaterNewsesObservable()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -260,7 +260,14 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
         e.printStackTrace();
         mSwipeRefreshLayout.setRefreshing(false);
         if (isAdded()) {
-            Snackbar.make(mContainer, getString(R.string.load_failure), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(mContainer, getString(R.string.load_failure), Snackbar.LENGTH_SHORT)
+                    .setAction(getResources().getString(R.string.retry), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            doRefresh(true);
+                        }
+                    })
+                    .show();
         }
     }
 

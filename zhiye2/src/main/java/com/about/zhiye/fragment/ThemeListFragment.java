@@ -122,7 +122,14 @@ public class ThemeListFragment extends Fragment implements Observer<List<Themes.
         mSwipeRefreshLayout.setRefreshing(false);
         mSwipeRefreshLayout.setEnabled(true);
         if (isAdded()) {
-            Snackbar.make(mSwipeRefreshLayout, getString(R.string.load_failure), Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(mSwipeRefreshLayout, getString(R.string.load_failure), Snackbar.LENGTH_SHORT)
+                    .setAction(getResources().getString(R.string.retry), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            getOthersBeanList();
+                        }
+                    })
+                    .show();
         }
     }
 

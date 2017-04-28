@@ -227,7 +227,14 @@ public class ThemeFragment extends Fragment implements Observer<Theme>, SwipeRef
         e.printStackTrace();
         mSwipeRefreshLayout.setRefreshing(false);
         mSwipeRefreshLayout.setEnabled(true);
-        Snackbar.make(mCoordinatorLayout, getString(R.string.load_failure), Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(mCoordinatorLayout, getString(R.string.load_failure), Snackbar.LENGTH_SHORT)
+                .setAction(getResources().getString(R.string.retry), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        loadTheme(mThemeId);
+                    }
+                })
+                .show();
     }
 
     @Override
