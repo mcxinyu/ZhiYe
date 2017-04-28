@@ -47,4 +47,5 @@
     <string name="open_drawer">打开</string>
     <string name="close_drawer">关闭</string>
     <string name="title_search">搜索</string>
+    <string name="start">开始</string>
 </resources>
