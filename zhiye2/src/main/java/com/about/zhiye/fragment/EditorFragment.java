@@ -68,9 +68,13 @@ public class EditorFragment extends Fragment {
         mWebView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
-                mProgressBar.setProgress(newProgress);
+                if (mProgressBar != null) {
+                    mProgressBar.setProgress(newProgress);
+                }
                 if (newProgress >= 100) {
-                    mProgressBar.setVisibility(View.INVISIBLE);
+                    if (mProgressBar != null) {
+                        mProgressBar.setVisibility(View.INVISIBLE);
+                    }
                 }
                 super.onProgressChanged(view, newProgress);
             }
@@ -78,7 +82,9 @@ public class EditorFragment extends Fragment {
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                mProgressBar.setVisibility(View.VISIBLE);
+                if (mProgressBar != null) {
+                    mProgressBar.setVisibility(View.VISIBLE);
+                }
                 view.loadUrl(url);
                 return super.shouldOverrideUrlLoading(view, url);
             }
