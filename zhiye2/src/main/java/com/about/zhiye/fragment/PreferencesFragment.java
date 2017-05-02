@@ -36,6 +36,7 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
 
     private void initPreferences() {
         findPreference(QueryPreferences.SETTING_AUTO_REFRESH).setOnPreferenceClickListener(this);
+        findPreference(QueryPreferences.SETTING_COLORFUL).setOnPreferenceClickListener(this);
         findPreference(QueryPreferences.SETTING_ABOUT).setOnPreferenceClickListener(this);
         findPreference(QueryPreferences.SETTING_FEEDBACK).setOnPreferenceClickListener(this);
     }
@@ -45,6 +46,8 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
         String key = preference.getKey();
         switch (key) {
             case QueryPreferences.SETTING_AUTO_REFRESH:
+                break;
+            case QueryPreferences.SETTING_COLORFUL:
                 break;
             case QueryPreferences.SETTING_ABOUT:
                 startAboutActivity();

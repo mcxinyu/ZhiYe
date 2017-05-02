@@ -8,6 +8,9 @@ public class DBScheme {
     public static final String DATABASE_NAME = "zhiye.db";
     public static final int DATABASE_VERSION = 3;
 
+    /**
+     * 稍后阅读表
+     */
     public static final class ReadLaterTable {
         public static final String TABLE_NAME = "read_later";
 
@@ -19,6 +22,9 @@ public class DBScheme {
         }
     }
 
+    /**
+     * 已读表，记录已读的新闻，包括稍后阅读中的已读时间
+     */
     public static final class HaveReadTable {
         public static final String TABLE_NAME = "have_read";
 

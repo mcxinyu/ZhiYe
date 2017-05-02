@@ -20,6 +20,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.about.zhiye.R;
+import com.about.zhiye.db.DBLab;
+import com.about.zhiye.fragment.NewsListFragment;
 import com.about.zhiye.fragment.ReadLaterFragment;
 import com.about.zhiye.fragment.ThemeListFragment;
 import com.about.zhiye.fragment.ZhihuFragment;
@@ -37,7 +39,7 @@ import butterknife.Unbinder;
  * Contact me : mcxinyu@foxmail.com
  * 管理 fragment
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NewsListFragment.Callbacks{
     public static final String TAG = "MainActivity";
 
     @BindView(R.id.fragment_content)
@@ -97,6 +99,11 @@ public class MainActivity extends AppCompatActivity {
         }
         mBottomNavigation.setSelectedBackgroundVisible(true);
 
+        int count = DBLab.get(this).queryAllUnHaveReadCountForReadLater();
+        if (count > 0) {
+            setBottomNavigationNotification("" + count, 2);
+        }
+
         mBottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
             @Override
             public boolean onTabSelected(int position, boolean wasSelected) {
@@ -132,6 +139,11 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    @Override
+    public void setBottomNavigationNotification(String title, int position) {
+        mBottomNavigation.setNotification(title, position);
     }
 
     private void switchFragment(Fragment fragment) {

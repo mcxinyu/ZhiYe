@@ -90,6 +90,11 @@ public class DBLab {
         mDatabase.update(ReadLaterTable.TABLE_NAME, values, ReadLaterTable.Columns.NEWS_ID + "=?", new String[]{newsId});
     }
 
+    /**
+     * 查询列出所有稍后阅读新闻，不包括已删除的
+     *
+     * @return
+     */
     public List<String> queryAllReadLater() {
         try (Cursor cursor = mDatabase.query(ReadLaterTable.TABLE_NAME, null, null, null, null, null,
                 ReadLaterTable.Columns.DATE + " DESC")) {
@@ -178,6 +183,11 @@ public class DBLab {
         mDatabase.delete(HaveReadTable.TABLE_NAME, HaveReadTable.Columns.NEWS_ID + "=?", new String[]{newsId});
     }
 
+    /**
+     * 查询列出已读表中的所有新闻
+     *
+     * @return
+     */
     public List<String> queryAllHaveRead() {
         try (Cursor cursor = mDatabase.query(HaveReadTable.TABLE_NAME, null, null, null, null, null, null)) {
             if (cursor.getCount() == 0) {
@@ -194,6 +204,12 @@ public class DBLab {
         }
     }
 
+    /**
+     * 查询列出已读表中的某条新闻
+     *
+     * @param newsId
+     * @return
+     */
     private Cursor queryHaveRead(String newsId) {
         return mDatabase.query(HaveReadTable.TABLE_NAME, null,
                 HaveReadTable.Columns.NEWS_ID + "=?",
@@ -201,6 +217,12 @@ public class DBLab {
                 null, null, null);
     }
 
+    /**
+     * 查询一条新闻是否已读
+     *
+     * @param newsId
+     * @return
+     */
     public boolean queryHaveReadExist(String newsId) {
         try (Cursor cursor = queryHaveRead(newsId)) {
             if (cursor.getCount() == 0) {
@@ -212,6 +234,12 @@ public class DBLab {
         }
     }
 
+    /**
+     * 查询一条稍后阅读的新闻是否已读
+     *
+     * @param newsId
+     * @return
+     */
     public boolean queryHaveReadExistForReadLater(String newsId) {
         try (Cursor cursor = queryHaveRead(newsId)) {
             if (cursor.getCount() == 0) {
@@ -221,5 +249,25 @@ public class DBLab {
             cursor.moveToFirst();
             return !TextUtils.isEmpty(cursor.getString(cursor.getColumnIndex(HaveReadTable.Columns.READ_LATER_READ_DATE)));
         }
+    }
+
+    /**
+     * 查询所有稍后阅读中未读的新闻数量
+     *
+     * @return
+     */
+    public int queryAllUnHaveReadCountForReadLater() {
+        List<String> list = queryAllReadLater();
+        if (list.size() == 0) {
+            return 0;
+        }
+
+        int count = 0;
+        for (int i = 0; i < list.size(); i++) {
+            if (!queryHaveReadExistForReadLater(list.get(i))) {
+                count++;
+            }
+        }
+        return count;
     }
 }

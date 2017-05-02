@@ -226,6 +226,7 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
                 return false;
             case R.id.mark_as_unread:
                 dbLab.deleteHaveReadNews(mNews.getId());
+                mListener.readLaterStatusChange(true);
                 Toast.makeText(getContext(), getString(R.string.action_marked_as_unread), Toast.LENGTH_SHORT).show();
                 return false;
             default:

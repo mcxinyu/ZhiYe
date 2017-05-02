@@ -61,7 +61,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
 
     private List<News> mNewses;
 
-    private Callbacks mListener;
+    private Callbacks mCallback;
     private NewsListAdapter mNewsAdapter;
     private String mDate;
     private boolean isRefreshed = false;
@@ -139,12 +139,12 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        // if (context instanceof Callbacks) {
-        //     mListener = (Callbacks) context;
-        // } else {
-        //     throw new RuntimeException(context.toString()
-        //             + " must implement Callbacks");
-        // }
+        if (context instanceof Callbacks) {
+            mCallback = (Callbacks) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement Callbacks");
+        }
     }
 
     @Override
@@ -158,7 +158,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        mCallback = null;
     }
 
     @Override
@@ -250,6 +250,9 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
         mSwipeRefreshLayout.setRefreshing(false);
         mNewsAdapter.updateStories(mNewses);
         setEmptyView(mNewses.size() > 0 ? View.INVISIBLE : View.VISIBLE);
+        if (isReadLaterFragment) {
+            updateBottomNavigationNotification();
+        }
     }
 
     /**
@@ -303,6 +306,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
         for (int i = 0; i < mNewses.size(); i++) {
             if (mNewses.get(i).getId().equals(newsId)) {
                 mNewsAdapter.notifyItemChanged(i, "newsId");
+                updateBottomNavigationNotification();
             }
         }
     }
@@ -316,6 +320,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     public void hasRead(String newsId) {
         if (isReadLaterFragment) {
             DBLab.get(getContext()).insertHaveReadNewsForReadLater(newsId);
+            updateBottomNavigationNotification();
         } else {
             DBLab.get(getContext()).insertHaveReadNews(newsId);
         }
@@ -349,9 +354,19 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
                     })
                     .show();
         }
+        updateBottomNavigationNotification();
+    }
+
+    public void updateBottomNavigationNotification() {
+        int count = DBLab.get(getContext()).queryAllUnHaveReadCountForReadLater();
+        if (count > 0) {
+            mCallback.setBottomNavigationNotification("" + count, 2);
+        } else {
+            mCallback.setBottomNavigationNotification(null, 2);
+        }
     }
 
     public interface Callbacks {
-        void doRefresh();
+        void setBottomNavigationNotification(String title, int position);
     }
 }
