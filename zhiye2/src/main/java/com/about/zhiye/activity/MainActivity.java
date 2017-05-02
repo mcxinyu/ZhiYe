@@ -39,7 +39,7 @@ import butterknife.Unbinder;
  * Contact me : mcxinyu@foxmail.com
  * 管理 fragment
  */
-public class MainActivity extends AppCompatActivity implements NewsListFragment.Callbacks{
+public class MainActivity extends AppCompatActivity implements NewsListFragment.Callbacks {
     public static final String TAG = "MainActivity";
 
     @BindView(R.id.fragment_content)
@@ -143,7 +143,9 @@ public class MainActivity extends AppCompatActivity implements NewsListFragment.
 
     @Override
     public void setBottomNavigationNotification(String title, int position) {
-        mBottomNavigation.setNotification(title, position);
+        if (QueryPreferences.getNotificationState(this)) {
+            mBottomNavigation.setNotification(title, position);
+        }
     }
 
     private void switchFragment(Fragment fragment) {

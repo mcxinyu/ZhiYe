@@ -51,4 +51,6 @@
     <string name="retry">重试</string>
     <string name="colorful_summary">使用多彩导航和标题栏（需重启）</string>
     <string name="title_settings_colorful">多彩生活</string>
+    <string name="notification_summary">在底部导航显示未读数量</string>
+    <string name="title_settings_notifications">通知</string>
 </resources>

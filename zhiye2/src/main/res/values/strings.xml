@@ -2,7 +2,7 @@
     <string name="app_name">ZhiYe</string>
     <string name="title_zhihu">ZhiHuDaily</string>
     <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_settings_notifications">Notifications</string>
 
     <string name="aboutLibraries_description_showIcon">true</string>
     <string name="aboutLibraries_description_showVersion">true</string>
@@ -53,4 +53,5 @@
     <string name="retry">Retry</string>
     <string name="colorful_summary">Use colorful navigation and title bar(need to restart)</string>
     <string name="title_settings_colorful">Colorful Life</string>
+    <string name="notification_summary">Show unread numbers on the bottom navigation</string>
 </resources>
