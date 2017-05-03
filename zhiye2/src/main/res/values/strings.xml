@@ -1,11 +1,7 @@
 <resources>
     <string name="app_name">ZhiYe</string>
     <string name="title_zhihu">ZhiHuDaily</string>
-    <string name="title_dashboard">Dashboard</string>
     <string name="title_settings_notifications">Notifications</string>
-
-    <string name="aboutLibraries_description_showIcon">true</string>
-    <string name="aboutLibraries_description_showVersion">true</string>
     <string name="aboutLibraries_description_text">This application is not yet complete!</string>
 
     <string name="news_image_preview">Image Preview</string>
@@ -13,12 +9,14 @@
     <string name="title_activity_zhihu_web">News</string>
     <string name="action_title_settings">Settings</string>
     <string name="action_title_share">Share</string>
-    <string name="action_title_collect">Collect</string>
     <string name="action_read_later">Read Later</string>
     <string name="the_left_brace">【</string>
     <string name="the_right_brace">】</string>
+    <string name="no_browser">Not Find Browser</string>
     <string name="action_title_open_browser">Use The Browser Open</string>
     <string name="action_title_open_zhihu">Use The Zhihu Client Open</string>
+    <string name="share_from_zhihu">from Zhihu.</string>
+    <string name="share_to">Share to…</string>
     <string name="load_failure">Load Failure</string>
     <string name="zhihu_daily_today">Zhihu Daily</string>
     <string name="title_read_later">Read Later</string>

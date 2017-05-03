@@ -4,8 +4,6 @@
     <string name="app_name">知也</string>
     <string name="title_zhihu">知乎日报</string>
     <string name="news_image_preview">新闻图片预览</string>
-    <string name="multiple_discussion">这里包含多个知乎讨论，请点击后选择</string>
-    <string name="sharp_from_zhihu">分享自知乎网</string>
     <string name="zhihu_question_link_prefix">http://www.zhihu.com/question/</string>
     <string name="no_browser">未找到支持的浏览器</string>
     <string name="zhihu_daily_today">今日知乎日报</string>
@@ -14,6 +12,7 @@
     <string name="share_to">选择分享至…</string>
     <string name="the_left_brace">【</string>
     <string name="the_right_brace">】</string>
+    <string name="action_read_later">稍后阅读</string>
     <string name="action_title_settings">设置</string>
     <string name="action_title_share">分享</string>
     <string name="action_title_read_later">稍后阅读</string>
