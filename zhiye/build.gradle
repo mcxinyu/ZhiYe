@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.jakewharton.butterknife'
 
-def keystorePropertiesFile = rootProject.file("zhiye/keystore.properties")
+def keystorePropertiesFile = rootProject.file("Key/keystore.properties")
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
@@ -31,6 +31,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             debuggable true
+            signingConfig signingConfigs.zhiye_release
+        }
+        debug {
             signingConfig signingConfigs.zhiye_release
         }
     }
