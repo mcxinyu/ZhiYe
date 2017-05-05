@@ -17,7 +17,7 @@ import static com.about.zhiye.util.DateUtil.SIMPLE_DATE_FORMAT;
  * Created by huangyuefeng on 2017/4/11.
  * Contact me : mcxinyu@foxmail.com
  */
-public class SingleNewsListActivity extends SingleFragmentActivity {
+public class SingleNewsListActivity extends SingleFragmentActivity implements NewsListFragment.Callbacks {
 
     private static final String EXTRA_DATE = "date";
 
@@ -63,5 +63,10 @@ public class SingleNewsListActivity extends SingleFragmentActivity {
         calendar.setTime(mDate);
         calendar.add(Calendar.DAY_OF_YEAR, 1);
         return SIMPLE_DATE_FORMAT.format(calendar.getTime());
+    }
+
+    @Override
+    public void setBottomNavigationNotification(String title, int position) {
+
     }
 }
