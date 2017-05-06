@@ -44,6 +44,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -82,8 +83,9 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
     private String mNewsId;
     private String mType;
     private News mNews;
-    private Callbacks mListener;
+    private Callbacks mCallbacks;
     private boolean isUserTouch = false;
+    private Subscription mSubscribe;
 
     public static ZhihuWebFragment newInstance(String newsId, String type) {
         Bundle args = new Bundle();
@@ -170,6 +172,16 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        mCallbacks = null;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
+        if (!mSubscribe.isUnsubscribed()) {
+            mSubscribe.unsubscribe();
+        }
     }
 
     @Override
@@ -206,7 +218,7 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
                                 }
                             })
                             .show();
-                    mListener.readLaterStatusChange(false);
+                    mCallbacks.readLaterStatusChange(false);
                 } else {
                     dbLab.insertReadLaterNews(mNews.getId());
                     item.setIcon(R.drawable.ic_action_read_later_selected);
@@ -218,7 +230,7 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
                                 }
                             })
                             .show();
-                    mListener.readLaterStatusChange(true);
+                    mCallbacks.readLaterStatusChange(true);
                 }
                 return false;
             case R.id.action_browser:
@@ -226,7 +238,7 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
                 return false;
             case R.id.mark_as_unread:
                 dbLab.deleteHaveReadNews(mNews.getId());
-                mListener.readLaterStatusChange(true);
+                mCallbacks.readLaterStatusChange(true);
                 Toast.makeText(getContext(), getString(R.string.action_marked_as_unread), Toast.LENGTH_SHORT).show();
                 return false;
             default:
@@ -238,7 +250,7 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof Callbacks) {
-            mListener = (Callbacks) context;
+            mCallbacks = (Callbacks) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement Callbacks");
@@ -246,7 +258,7 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     private void loadDetailNews(String id) {
-        ApiFactory.getZhihuApiSingleton().getDetailNews(id)
+        mSubscribe = ApiFactory.getZhihuApiSingleton().getDetailNews(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this);

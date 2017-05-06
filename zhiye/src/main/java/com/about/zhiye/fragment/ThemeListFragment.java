@@ -26,6 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import rx.Observable;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -46,6 +47,7 @@ public class ThemeListFragment extends Fragment implements Observer<List<Themes.
     private List<Themes.OthersBean> mOthersBeanList;
     private ThemesAdapter mAdapter;
     private boolean isRefreshed;
+    private Subscription mSubscribe;
 
     public static ThemeListFragment newInstance() {
 
@@ -83,7 +85,7 @@ public class ThemeListFragment extends Fragment implements Observer<List<Themes.
     }
 
     private void getOthersBeanList() {
-        getThemesObservable()
+        mSubscribe = getThemesObservable()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this);
@@ -109,6 +111,9 @@ public class ThemeListFragment extends Fragment implements Observer<List<Themes.
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        if (!mSubscribe.isUnsubscribed()) {
+            mSubscribe.unsubscribe();
+        }
     }
 
     @Override

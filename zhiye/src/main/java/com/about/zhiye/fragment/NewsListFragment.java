@@ -31,6 +31,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import rx.Observable;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -68,6 +69,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     private boolean isPreloadFailure = false;
     private boolean isReadLaterFragment = false;
     private int recyclerScrollY = 0;
+    private Subscription mSubscribe;
 
     public static NewsListFragment newInstance(@Nullable String date) {
         NewsListFragment fragment = new NewsListFragment();
@@ -159,6 +161,9 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     public void onDetach() {
         super.onDetach();
         mCallback = null;
+        if (!mSubscribe.isUnsubscribed()) {
+            mSubscribe.unsubscribe();
+        }
     }
 
     @Override
@@ -212,7 +217,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
      */
     public void doRefresh(boolean isRefreshReadLater) {
         if (isReadLaterFragment) {
-            getReadLaterNewsesObservable()
+            mSubscribe = getReadLaterNewsesObservable()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this);
@@ -222,7 +227,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
                 isPreloadFailure = true;
                 return;
             }
-            getNewsesObservableOfDate()
+            mSubscribe = getNewsesObservableOfDate()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this);

@@ -39,6 +39,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import rx.Observable;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -73,6 +74,7 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
     private List<News> mTopNewses;
     private NewsListPagerAdapter mNewsListPagerAdapter;
     private boolean isAppBarLayoutExpanded = false;
+    private Subscription mSubscribe;
 
     public static ZhihuFragment newInstance() {
 
@@ -197,6 +199,9 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        if (!mSubscribe.isUnsubscribed()) {
+            mSubscribe.unsubscribe();
+        }
     }
 
     @Override
@@ -262,7 +267,7 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
     // TopNews
     private void doRefreshTopNewses() {
         if (null == mTopNewses || mTopNewses.size() == 0) {
-            getTopNewses()
+            mSubscribe = getTopNewses()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this);

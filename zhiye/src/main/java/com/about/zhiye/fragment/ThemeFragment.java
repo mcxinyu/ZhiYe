@@ -41,6 +41,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -89,6 +90,7 @@ public class ThemeFragment extends Fragment implements Observer<Theme>, SwipeRef
     private List<Theme.StoriesBean> mStoriesBeen;
     private List<Theme.EditorsBean> mEditorsBeen;
     private boolean isUserTouch = false;
+    private Subscription mSubscribe;
 
     public static ThemeFragment newInstance(String themeName, int themeId) {
 
@@ -150,7 +152,7 @@ public class ThemeFragment extends Fragment implements Observer<Theme>, SwipeRef
     }
 
     private void loadTheme(int themeId) {
-        ZhihuHelper.getTheme(themeId)
+        mSubscribe = ZhihuHelper.getTheme(themeId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this);
@@ -185,6 +187,9 @@ public class ThemeFragment extends Fragment implements Observer<Theme>, SwipeRef
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        if (!mSubscribe.isUnsubscribed()) {
+            mSubscribe.unsubscribe();
+        }
     }
 
     private void setView(final Theme theme) {
