@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
     <application
         android:name=".ZhiYeApp"
@@ -18,7 +19,10 @@
         android:theme="@style/Theme.Zhiye.Light.NoActionbar.Translucent">
         <meta-data
             android:name="com.google.android.backup.api_key"
-            android:value="AEdPqrEAAAAIjzrthDXQrr6_BQMZHdfhcOemS-Y4hUPdw2UU5Q"/>
+            android:value="${com_google_android_backup_api_key}"/>
+        <meta-data
+            android:name="BUG_HD_SDK_GENERAL_KEY"
+            android:value="${bug_hd_sdk_general_key}"/>
 
         <activity
             android:name=".activity.MainActivity"
