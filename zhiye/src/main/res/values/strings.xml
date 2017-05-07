@@ -2,7 +2,7 @@
     <string name="app_name">ZhiYe</string>
     <string name="title_zhihu">ZhiHuDaily</string>
     <string name="title_settings_notifications">Notifications</string>
-    <string name="aboutLibraries_description_text">This application is not yet complete!</string>
+    <string name="aboutLibraries_description_text">Zhihu is a trademark of Zhihu. Inc. This app is not created nor endorsed by Zhihu Inc. All the information and content accessible through Zhiye Daily are subject to Zhihu\'s copyright and terms of use. This is a free app and does not charge for anything. All content are available for free from Zhihu.</string>
 
     <string name="news_image_preview">Image Preview</string>
     <string name="zhihu_question_link_prefix">http://www.zhihu.com/question/</string>
@@ -52,4 +52,5 @@
     <string name="colorful_summary">Use colorful navigation and title bar(need to restart)</string>
     <string name="title_settings_colorful">Colorful Life</string>
     <string name="notification_summary">Show unread numbers on the bottom navigation</string>
+    <string name="title_check_update">Check for updates</string>
 </resources>

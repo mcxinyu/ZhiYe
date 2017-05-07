@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.jakewharton.butterknife'
 
-def propertiesFile = rootProject.file("Key/zhiye.properties")
+def propertiesFile = file("key/zhiye.properties")
 def zhiyeProperties = new Properties()
 zhiyeProperties.load(new FileInputStream(propertiesFile))
 
@@ -20,11 +20,12 @@ android {
         applicationId "com.about.zhiye"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0.0"
+        versionCode 3
+        versionName '1.0.2'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         signingConfig signingConfigs.zhiye_release
+//        versionNameSuffix '(force)'
     }
     buildTypes {
         release {
@@ -33,12 +34,14 @@ android {
             debuggable true
             signingConfig signingConfigs.zhiye_release
             manifestPlaceholders = [com_google_android_backup_api_key: zhiyeProperties['com_google_android_backup_api_key'],
-                                    bug_hd_sdk_general_key           : zhiyeProperties['bug_hd_sdk_general_key']]
+                                    bug_hd_sdk_general_key           : zhiyeProperties['bug_hd_sdk_general_key'],
+                                    fir_token                        : zhiyeProperties['fir_token']]
         }
         debug {
             signingConfig signingConfigs.zhiye_release
             manifestPlaceholders = [com_google_android_backup_api_key: zhiyeProperties['com_google_android_backup_api_key'],
-                                    bug_hd_sdk_general_key           : zhiyeProperties['bug_hd_sdk_general_key']]
+                                    bug_hd_sdk_general_key           : zhiyeProperties['bug_hd_sdk_general_key'],
+                                    fir_token                        : zhiyeProperties['fir_token']]
         }
     }
     compileOptions {
@@ -76,4 +79,5 @@ dependencies {
     compile 'com.mikepenz:aboutlibraries:5.9.5'
     compile 'com.aurelhubert:ahbottomnavigation:2.0.6'
     compile 'im.fir:fir-sdk:latest.integration@aar'
+    compile 'com.qiangxi.checkupdatelibrary:checkupdatelibrary:1.1.0'
 }

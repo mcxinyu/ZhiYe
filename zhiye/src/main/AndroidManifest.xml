@@ -23,6 +23,9 @@
         <meta-data
             android:name="BUG_HD_SDK_GENERAL_KEY"
             android:value="${bug_hd_sdk_general_key}"/>
+        <meta-data
+            android:name="fir_token"
+            android:value="${fir_token}"/>
 
         <activity
             android:name=".activity.MainActivity"
@@ -63,6 +66,18 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Zhiye.Light.NoActionbar.Preferences">
         </activity>
+
+        <service android:name="com.qiangxi.checkupdatelibrary.service.DownloadService"/>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.about.zhiye.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/checkupdatelibrary_uri_grant"/>
+        </provider>
     </application>
 
 </manifest>

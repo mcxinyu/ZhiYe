@@ -27,12 +27,18 @@ public class ApiRetrofit {
     private static final String TAG = "ApiRetrofit";
 
     public ZhihuApi ZhihuApiService;
+    public FirApi FirApiServices;
 
     public static final String ZHIHU_BASE_URL = "http://news-at.zhihu.com/";
     public static final String ZHIHU_SEARCH = "http://zhihudailypurify.herokuapp.com/search/";
+    public static final String FIR_BASE_URL = "http://api.fir.im/";
 
     public ZhihuApi getZhihuApiService() {
         return ZhihuApiService;
+    }
+
+    public FirApi getFirApiService() {
+        return FirApiServices;
     }
 
     public ApiRetrofit() {
@@ -55,7 +61,15 @@ public class ApiRetrofit {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
 
+        Retrofit retrofitFir = new Retrofit.Builder()
+                .baseUrl(FIR_BASE_URL)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build();
+
         ZhihuApiService = retrofitZhihu.create(ZhihuApi.class);
+        FirApiServices = retrofitFir.create(FirApi.class);
     }
 
     // 缓存
