@@ -161,7 +161,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     public void onDetach() {
         super.onDetach();
         mCallback = null;
-        if (!mSubscribe.isUnsubscribed()) {
+        if (mSubscribe != null && !mSubscribe.isUnsubscribed()) {
             mSubscribe.unsubscribe();
         }
     }

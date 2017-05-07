@@ -199,7 +199,7 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-        if (!mSubscribe.isUnsubscribed()) {
+        if (mSubscribe != null && !mSubscribe.isUnsubscribed()) {
             mSubscribe.unsubscribe();
         }
     }

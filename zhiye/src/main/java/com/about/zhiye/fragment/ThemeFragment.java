@@ -187,7 +187,7 @@ public class ThemeFragment extends Fragment implements Observer<Theme>, SwipeRef
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-        if (!mSubscribe.isUnsubscribed()) {
+        if (mSubscribe != null && !mSubscribe.isUnsubscribed()) {
             mSubscribe.unsubscribe();
         }
     }

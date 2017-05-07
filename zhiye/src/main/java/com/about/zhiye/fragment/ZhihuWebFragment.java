@@ -179,7 +179,7 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
     public void onDetach() {
         super.onDetach();
         mCallbacks = null;
-        if (!mSubscribe.isUnsubscribed()) {
+        if (mSubscribe != null && !mSubscribe.isUnsubscribed()) {
             mSubscribe.unsubscribe();
         }
     }
