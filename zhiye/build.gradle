@@ -25,7 +25,6 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         signingConfig signingConfigs.zhiye_release
-//        versionNameSuffix '(force)'
     }
     buildTypes {
         release {
@@ -49,6 +48,27 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
     productFlavors {
+        zhiyeConfig {
+            applicationId "com.about.zhiye"
+            minSdkVersion 19
+            targetSdkVersion 25
+            versionCode 4
+            versionName '1.0.3'
+            testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+            vectorDrawables.useSupportLibrary = true
+            signingConfig signingConfigs.zhiye_release
+        }
+        zhiyeForceConfig {
+            applicationId "com.about.zhiye"
+            minSdkVersion 19
+            targetSdkVersion 25
+            versionCode 100
+            versionName '1.1.0'
+            testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+            vectorDrawables.useSupportLibrary = true
+            signingConfig signingConfigs.zhiye_release
+            versionNameSuffix '(force)'
+        }
     }
 }
 

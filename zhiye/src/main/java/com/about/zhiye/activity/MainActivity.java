@@ -1,10 +1,16 @@
 package com.about.zhiye.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -13,11 +19,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.about.zhiye.R;
 import com.about.zhiye.db.DBLab;
@@ -25,14 +33,22 @@ import com.about.zhiye.fragment.NewsListFragment;
 import com.about.zhiye.fragment.ReadLaterFragment;
 import com.about.zhiye.fragment.ThemeListFragment;
 import com.about.zhiye.fragment.ZhihuFragment;
+import com.about.zhiye.model.VersionInfoFir;
+import com.about.zhiye.util.CheckUpdateHelper;
 import com.about.zhiye.util.QueryPreferences;
 import com.about.zhiye.util.StateUtils;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
+import com.google.gson.Gson;
+import com.qiangxi.checkupdatelibrary.dialog.ForceUpdateDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import im.fir.sdk.FIR;
+import im.fir.sdk.VersionCheckCallback;
+
+import static com.qiangxi.checkupdatelibrary.dialog.ForceUpdateDialog.FORCE_UPDATE_DIALOG_PERMISSION_REQUEST_CODE;
 
 /**
  * Created by huangyuefeng on 2017/3/17.
@@ -41,6 +57,7 @@ import butterknife.Unbinder;
  */
 public class MainActivity extends AppCompatActivity implements NewsListFragment.Callbacks {
     public static final String TAG = "MainActivity";
+    private static final int CHECK_UPDATE_WHAT = 1024;
 
     @BindView(R.id.fragment_content)
     FrameLayout mFragmentContent;
@@ -62,6 +79,17 @@ public class MainActivity extends AppCompatActivity implements NewsListFragment.
     private ThemeListFragment mThemeFragment;
     private ReadLaterFragment mReadLaterFragment;
     private Fragment currentFragment;
+    private ForceUpdateDialog mForceUpdateDialog;
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == CHECK_UPDATE_WHAT) {
+                checkForUpdate();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +112,8 @@ public class MainActivity extends AppCompatActivity implements NewsListFragment.
         }
 
         initBottomNavigation();
+
+        mHandler.sendEmptyMessageDelayed(CHECK_UPDATE_WHAT, 3000);
     }
 
     private void initBottomNavigation() {
@@ -236,6 +266,68 @@ public class MainActivity extends AppCompatActivity implements NewsListFragment.
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+        }
+    }
+
+    private void checkForUpdate() {
+        try {
+            ApplicationInfo appInfo = MainActivity.this.getPackageManager()
+                    .getApplicationInfo(MainActivity.this.getPackageName(), PackageManager.GET_META_DATA);
+            String firToken = appInfo.metaData.getString("fir_token");
+
+            FIR.checkForUpdateInFIR(firToken, new VersionCheckCallback() {
+                @Override
+                public void onSuccess(String versionJson) {
+                    Log.i(TAG, "check from fir.im success! " + "\n" + versionJson);
+                    final VersionInfoFir versionInfoFir = new Gson().fromJson(versionJson, VersionInfoFir.class);
+
+                    if (versionInfoFir.getVersion() > CheckUpdateHelper.getCurrentVersionCode(MainActivity.this)) {
+                        if (versionInfoFir.getVersionShort().contains("force")) {
+                            mForceUpdateDialog = CheckUpdateHelper.buildForceUpdateDialog(MainActivity.this, versionInfoFir);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFail(Exception exception) {
+                    Log.i(TAG, "check fir.im fail! " + "\n" + exception.getMessage());
+                }
+
+                @Override
+                public void onStart() {
+                    Log.i(TAG, "check update start.");
+                }
+
+                @Override
+                public void onFinish() {
+                    Log.i(TAG, "check update finish.");
+                }
+            });
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        //如果用户同意所请求的权限
+        if (permissions[0].equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            //所以在进行判断时,必须要结合这两个常量进行判断.
+            if (requestCode == FORCE_UPDATE_DIALOG_PERMISSION_REQUEST_CODE) {
+                //进行下载操作
+                mForceUpdateDialog.download();
+            }
+        } else {
+            //用户不同意,提示用户,如下载失败,因为您拒绝了相关权限
+            Toast.makeText(this, "程序将无法正常运行", Toast.LENGTH_SHORT).show();
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                Log.e(TAG, "false.请开启读写sd卡权限,不然无法正常工作");
+            } else {
+                Log.e(TAG, "true.请开启读写sd卡权限,不然无法正常工作");
+            }
         }
     }
 }

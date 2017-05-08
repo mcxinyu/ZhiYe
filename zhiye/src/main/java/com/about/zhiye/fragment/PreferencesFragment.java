@@ -2,11 +2,9 @@ package com.about.zhiye.fragment;
 
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
@@ -16,11 +14,11 @@ import android.widget.Toast;
 
 import com.about.zhiye.R;
 import com.about.zhiye.model.VersionInfoFir;
+import com.about.zhiye.util.CheckUpdateHelper;
 import com.about.zhiye.util.QueryPreferences;
 import com.google.gson.Gson;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
-import com.qiangxi.checkupdatelibrary.dialog.ForceUpdateDialog;
 import com.qiangxi.checkupdatelibrary.dialog.UpdateDialog;
 
 import im.fir.sdk.FIR;
@@ -31,10 +29,10 @@ import im.fir.sdk.VersionCheckCallback;
  * Contact me : mcxinyu@foxmail.com
  */
 public class PreferencesFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener {
+    public static final String TAG = "PreferencesFragment";
 
     private PreferenceScreen mCheckUpdatePreference;
     private UpdateDialog mUpdateDialog;
-    private ForceUpdateDialog mForceUpdateDialog;
 
     public static PreferencesFragment newInstance() {
 
@@ -60,7 +58,7 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
         findPreference(QueryPreferences.SETTING_FEEDBACK).setOnPreferenceClickListener(this);
         mCheckUpdatePreference = (PreferenceScreen) findPreference(QueryPreferences.SETTING_CHECK_UPDATE);
         mCheckUpdatePreference.setOnPreferenceClickListener(this);
-        mCheckUpdatePreference.setSummary("当前版本：" + getCurrentVersionName());
+        mCheckUpdatePreference.setSummary("当前版本：" + CheckUpdateHelper.getCurrentVersionName(getActivity()));
     }
 
     @Override
@@ -95,24 +93,19 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
             FIR.checkForUpdateInFIR(firToken, new VersionCheckCallback() {
                 @Override
                 public void onSuccess(String versionJson) {
-                    Log.i("fir", "check from fir.im success! " + "\n" + versionJson);
+                    Log.i(TAG, "check from fir.im success! " + "\n" + versionJson);
                     final VersionInfoFir versionInfoFir = new Gson().fromJson(versionJson, VersionInfoFir.class);
 
-                    if (versionInfoFir.getVersion() > getCurrentVersionCode()) {
-                        // if (versionInfoFir.getVersionShort().contains("force")) {
-                        //     forceUpdateDialog(versionInfoFir);
-                        // } else {
-                        //     updateDialog(versionInfoFir);
-                        // }
-                        updateDialog(versionInfoFir);
+                    if (versionInfoFir.getVersion() > CheckUpdateHelper.getCurrentVersionCode(getActivity())) {
+                        mUpdateDialog = CheckUpdateHelper.buildUpdateDialog(getActivity(), versionInfoFir);
                     } else {
-                        mCheckUpdatePreference.setSummary("当前为最新版本：" + getCurrentVersionName());
+                        mCheckUpdatePreference.setSummary("当前为最新版本：" + CheckUpdateHelper.getCurrentVersionName(getActivity()));
                     }
                 }
 
                 @Override
                 public void onFail(Exception exception) {
-                    Log.i("fir", "check fir.im fail! " + "\n" + exception.getMessage());
+                    Log.i(TAG, "check fir.im fail! " + "\n" + exception.getMessage());
                     Toast.makeText(getActivity(), "更新失败", Toast.LENGTH_SHORT).show();
                 }
 
@@ -129,70 +122,6 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * 强制更新
-     */
-    private void forceUpdateDialog(VersionInfoFir versionInfo) {
-        mForceUpdateDialog = new ForceUpdateDialog(getActivity());
-        mForceUpdateDialog.setAppSize(versionInfo.getBinary().getFileSize())
-                .setDownloadUrl(versionInfo.getInstallUrl())
-                .setTitle(versionInfo.getName() + "有更新啦")
-                .setReleaseTime(versionInfo.getUpdatedAt())
-                .setVersionName(versionInfo.getVersionShort())
-                .setUpdateDesc(versionInfo.getChangelog())
-                .setFileName(versionInfo.getName() + " v" + versionInfo.getVersionShort() + ".apk")
-                .setFilePath(Environment.getExternalStorageDirectory().getPath() + "/update")
-                .show();
-    }
-
-    /**
-     * 非强制更新
-     */
-    private void updateDialog(VersionInfoFir versionInfo) {
-        mUpdateDialog = new UpdateDialog(getActivity());
-        mUpdateDialog.setAppSize(versionInfo.getBinary().getFileSize())
-                .setDownloadUrl(versionInfo.getInstallUrl())
-                .setTitle(versionInfo.getName() + "有更新啦")
-                .setReleaseTime(versionInfo.getUpdatedAt())
-                .setVersionName(versionInfo.getVersionShort())
-                .setUpdateDesc(versionInfo.getChangelog())
-                .setFileName(versionInfo.getName() + " v" + versionInfo.getVersionShort() + ".apk")
-                .setFilePath(Environment.getExternalStorageDirectory().getPath() + "/Download")
-                .setShowProgress(true)
-                .setIconResId(R.mipmap.ic_launcher)
-                .setAppName(versionInfo.getName())
-                .show();
-    }
-
-    /**
-     * 获取当前应用版本号
-     */
-    private int getCurrentVersionCode() {
-        try {
-            return getPackageInfo().versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
-
-    /**
-     * 获取当前应用版本号
-     */
-    private String getCurrentVersionName() {
-        try {
-            return getPackageInfo().versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
-
-    private PackageInfo getPackageInfo() throws PackageManager.NameNotFoundException {
-        PackageManager packageManager = getActivity().getPackageManager();
-        return packageManager.getPackageInfo(getActivity().getPackageName(), 0);
     }
 
     private void startAboutActivity() {
@@ -217,9 +146,5 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
 
     public UpdateDialog getUpdateDialog() {
         return mUpdateDialog;
-    }
-
-    public ForceUpdateDialog getForceUpdateDialog() {
-        return mForceUpdateDialog;
     }
 }

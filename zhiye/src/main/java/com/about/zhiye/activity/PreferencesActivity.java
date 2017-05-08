@@ -24,7 +24,6 @@ import com.about.zhiye.fragment.PreferencesFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.qiangxi.checkupdatelibrary.dialog.ForceUpdateDialog.FORCE_UPDATE_DIALOG_PERMISSION_REQUEST_CODE;
 import static com.qiangxi.checkupdatelibrary.dialog.UpdateDialog.UPDATE_DIALOG_PERMISSION_REQUEST_CODE;
 
 /**
@@ -32,6 +31,7 @@ import static com.qiangxi.checkupdatelibrary.dialog.UpdateDialog.UPDATE_DIALOG_P
  * Contact me : mcxinyu@foxmail.com
  */
 public class PreferencesActivity extends AppCompatActivity {
+    private static String TAG = "PreferencesActivity";
 
     private PreferencesFragment mFragment;
 
@@ -99,18 +99,13 @@ public class PreferencesActivity extends AppCompatActivity {
                 //进行下载操作
                 mFragment.getUpdateDialog().download();
             }
-            //强制更新对话框
-            else if (requestCode == FORCE_UPDATE_DIALOG_PERMISSION_REQUEST_CODE) {
-                //进行下载操作
-                mFragment.getForceUpdateDialog().download();
-            }
         } else {
             //用户不同意,提示用户,如下载失败,因为您拒绝了相关权限
-            Toast.makeText(this, "some description...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "程序将无法正常运行", Toast.LENGTH_SHORT).show();
             if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                Log.e("tag", "false.请开启读写sd卡权限,不然无法正常工作");
+                Log.e(TAG, "false.请开启读写sd卡权限,不然无法正常工作");
             } else {
-                Log.e("tag", "true.请开启读写sd卡权限,不然无法正常工作");
+                Log.e(TAG, "true.请开启读写sd卡权限,不然无法正常工作");
             }
         }
     }
