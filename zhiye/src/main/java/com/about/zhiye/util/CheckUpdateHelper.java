@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Environment;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 
 import com.about.zhiye.R;
 import com.about.zhiye.model.VersionInfoFir;
@@ -20,8 +22,18 @@ public class CheckUpdateHelper {
     /**
      * 强制更新
      */
-    public static ForceUpdateDialog buildForceUpdateDialog(Activity activity, VersionInfoFir versionInfo) {
-        ForceUpdateDialog forceUpdateDialog = new ForceUpdateDialog(activity);
+    private static ForceUpdateDialog buildForceUpdateDialog(Activity activity,
+                                                            @Nullable android.app.Fragment fragment,
+                                                            @Nullable Fragment compatFragment,
+                                                            VersionInfoFir versionInfo) {
+        ForceUpdateDialog forceUpdateDialog;
+        if (fragment != null) {
+            forceUpdateDialog = new ForceUpdateDialog(activity, fragment);
+        } else if (compatFragment != null) {
+            forceUpdateDialog = new ForceUpdateDialog(activity, compatFragment);
+        } else {
+            forceUpdateDialog = new ForceUpdateDialog(activity);
+        }
         forceUpdateDialog.setAppSize(versionInfo.getBinary().getFileSize())
                 .setDownloadUrl(versionInfo.getInstallUrl())
                 .setTitle(versionInfo.getName() + "有更新啦")
@@ -34,11 +46,33 @@ public class CheckUpdateHelper {
         return forceUpdateDialog;
     }
 
+    public static ForceUpdateDialog buildForceUpdateDialog(Activity activity, android.app.Fragment fragment, VersionInfoFir versionInfo) {
+        return buildForceUpdateDialog(activity, fragment, null, versionInfo);
+    }
+
+    public static ForceUpdateDialog buildForceUpdateDialog(Activity activity, Fragment compatFragment, VersionInfoFir versionInfo) {
+        return buildForceUpdateDialog(activity, null, compatFragment, versionInfo);
+    }
+
+    public static ForceUpdateDialog buildForceUpdateDialog(Activity activity, VersionInfoFir versionInfo) {
+        return buildForceUpdateDialog(activity, null, null, versionInfo);
+    }
+
     /**
      * 非强制更新
      */
-    public static UpdateDialog buildUpdateDialog(Activity activity, VersionInfoFir versionInfo) {
-        UpdateDialog updateDialog = new UpdateDialog(activity);
+    private static UpdateDialog buildUpdateDialog(Activity activity,
+                                                  @Nullable android.app.Fragment fragment,
+                                                  @Nullable Fragment compatFragment,
+                                                  VersionInfoFir versionInfo) {
+        UpdateDialog updateDialog;
+        if (fragment != null) {
+            updateDialog = new UpdateDialog(activity, fragment);
+        } else if (compatFragment != null) {
+            updateDialog = new UpdateDialog(activity, compatFragment);
+        } else {
+            updateDialog = new UpdateDialog(activity);
+        }
         updateDialog.setAppSize(versionInfo.getBinary().getFileSize())
                 .setDownloadUrl(versionInfo.getInstallUrl())
                 .setTitle(versionInfo.getName() + "有更新啦")
@@ -52,6 +86,18 @@ public class CheckUpdateHelper {
                 .setAppName(versionInfo.getName())
                 .show();
         return updateDialog;
+    }
+
+    public static UpdateDialog buildUpdateDialog(Activity activity, android.app.Fragment fragment, VersionInfoFir versionInfo) {
+        return buildUpdateDialog(activity, fragment, null, versionInfo);
+    }
+
+    public static UpdateDialog buildUpdateDialog(Activity activity, Fragment compatFragment, VersionInfoFir versionInfo) {
+        return buildUpdateDialog(activity, null, compatFragment, versionInfo);
+    }
+
+    public static UpdateDialog buildUpdateDialog(Activity activity, VersionInfoFir versionInfo) {
+        return buildUpdateDialog(activity, null, null, versionInfo);
     }
 
     /**

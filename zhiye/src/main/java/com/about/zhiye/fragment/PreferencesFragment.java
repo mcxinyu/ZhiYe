@@ -1,5 +1,6 @@
 package com.about.zhiye.fragment;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -8,7 +9,9 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -23,6 +26,8 @@ import com.qiangxi.checkupdatelibrary.dialog.UpdateDialog;
 
 import im.fir.sdk.FIR;
 import im.fir.sdk.VersionCheckCallback;
+
+import static com.qiangxi.checkupdatelibrary.dialog.UpdateDialog.UPDATE_DIALOG_PERMISSION_REQUEST_CODE;
 
 /**
  * Created by huangyuefeng on 2017/4/25.
@@ -97,7 +102,7 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
                     final VersionInfoFir versionInfoFir = new Gson().fromJson(versionJson, VersionInfoFir.class);
 
                     if (versionInfoFir.getVersion() > CheckUpdateHelper.getCurrentVersionCode(getActivity())) {
-                        mUpdateDialog = CheckUpdateHelper.buildUpdateDialog(getActivity(), versionInfoFir);
+                        mUpdateDialog = CheckUpdateHelper.buildUpdateDialog(getActivity(), PreferencesFragment.this, versionInfoFir);
                     } else {
                         mCheckUpdatePreference.setSummary("当前为最新版本：" + CheckUpdateHelper.getCurrentVersionName(getActivity()));
                     }
@@ -144,7 +149,27 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
         startActivity(intent);
     }
 
-    public UpdateDialog getUpdateDialog() {
-        return mUpdateDialog;
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        //如果用户同意所请求的权限
+        if (permissions[0].equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            //所以在进行判断时,必须要结合这两个常量进行判断.
+            //非强制更新对话框
+            if (requestCode == UPDATE_DIALOG_PERMISSION_REQUEST_CODE) {
+                //进行下载操作
+                mUpdateDialog.download();
+            }
+        } else {
+            //用户不同意,提示用户,如下载失败,因为您拒绝了相关权限
+            Toast.makeText(getActivity(), "程序将无法正常运行", Toast.LENGTH_SHORT).show();
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                Log.e(TAG, "false.请开启读写sd卡权限,不然无法正常工作");
+            } else {
+                Log.e(TAG, "true.请开启读写sd卡权限,不然无法正常工作");
+            }
+        }
     }
 }
