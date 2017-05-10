@@ -41,7 +41,7 @@ public class CheckUpdateHelper {
                 .setVersionName(versionInfo.getVersionShort())
                 .setUpdateDesc(versionInfo.getChangelog())
                 .setFileName(versionInfo.getName() + " v" + versionInfo.getVersionShort() + ".apk")
-                .setFilePath(Environment.getExternalStorageDirectory().getPath() + "/update")
+                .setFilePath(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath())
                 .show();
         return forceUpdateDialog;
     }
@@ -80,7 +80,7 @@ public class CheckUpdateHelper {
                 .setVersionName(versionInfo.getVersionShort())
                 .setUpdateDesc(versionInfo.getChangelog())
                 .setFileName(versionInfo.getName() + " v" + versionInfo.getVersionShort() + ".apk")
-                .setFilePath(Environment.getExternalStorageDirectory().getPath() + "/Download")
+                .setFilePath(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath())
                 .setShowProgress(true)
                 .setIconResId(R.mipmap.ic_launcher)
                 .setAppName(versionInfo.getName())
