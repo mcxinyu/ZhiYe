@@ -78,11 +78,32 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
 
     private void initSummary() {
         mCheckUpdatePreference.setSummary("当前版本：" + CheckUpdateHelper.getCurrentVersionName(getActivity()));
-        mCleanCachePreference.setSummary("缓存占用：" + getCacheSizeDesc());
+        initCacheSummary();
     }
 
-    private String getCacheSizeDesc() {
-        return formatFileSize(getCacheSize());
+    private void initCacheSummary() {
+        final Handler handler = new Handler() {
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case 1:
+                        mCleanCachePreference.setSummary("缓存占用：" + formatFileSize((Long) msg.obj));
+                        break;
+                }
+            }
+        };
+        new Thread() {
+            public void run() {
+                Message msg = new Message();
+                try {
+                    msg.obj = getCacheSize();
+                    msg.what = 1;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    msg.what = -1;
+                }
+                handler.sendMessage(msg);
+            }
+        }.start();
     }
 
     private String formatFileSize(long fileS) {
@@ -159,10 +180,10 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
         final Handler handler = new Handler() {
             public void handleMessage(Message msg) {
                 if (msg.what == 1) {
-                    mCleanCachePreference.setSummary("缓存占用：" + getCacheSizeDesc());
+                    initCacheSummary();
                     Toast.makeText(getActivity(), getString(R.string.clean_cache_up), Toast.LENGTH_SHORT).show();
                 } else {
-                    mCleanCachePreference.setSummary("缓存占用：" + getCacheSizeDesc());
+                    initCacheSummary();
                     Toast.makeText(getActivity(), getString(R.string.clean_cache_fail), Toast.LENGTH_SHORT).show();
                 }
             }
