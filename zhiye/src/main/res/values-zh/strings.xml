@@ -53,4 +53,7 @@
     <string name="notification_summary">在底部导航显示未读数量</string>
     <string name="title_settings_notifications">通知</string>
     <string name="title_check_update">检查更新</string>
+    <string name="title_clean_cache">清理缓存</string>
+    <string name="clean_cache_up">清理完成</string>
+    <string name="clean_cache_fail">清理失败</string>
 </resources>

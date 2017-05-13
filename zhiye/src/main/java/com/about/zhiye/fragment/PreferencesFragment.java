@@ -6,6 +6,8 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
@@ -24,6 +26,9 @@ import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.qiangxi.checkupdatelibrary.dialog.UpdateDialog;
 
+import java.io.File;
+import java.text.DecimalFormat;
+
 import im.fir.sdk.FIR;
 import im.fir.sdk.VersionCheckCallback;
 
@@ -37,6 +42,7 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
     public static final String TAG = "PreferencesFragment";
 
     private PreferenceScreen mCheckUpdatePreference;
+    private PreferenceScreen mCleanCachePreference;
     private UpdateDialog mUpdateDialog;
 
     public static PreferencesFragment newInstance() {
@@ -63,7 +69,64 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
         findPreference(QueryPreferences.SETTING_FEEDBACK).setOnPreferenceClickListener(this);
         mCheckUpdatePreference = (PreferenceScreen) findPreference(QueryPreferences.SETTING_CHECK_UPDATE);
         mCheckUpdatePreference.setOnPreferenceClickListener(this);
+
+        mCleanCachePreference = (PreferenceScreen) findPreference(QueryPreferences.SETTING_CLEAN_CACHE);
+        mCleanCachePreference.setOnPreferenceClickListener(this);
+
+        initSummary();
+    }
+
+    private void initSummary() {
         mCheckUpdatePreference.setSummary("当前版本：" + CheckUpdateHelper.getCurrentVersionName(getActivity()));
+        mCleanCachePreference.setSummary("缓存占用：" + getCacheSizeDesc());
+    }
+
+    private String getCacheSizeDesc() {
+        return formatFileSize(getCacheSize());
+    }
+
+    private String formatFileSize(long fileS) {
+        DecimalFormat df = new DecimalFormat("#.00");
+        String fileSizeString;
+        if (fileS == 0) {
+            fileSizeString = "0MB";
+        } else if (fileS < 1024) {
+            fileSizeString = df.format((double) fileS) + "B";
+        } else if (fileS < 1048576) {
+            fileSizeString = df.format((double) fileS / 1024) + "KB";
+        } else if (fileS < 1073741824) {
+            fileSizeString = df.format((double) fileS / 1048576) + "MB";
+        } else {
+            fileSizeString = df.format((double) fileS / 1073741824) + "GB";
+        }
+        return fileSizeString;
+    }
+
+    private long getCacheSize() {
+        try {
+            return getFolderSize(getActivity().getCacheDir()) +
+                    getFolderSize(getActivity().getExternalCacheDir());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    private long getFolderSize(File file) throws Exception {
+        long size = 0;
+        try {
+            File[] fileList = file.listFiles();
+            for (File aFileList : fileList) {
+                if (aFileList.isDirectory()) {
+                    size = size + getFolderSize(aFileList);
+                } else {
+                    size = size + aFileList.length();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return size;
     }
 
     @Override
@@ -82,11 +145,68 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
             case QueryPreferences.SETTING_CHECK_UPDATE:
                 checkForUpdate();
                 return true;
+            case QueryPreferences.SETTING_CLEAN_CACHE:
+                clearAppCache();
+                return true;
             case QueryPreferences.SETTING_FEEDBACK:
                 sendEmailFeedback();
                 return true;
         }
         return false;
+    }
+
+    private void clearAppCache() {
+        final Handler handler = new Handler() {
+            public void handleMessage(Message msg) {
+                if (msg.what == 1) {
+                    mCleanCachePreference.setSummary("缓存占用：" + getCacheSizeDesc());
+                    Toast.makeText(getActivity(), getString(R.string.clean_cache_up), Toast.LENGTH_SHORT).show();
+                } else {
+                    mCleanCachePreference.setSummary("缓存占用：" + getCacheSizeDesc());
+                    Toast.makeText(getActivity(), getString(R.string.clean_cache_fail), Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+        new Thread() {
+            public void run() {
+                Message msg = new Message();
+                try {
+                    clearCache();
+                    msg.what = 1;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    msg.what = -1;
+                }
+                handler.sendMessage(msg);
+            }
+        }.start();
+    }
+
+    private void clearCache() {
+        //清除数据缓存
+        cleanCacheFolder(getActivity().getCacheDir(), System.currentTimeMillis());
+        cleanCacheFolder(getActivity().getExternalCacheDir(), System.currentTimeMillis());
+    }
+
+    private int cleanCacheFolder(File dir, long curTime) {
+        int deletedFiles = 0;
+        if (dir != null && dir.isDirectory()) {
+            try {
+                for (File child : dir.listFiles()) {
+                    if (child.isDirectory()) {
+                        deletedFiles += cleanCacheFolder(child, curTime);
+                    }
+                    if (child.lastModified() < curTime) {
+                        if (child.delete()) {
+                            deletedFiles++;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return deletedFiles;
     }
 
     private void checkForUpdate() {

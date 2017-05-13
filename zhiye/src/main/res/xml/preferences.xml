@@ -29,12 +29,15 @@
     <PreferenceCategory
         android:title="@string/title_settings_others">
         <PreferenceScreen
-            android:key="setting_about"
-            android:summary="没有工作室 No own a house"
-            android:title="@string/title_settings_others_about"/>
+            android:key="setting_clean_cache"
+            android:title="@string/title_clean_cache"/>
         <PreferenceScreen
             android:key="setting_check_update"
             android:title="@string/title_check_update"/>
+        <PreferenceScreen
+            android:key="setting_about"
+            android:summary="没有工作室 No own a house"
+            android:title="@string/title_settings_others_about"/>
         <PreferenceScreen
             android:key="setting_feedback"
             android:title="@string/title_settings_feedback"/>
