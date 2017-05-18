@@ -1,28 +1,17 @@
 package com.about.zhiye.activity;
 
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
-import android.widget.FrameLayout;
+import android.support.v4.app.Fragment;
 
-import com.about.zhiye.R;
-import com.about.zhiye.fragment.PreferencesFragment;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.about.zhiye.fragment.ZhiyePreferenceFragment;
 
 /**
  * Created by huangyuefeng on 2017/4/25.
  * Contact me : mcxinyu@foxmail.com
  */
-public class PreferencesActivity extends AppCompatActivity {
+public class PreferencesActivity extends SingleFragmentActivity {
     private static String TAG = "PreferencesActivity";
 
     public static Intent newIntent(Context context) {
@@ -32,47 +21,17 @@ public class PreferencesActivity extends AppCompatActivity {
         return intent;
     }
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.app_bar_layout)
-    AppBarLayout mAppBarLayout;
-    @BindView(R.id.fragment_container)
-    FrameLayout mFragmentContainer;
-
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_single_fragment);
-        ButterKnife.bind(this);
-
-        FragmentManager fragmentManager = getFragmentManager();
-        PreferencesFragment fragment = (PreferencesFragment) fragmentManager.findFragmentById(R.id.fragment_container);
-        if (fragment == null) {
-            fragment = PreferencesFragment.newInstance();
-            fragmentManager.beginTransaction()
-                    .add(R.id.fragment_container, fragment)
-                    .commit();
-        }
-
-        initToolbar();
-    }
-
-    private void initToolbar() {
-        setSupportActionBar(mToolbar);
-
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+    protected Fragment createFragment() {
+        return ZhiyePreferenceFragment.newInstance();
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
+    protected boolean setHasToolbar() {
+        // 关闭 Toolbar 的滚动。
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mToolbar.getLayoutParams();
+        params.setScrollFlags(0);
+        // mToolbar.setTitle(getString(R.string.title_pick_date));
+        return true;
     }
 }

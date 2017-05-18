@@ -8,12 +8,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceScreen;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -38,25 +37,24 @@ import static com.qiangxi.checkupdatelibrary.dialog.UpdateDialog.UPDATE_DIALOG_P
  * Created by huangyuefeng on 2017/4/25.
  * Contact me : mcxinyu@foxmail.com
  */
-public class PreferencesFragment extends PreferenceFragment implements Preference.OnPreferenceClickListener {
-    public static final String TAG = "PreferencesFragment";
+public class ZhiyePreferenceFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener {
+    public static final String TAG = "ZhiyePreferenceFragment";
 
     private PreferenceScreen mCheckUpdatePreference;
     private PreferenceScreen mCleanCachePreference;
     private UpdateDialog mUpdateDialog;
 
-    public static PreferencesFragment newInstance() {
+    public static ZhiyePreferenceFragment newInstance() {
 
         Bundle args = new Bundle();
 
-        PreferencesFragment fragment = new PreferencesFragment();
+        ZhiyePreferenceFragment fragment = new ZhiyePreferenceFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.preferences);
         initPreferences();
     }
@@ -243,7 +241,7 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
                     final VersionInfoFir versionInfoFir = new Gson().fromJson(versionJson, VersionInfoFir.class);
 
                     if (versionInfoFir.getVersion() > CheckUpdateHelper.getCurrentVersionCode(getActivity())) {
-                        mUpdateDialog = CheckUpdateHelper.buildUpdateDialog(getActivity(), PreferencesFragment.this, versionInfoFir);
+                        mUpdateDialog = CheckUpdateHelper.buildUpdateDialog(getActivity(), ZhiyePreferenceFragment.this, versionInfoFir);
                     } else {
                         mCheckUpdatePreference.setSummary("当前为最新版本：" + CheckUpdateHelper.getCurrentVersionName(getActivity()));
                     }
