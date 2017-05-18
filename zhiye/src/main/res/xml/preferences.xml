@@ -6,19 +6,19 @@
     <PreferenceCategory
         android:key="settings_general"
         android:title="@string/title_settings_general_setting">
-        <SwitchPreference
+        <CheckBoxPreference
             android:defaultValue="true"
             android:enabled="true"
             android:key="setting_auto_refresh"
             android:summary="@string/auto_refresh_summary"
             android:title="@string/title_settings_auto_refresh"/>
-        <SwitchPreference
+        <CheckBoxPreference
             android:defaultValue="true"
             android:enabled="true"
             android:key="setting_notification"
             android:summary="@string/notification_summary"
             android:title="@string/title_settings_notifications"/>
-        <SwitchPreference
+        <CheckBoxPreference
             android:defaultValue="false"
             android:enabled="true"
             android:key="setting_colorful"

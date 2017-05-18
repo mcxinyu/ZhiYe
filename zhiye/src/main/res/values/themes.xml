@@ -15,7 +15,7 @@
             @style/Theme.Zhiye.Light.PopupMenuTextAppearanceLarge
         </item>
         <item name="colorControlNormal">@color/colorWhite</item>
-        <!--<item name="actionMenuTextColor">@color/colorWhite</item>-->
+        <item name="actionMenuTextColor">@color/colorWhite</item>
     </style>
 
     <style name="Theme.Zhiye.Light.NoActionbar.Translucent" parent="Theme.Zhiye.Light.NoActionbar">
@@ -23,7 +23,12 @@
     </style>
 
     <style name="Theme.Zhiye.Light.NoActionbar.Preferences" parent="Theme.Zhiye.Light.NoActionbar">
-        <item name="android:textColorPrimary">@color/colorWhite</item>
+        <item name="preferenceTheme">@style/PreferenceFragment</item>
+        <!--<item name="colorPrimary">@color/colorPrimary</item>-->
+        <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
+        <!--<item name="colorControlNormal">@color/colorWhite</item>-->
+        <!--<item name="android:actionMenuTextColor">@color/colorWhite</item>-->
+        <!--<item name="android:textColorPrimary">@color/colorWhite</item>-->
         <item name="android:textColor">@color/titleGrayDark</item>
     </style>
 
@@ -63,6 +68,7 @@
     </style>
 
     <style name="Theme.Zhiye.Dark.Preferences" parent="Theme.Zhiye.Dark.NoActionbar">
+        <item name="preferenceTheme">@style/PreferenceFragment</item>
         <item name="android:textColor">@android:color/darker_gray</item>
     </style>
 
