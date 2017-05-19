@@ -20,6 +20,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -85,6 +86,10 @@ public class MainActivity extends AppCompatActivity implements NewsListFragment.
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
+            if (!QueryPreferences.getDrawerOpenState(MainActivity.this)) {
+                mDrawerLayout.openDrawer(Gravity.START);
+                QueryPreferences.setDrawerOpenState(MainActivity.this, true);
+            }
             if (msg.what == CHECK_UPDATE_WHAT) {
                 checkForUpdate();
             }
