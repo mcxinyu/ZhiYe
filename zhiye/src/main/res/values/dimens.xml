@@ -21,4 +21,7 @@
     <dimen name="action_min_size">24dp</dimen>
 
     <dimen name="nav_header_height">160dp</dimen>
+
+    <dimen name="launch_screens_zhiye_logo_bottom">48dp</dimen>
+    <dimen name="launch_screens_zhiye_name_logo_bottom">14dp</dimen>
 </resources>

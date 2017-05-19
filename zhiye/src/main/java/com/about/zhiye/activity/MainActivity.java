@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements NewsListFragment.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.Theme_Zhiye_Light_NoActionbar_Translucent);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer_layout);
         unbinder = ButterKnife.bind(this);

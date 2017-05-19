@@ -204,11 +204,13 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
         DBLab dbLab = DBLab.get(getContext());
         switch (item.getItemId()) {
             case R.id.action_share:
-                ZhihuHelper.shareNews(getContext(), mNews.getTitle(), mNews.getShareUrl());
+                if (mNews != null) {
+                    ZhihuHelper.shareNews(getContext(), mNews.getTitle(), mNews.getShareUrl());
+                }
                 return false;
             case R.id.action_read_later:
-                if (dbLab.queryReadLaterExist(mNews.getId())) {
-                    dbLab.deleteReadLaterNews(mNews.getId());
+                if (dbLab.queryReadLaterExist(mNewsId)) {
+                    dbLab.deleteReadLaterNews(mNewsId);
                     item.setIcon(R.drawable.ic_action_read_later_unselected);
                     Snackbar.make(mSwipeRefreshLayout, getString(R.string.removed_read_later), Snackbar.LENGTH_SHORT)
                             .setAction(getString(R.string.undo), new View.OnClickListener() {
@@ -220,7 +222,7 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
                             .show();
                     mCallbacks.readLaterStatusChange(false);
                 } else {
-                    dbLab.insertReadLaterNews(mNews.getId());
+                    dbLab.insertReadLaterNews(mNewsId);
                     item.setIcon(R.drawable.ic_action_read_later_selected);
                     Snackbar.make(mSwipeRefreshLayout, getString(R.string.added_read_later), Snackbar.LENGTH_SHORT)
                             .setAction(getString(R.string.undo), new View.OnClickListener() {
@@ -234,10 +236,12 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
                 }
                 return false;
             case R.id.action_browser:
-                ZhihuHelper.shareToBrowser(getContext(), mNews.getShareUrl());
+                if (mNews != null) {
+                    ZhihuHelper.shareToBrowser(getContext(), mNews.getShareUrl());
+                }
                 return false;
             case R.id.mark_as_unread:
-                dbLab.deleteHaveReadNews(mNews.getId());
+                dbLab.deleteHaveReadNews(mNewsId);
                 mCallbacks.readLaterStatusChange(true);
                 Toast.makeText(getContext(), getString(R.string.action_marked_as_unread), Toast.LENGTH_SHORT).show();
                 return false;

@@ -207,7 +207,10 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     public boolean isFirstItemOnTop() {
-        return ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findFirstVisibleItemPosition() == 0;
+        if (mRecyclerView != null) {
+            return ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findFirstVisibleItemPosition() == 0;
+        }
+        return false;
     }
 
     /**
