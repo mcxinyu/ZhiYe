@@ -62,7 +62,7 @@ public class ZhihuWebActivity extends BaseActivity
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && mFragment.getWebView().canGoBack()) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && mFragment != null && mFragment.getWebView().canGoBack()) {
             mFragment.getWebView().goBack();
             return true;
         }
