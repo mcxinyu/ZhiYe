@@ -183,6 +183,11 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
         });
     }
 
+    /**
+     * 设置自动加载的方法
+     *
+     * @return
+     */
     private boolean UserWantsToRefreshAutomatically() {
         return QueryPreferences.getAutoRefreshState(ZhiYeApp.getInstance());
     }
@@ -213,6 +218,9 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
         }
     }
 
+    /**
+     * 各日期的新闻列表适配器
+     */
     private class NewsListPagerAdapter extends FragmentStatePagerAdapter {
         List<NewsListFragment> mFragmentList = new ArrayList<>();
 
@@ -306,6 +314,9 @@ public class ZhihuFragment extends Fragment implements Observer<List<News>> {
         mTopNewses = topNewses;
     }
 
+    /**
+     * 顶部"top"推荐新闻适配器
+     */
     private class TopNewsPagerAdapter extends FragmentStatePagerAdapter {
         List<News> list = new ArrayList<>();
 

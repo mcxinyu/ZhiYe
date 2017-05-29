@@ -49,7 +49,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
 
     @Override
     public void onBindViewHolder(CardViewHolder holder, int position) {
-        holder.BindView(mNewses.get(position));
+        holder.bindView(mNewses.get(position));
     }
 
     @Override
@@ -103,7 +103,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
             ButterKnife.bind(this, itemView);
         }
 
-        public void BindView(final News news) {
+        public void bindView(final News news) {
             if (TextUtils.isEmpty(news.getQuestions().get(0).getTitle())) {
                 mQuestionTitle.setText(news.getTitle());
                 mDailyTitle.setText(news.getTitle());
@@ -141,15 +141,16 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.CardVi
                 Glide.with(mContext)
                         .load(news.getThumbnail())
                         .crossFade()
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
                         .centerCrop()
                         .into(mThumbnailImage);
             } else if (null != news.getImage()) {
                 // 如果没有缩略图，可以使用大图
                 Glide.with(mContext)
                         .load(news.getImage())
+                        .thumbnail(0.1f)
                         .crossFade()
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
                         .centerCrop()
                         .into(mThumbnailImage);
             } else {
