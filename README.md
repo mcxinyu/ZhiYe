@@ -1,3 +1,7 @@
+## Download／Install App - 下载、安装
+
+[Zhiye APK Download 下载地址](https://fir.im/zhi0) or [Releases 发布](https://github.com/mcxinyu/ZhiYe/releases)
+
 ## Zhiye 知也 - 你的知乎日报
 
 ## Features - 特性
