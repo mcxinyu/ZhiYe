@@ -97,23 +97,11 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putSerializable(KEY_NEWS, mNews);
-    }
-
-    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            mNews = (News) savedInstanceState.getSerializable(KEY_NEWS);
-            mNewsId = mNews.getId();
-            mType = mNews.getType();
-        } else {
-            if (getArguments() != null) {
-                mNewsId = getArguments().getString(ARGS_NEWS_ID);
-                mType = getArguments().getString(ARGS_TYPE);
-            }
+        if (getArguments() != null) {
+            mNewsId = getArguments().getString(ARGS_NEWS_ID);
+            mType = getArguments().getString(ARGS_TYPE);
         }
         setHasOptionsMenu(true);
     }
