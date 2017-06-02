@@ -56,4 +56,5 @@
     <string name="title_clean_cache">Clean Cache</string>
     <string name="clean_cache_up">Clean Up</string>
     <string name="clean_cache_fail">Clean Fail</string>
+    <string name="action_title_search">Search</string>
 </resources>

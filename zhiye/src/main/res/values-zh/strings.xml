@@ -56,4 +56,5 @@
     <string name="title_clean_cache">清理缓存</string>
     <string name="clean_cache_up">清理完成</string>
     <string name="clean_cache_fail">清理失败</string>
+    <string name="action_title_search">搜索</string>
 </resources>

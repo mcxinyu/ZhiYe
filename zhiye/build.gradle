@@ -55,8 +55,8 @@ android {
             applicationId "com.about.zhiye"
             minSdkVersion 19
             targetSdkVersion 25
-            versionCode 7
-            versionName '1.0.6'
+            versionCode 8
+            versionName '1.0.7'
             testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
             vectorDrawables.useSupportLibrary = true
             signingConfig signingConfigs.zhiye_release
