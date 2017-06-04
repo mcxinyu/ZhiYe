@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
-import com.about.zhiye.fragment.NewsListFragment;
+import com.about.zhiye.fragment.SingleDayNewsListFragment;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -17,23 +17,23 @@ import static com.about.zhiye.util.DateUtil.SIMPLE_DATE_FORMAT;
  * Created by huangyuefeng on 2017/4/11.
  * Contact me : mcxinyu@foxmail.com
  */
-public class SingleNewsListActivity extends SingleFragmentActivity implements NewsListFragment.Callbacks {
+public class SingleDayNewsListActivity extends SingleFragmentActivity implements SingleDayNewsListFragment.Callbacks {
 
     private static final String EXTRA_DATE = "date";
 
     private Date mDate;
 
-    private NewsListFragment mFragment;
+    private SingleDayNewsListFragment mFragment;
 
     public static Intent newIntent(Context context, Date date) {
-        Intent intent = new Intent(context, SingleNewsListActivity.class);
+        Intent intent = new Intent(context, SingleDayNewsListActivity.class);
         intent.putExtra(EXTRA_DATE, date != null ? date : new Date());
         return intent;
     }
 
     @Override
     protected Fragment createFragment() {
-        mFragment = NewsListFragment.newInstance(getNextDate());
+        mFragment = SingleDayNewsListFragment.newInstance(getNextDate());
         return mFragment;
     }
 

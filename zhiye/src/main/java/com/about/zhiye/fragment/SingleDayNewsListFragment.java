@@ -43,7 +43,7 @@ import static android.app.Activity.RESULT_OK;
  * Contact me : mcxinyu@foxmail.com
  * 一天的 NewsList
  */
-public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
+public class SingleDayNewsListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
         Observer<List<News>>,
         NewsListAdapter.Callbacks {
 
@@ -71,8 +71,8 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     private int recyclerScrollY = 0;
     private Subscription mSubscribe;
 
-    public static NewsListFragment newInstance(@Nullable String date) {
-        NewsListFragment fragment = new NewsListFragment();
+    public static SingleDayNewsListFragment newInstance(@Nullable String date) {
+        SingleDayNewsListFragment fragment = new SingleDayNewsListFragment();
         if (date == null) {
             return fragment;
         }
