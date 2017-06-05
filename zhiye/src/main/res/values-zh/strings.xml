@@ -35,7 +35,7 @@
     <string name="title_themes">主题日报</string>
     <string name="title_editor">主编</string>
     <string name="multiple_picture">多图</string>
-    <string name="title_read_later_empty">“稍后阅读”中空空如也</string>
+    <string name="read_later_empty">“稍后阅读”中空空如也</string>
     <string name="title_settings_general_setting">常规</string>
     <string name="auto_refresh_summary">打开时，允许自动刷新？</string>
     <string name="title_settings_auto_refresh">自动刷新</string>
@@ -57,4 +57,6 @@
     <string name="clean_cache_up">清理完成</string>
     <string name="clean_cache_fail">清理失败</string>
     <string name="action_title_search">搜索</string>
+    <string name="title_discover">发现</string>
+    <string name="news_empty">没有相关内容</string>
 </resources>

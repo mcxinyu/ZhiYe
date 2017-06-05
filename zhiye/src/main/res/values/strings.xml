@@ -36,7 +36,7 @@
     <string name="title_editor">Editor</string>
     <string name="multiple_picture">Multi-Images</string>
     <string name="action_title_read_later">Read Later</string>
-    <string name="title_read_later_empty">Read Later Empty</string>
+    <string name="read_later_empty">Read Later Empty</string>
     <string name="title_settings_general_setting">General Settings</string>
     <string name="auto_refresh_summary">Auto refresh when this app is launched?</string>
     <string name="title_settings_auto_refresh">Auto Refresh</string>
@@ -57,4 +57,6 @@
     <string name="clean_cache_up">Clean Up</string>
     <string name="clean_cache_fail">Clean Fail</string>
     <string name="action_title_search">Search</string>
+    <string name="title_discover">Discover</string>
+    <string name="news_empty">No Related News</string>
 </resources>

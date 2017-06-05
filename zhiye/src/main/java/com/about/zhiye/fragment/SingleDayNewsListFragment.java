@@ -13,7 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.about.zhiye.R;
 import com.about.zhiye.ZhiYeApp;
@@ -43,7 +45,8 @@ import static android.app.Activity.RESULT_OK;
  * Contact me : mcxinyu@foxmail.com
  * 一天的 NewsList
  */
-public class SingleDayNewsListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
+public class SingleDayNewsListFragment extends Fragment
+        implements SwipeRefreshLayout.OnRefreshListener,
         Observer<List<News>>,
         NewsListAdapter.Callbacks {
 
@@ -58,6 +61,10 @@ public class SingleDayNewsListFragment extends Fragment implements SwipeRefreshL
     FrameLayout mContainer;
     @BindView(R.id.read_later_empty_layout)
     RelativeLayout mReadLaterEmptyLayout;
+    @BindView(R.id.empty_image_view)
+    ImageView mEmptyImageView;
+    @BindView(R.id.empty_text_view)
+    TextView mEmptyTextView;
     private Unbinder unbinder;
 
     private List<News> mNewses;
@@ -97,7 +104,7 @@ public class SingleDayNewsListFragment extends Fragment implements SwipeRefreshL
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_news_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_single_day_news_list, container, false);
         unbinder = ButterKnife.bind(this, view);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
@@ -145,7 +152,7 @@ public class SingleDayNewsListFragment extends Fragment implements SwipeRefreshL
             mCallback = (Callbacks) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement Callbacks");
+                    + " must implement SearchViewCallbacks");
         }
     }
 
@@ -172,11 +179,20 @@ public class SingleDayNewsListFragment extends Fragment implements SwipeRefreshL
         refreshIf(shouldRefreshOnVisibilityChange(isVisibleToUser));
     }
 
-    private void setEmptyView(int visible) {
+    private void setEmptyNewsView(int visible) {
         if (isReadLaterFragment) {
-            mReadLaterEmptyLayout.setVisibility(visible);
+            mEmptyImageView.setImageResource(R.drawable.ic_empty_bookmark);
+            mEmptyTextView.setText(getString(R.string.read_later_empty));
         }
+        mReadLaterEmptyLayout.setVisibility(visible);
         if (mNewses.size() > 0) mRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    private void setErrorView() {
+        mEmptyImageView.setImageResource(R.drawable.ic_empty_error);
+        mEmptyTextView.setText(getString(R.string.load_failure));
+        mReadLaterEmptyLayout.setVisibility(View.VISIBLE);
+        mRecyclerView.setVisibility(View.INVISIBLE);
     }
 
     private boolean UserWantsToRefreshAutomatically() {
@@ -257,7 +273,7 @@ public class SingleDayNewsListFragment extends Fragment implements SwipeRefreshL
         isRefreshed = true;
         mSwipeRefreshLayout.setRefreshing(false);
         mNewsAdapter.updateStories(mNewses);
-        setEmptyView(mNewses.size() > 0 ? View.INVISIBLE : View.VISIBLE);
+        setEmptyNewsView(mNewses.size() > 0 ? View.INVISIBLE : View.VISIBLE);
         if (isReadLaterFragment) {
             updateBottomNavigationNotification();
         }
@@ -270,6 +286,7 @@ public class SingleDayNewsListFragment extends Fragment implements SwipeRefreshL
     public void onError(Throwable e) {
         e.printStackTrace();
         mSwipeRefreshLayout.setRefreshing(false);
+        setErrorView();
         if (isAdded()) {
             Snackbar.make(mContainer, getString(R.string.load_failure), Snackbar.LENGTH_SHORT)
                     .setAction(getResources().getString(R.string.retry), new View.OnClickListener() {

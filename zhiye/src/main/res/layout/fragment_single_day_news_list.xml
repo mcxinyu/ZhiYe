@@ -4,8 +4,7 @@
              android:id="@+id/container"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-             tools:context="com.about.zhiye.fragment.NewsListFragment">
+             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <RelativeLayout
         android:id="@+id/read_later_empty_layout"
@@ -14,19 +13,20 @@
         android:visibility="gone">
 
         <ImageView
-            android:id="@+id/image_view"
+            android:id="@+id/empty_image_view"
             android:layout_width="128dp"
             android:layout_height="128dp"
             android:layout_centerInParent="true"
-            android:src="@drawable/ic_read_later_empty"/>
+            android:src="@drawable/ic_empty_news"/>
 
         <TextView
+            android:id="@+id/empty_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/image_view"
+            android:layout_below="@id/empty_image_view"
             android:layout_centerInParent="true"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:text="@string/title_read_later_empty"
+            android:text="@string/news_empty"
             android:textColor="@color/titleGrayDark"/>
     </RelativeLayout>
 
