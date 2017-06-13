@@ -20,6 +20,7 @@ public class ThemeActivity extends BaseActivity {
 
     private int mThemeId;
     private String mThemeName;
+    private SingleZhihuThemeFragment mFragment;
 
     public static Intent newIntent(Context context, String themeName, int themeId) {
 
@@ -31,7 +32,8 @@ public class ThemeActivity extends BaseActivity {
 
     @Override
     protected Fragment createFragment() {
-        return SingleZhihuThemeFragment.newInstance(mThemeName, mThemeId);
+        mFragment = SingleZhihuThemeFragment.newInstance(mThemeName, mThemeId);
+        return mFragment;
     }
 
     @Override
@@ -50,5 +52,14 @@ public class ThemeActivity extends BaseActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mFragment.getScrollY() != 0) {
+            mFragment.scrollToTop();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

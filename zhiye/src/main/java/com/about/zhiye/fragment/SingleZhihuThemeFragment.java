@@ -212,6 +212,15 @@ public class SingleZhihuThemeFragment extends Fragment
                 });
     }
 
+    public void scrollToTop() {
+        mScrollView.smoothScrollTo(0, 0);
+    }
+
+
+    public int getScrollY() {
+        return mScrollView.getScrollY();
+    }
+
     @Override
     public void onCompleted() {
         mSwipeRefreshLayout.setRefreshing(false);
