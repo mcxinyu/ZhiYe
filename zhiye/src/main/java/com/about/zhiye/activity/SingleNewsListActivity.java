@@ -83,4 +83,14 @@ public class SingleNewsListActivity extends SingleFragmentActivity
     public void setBottomNavigationNotification(String title, int position) {
 
     }
+
+    @Override
+    public void onBackPressed() {
+        if (!mFragment.isFirstItemOnTop()) {
+            mAppBarLayout.setExpanded(true);
+            mFragment.scrollToTop();
+        } else {
+            super.onBackPressed();
+        }
+    }
 }

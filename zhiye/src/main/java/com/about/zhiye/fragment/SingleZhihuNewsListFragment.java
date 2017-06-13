@@ -220,10 +220,8 @@ public class SingleZhihuNewsListFragment extends Fragment
     }
 
     public boolean isFirstItemOnTop() {
-        if (mRecyclerView != null) {
-            return ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findFirstVisibleItemPosition() == 0;
-        }
-        return false;
+        return mRecyclerView != null
+                && ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findFirstVisibleItemPosition() == 0;
     }
 
     public int getRecyclerScrollY() {

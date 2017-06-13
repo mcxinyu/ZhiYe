@@ -17,7 +17,7 @@
             android:layout_height="?attr/actionBarSize"
             android:title="@string/title_zhihu"
             app:contentScrim="@color/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
             app:statusBarScrim="@color/colorPrimary"/>
     </android.support.design.widget.AppBarLayout>
 
