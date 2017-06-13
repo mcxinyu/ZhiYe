@@ -23,39 +23,13 @@
                 android:layout_height="64dp"
                 app:layout_scrollFlags="scroll|enterAlways|snap"/>
 
-            <android.support.design.widget.TabLayout
-                android:id="@+id/zhihu_tab_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:tabIndicatorColor="@android:color/white"
-                app:tabMode="scrollable"
-                app:tabSelectedTextColor="@android:color/white"
-                app:tabTextColor="@color/titleGray"/>
-            <!--app:tabBackground="@color/colorPrimary"-->
-
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/story_list_view_pager"
+        <FrameLayout
+            android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/floating_action_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_gravity="bottom|end"
-            android:layout_marginBottom="70dp"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:src="@drawable/ic_floating_action_date"
-            app:backgroundTint="@color/colorPrimary"
-            app:borderWidth="0dp"
-            app:fabSize="normal"
-            app:layout_behavior="com.about.zhiye.util.ScrollAwareFABBehavior"
-            app:pressedTranslationZ="5dp"/>
 
     </android.support.design.widget.CoordinatorLayout>
 

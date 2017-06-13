@@ -49,7 +49,8 @@ import rx.schedulers.Schedulers;
  * Created by huangyuefeng on 2017/4/16.
  * Contact me : mcxinyu@foxmail.com
  */
-public class ThemeFragment extends Fragment implements Observer<Theme>, SwipeRefreshLayout.OnRefreshListener {
+public class SingleZhihuThemeFragment extends Fragment
+        implements Observer<Theme>, SwipeRefreshLayout.OnRefreshListener {
 
     private static final String ARGS_THEME_ID = "theme_id";
     private static final String ARGS_THEME_NAME = "theme_name";
@@ -92,12 +93,12 @@ public class ThemeFragment extends Fragment implements Observer<Theme>, SwipeRef
     private boolean isUserTouch = false;
     private Subscription mSubscribe;
 
-    public static ThemeFragment newInstance(String themeName, int themeId) {
+    public static SingleZhihuThemeFragment newInstance(String themeName, int themeId) {
 
         Bundle args = new Bundle();
         args.putInt(ARGS_THEME_ID, themeId);
         args.putString(ARGS_THEME_NAME, themeName);
-        ThemeFragment fragment = new ThemeFragment();
+        SingleZhihuThemeFragment fragment = new SingleZhihuThemeFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -114,7 +115,7 @@ public class ThemeFragment extends Fragment implements Observer<Theme>, SwipeRef
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_theme, container, false);
+        View view = inflater.inflate(R.layout.fragment_single_zhihu_theme, container, false);
         unbinder = ButterKnife.bind(this, view);
 
         mSwipeRefreshLayout.setOnRefreshListener(this);

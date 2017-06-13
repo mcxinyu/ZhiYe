@@ -45,12 +45,14 @@ import static android.app.Activity.RESULT_OK;
  * Contact me : mcxinyu@foxmail.com
  * 一天的 NewsList
  */
-public class SingleDayNewsListFragment extends Fragment
+public class SingleZhihuNewsListFragment extends Fragment
         implements SwipeRefreshLayout.OnRefreshListener,
         Observer<List<News>>,
         NewsListAdapter.Callbacks {
 
     private static final String ARGS_DATE = "date";
+    private static final String ARGS_KEY_WORD = "key_word";
+
     private static final int REQUEST_CODE = 1024;
 
     @BindView(R.id.recycler_view)
@@ -72,22 +74,31 @@ public class SingleDayNewsListFragment extends Fragment
     private Callbacks mCallback;
     private NewsListAdapter mNewsAdapter;
     private String mDate;
+    private String mKeyWord;
     private boolean isRefreshed = false;
     private boolean isPreloadFailure = false;
-    private boolean isReadLaterFragment = false;
+
     private int recyclerScrollY = 0;
+
+    private boolean isReadLaterFragment = false;
+    private boolean isSearchResultFragment = false;
+    private boolean isDailyNewsFragment = false;
+
     private Subscription mSubscribe;
 
-    public static SingleDayNewsListFragment newInstance(@Nullable String date) {
-        SingleDayNewsListFragment fragment = new SingleDayNewsListFragment();
-        if (date == null) {
-            return fragment;
-        }
+    public static SingleZhihuNewsListFragment newInstance(@Nullable String date, @Nullable String keyWord) {
+        SingleZhihuNewsListFragment fragment = new SingleZhihuNewsListFragment();
 
         Bundle args = new Bundle();
-        args.putString(ARGS_DATE, date);
+        if (date != null) {
+            args.putString(ARGS_DATE, date);
+            fragment.setArguments(args);
+        }
+        if (keyWord != null) {
+            args.putString(ARGS_KEY_WORD, keyWord);
+            fragment.setArguments(args);
+        }
 
-        fragment.setArguments(args);
         return fragment;
     }
 
@@ -95,16 +106,19 @@ public class SingleDayNewsListFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mDate = getArguments().getString(ARGS_DATE);
+            if ((mDate = getArguments().getString(ARGS_DATE)) != null) {
+                isDailyNewsFragment = true;
+            } else if ((mKeyWord = getArguments().getString(ARGS_KEY_WORD)) != null) {
+                isSearchResultFragment = true;
+            }
         } else {
-            // 如果没有参数传入，那么当作 ReadLaterFragment 用
             isReadLaterFragment = true;
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_single_day_news_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_single_zhihu_news_list, container, false);
         unbinder = ButterKnife.bind(this, view);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
@@ -116,19 +130,6 @@ public class SingleDayNewsListFragment extends Fragment
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if (!recyclerView.canScrollVertically(1)) {
-                        // 还可以向下滚动
-                    }
-                    if (!recyclerView.canScrollVertically(-1)) {
-                        // 还可以向上滚动
-                    }
-                }
-            }
-
-            @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 recyclerScrollY += dy;
@@ -139,10 +140,6 @@ public class SingleDayNewsListFragment extends Fragment
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
 
         return view;
-    }
-
-    public int getRecyclerScrollY() {
-        return recyclerScrollY;
     }
 
     @Override
@@ -229,6 +226,10 @@ public class SingleDayNewsListFragment extends Fragment
         return false;
     }
 
+    public int getRecyclerScrollY() {
+        return recyclerScrollY;
+    }
+
     /**
      * 获取数据后刷新
      *
@@ -237,6 +238,15 @@ public class SingleDayNewsListFragment extends Fragment
     public void doRefresh(boolean isRefreshReadLater) {
         if (isReadLaterFragment) {
             mSubscribe = getReadLaterNewsesObservable()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this);
+        } else if (isSearchResultFragment) {
+            if (mKeyWord == null) {
+                isPreloadFailure = true;
+                return;
+            }
+            mSubscribe = getSearchResultObservable()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this);
@@ -263,6 +273,10 @@ public class SingleDayNewsListFragment extends Fragment
 
     private Observable<List<News>> getReadLaterNewsesObservable() {
         return ZhihuHelper.getNewsesOfIds(getContext());
+    }
+
+    private Observable<List<News>> getSearchResultObservable() {
+        return ZhihuHelper.withKeyword(mKeyWord);
     }
 
     /**

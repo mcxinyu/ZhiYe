@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.MenuItem;
 
-import com.about.zhiye.fragment.ThemeFragment;
+import com.about.zhiye.fragment.SingleZhihuThemeFragment;
 
 /**
  * Created by huangyuefeng on 2017/4/16.
@@ -31,7 +31,7 @@ public class ThemeActivity extends BaseActivity {
 
     @Override
     protected Fragment createFragment() {
-        return ThemeFragment.newInstance(mThemeName, mThemeId);
+        return SingleZhihuThemeFragment.newInstance(mThemeName, mThemeId);
     }
 
     @Override

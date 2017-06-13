@@ -245,7 +245,7 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
             mCallbacks = (Callbacks) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement Callbacks");
+                    + " must implement SearchViewCallbacks");
         }
     }
 

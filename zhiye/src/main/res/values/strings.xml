@@ -59,4 +59,5 @@
     <string name="action_title_search">Search</string>
     <string name="title_discover">Discover</string>
     <string name="news_empty">No Related News</string>
+    <string name="action_title_clear_read_later">Clear Read Later</string>
 </resources>

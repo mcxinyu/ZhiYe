@@ -2,6 +2,11 @@ package com.about.zhiye.util;
 
 import android.content.Context;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by huangyuefeng on 2017/4/25.
@@ -18,6 +23,8 @@ public class QueryPreferences {
     public static final String SETTING_CHECK_UPDATE = "setting_check_update";
     public static final String SETTING_ABOUT = "setting_about";
     public static final String SETTING_FEEDBACK = "setting_feedback";
+
+    public static final String SEARCH_HISTORY = "search_history";
 
     public static boolean getDrawerOpenState(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
@@ -65,5 +72,32 @@ public class QueryPreferences {
                 .edit()
                 .putBoolean(SETTING_NOTIFICATION, enable)
                 .apply();
+    }
+
+    public static List<String> getSearchHistory(Context context) {
+        String history = context.getSharedPreferences(SEARCH_HISTORY, 0)
+                .getString(SEARCH_HISTORY, "");
+
+        List<String> list = new ArrayList<>();
+        if (!TextUtils.isEmpty(history)) {
+            Collections.addAll(list, history.split(","));
+            return list;
+        }
+
+        return list;
+    }
+
+    public static void setSearchHistory(Context context, String keyWord) {
+        String oldHistory = context.getSharedPreferences(SEARCH_HISTORY, 0)
+                .getString(SEARCH_HISTORY, "");
+
+        String replaceKeyWord = keyWord.replaceAll("/[^'’[^\\p{P}]]/", "");
+
+        if (!TextUtils.isEmpty(replaceKeyWord) && !oldHistory.contains(replaceKeyWord + ",")) {
+            context.getSharedPreferences(SEARCH_HISTORY, 0)
+                    .edit()
+                    .putString(SEARCH_HISTORY, replaceKeyWord + "," + oldHistory)
+                    .apply();
+        }
     }
 }

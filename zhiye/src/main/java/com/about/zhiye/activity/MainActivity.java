@@ -16,13 +16,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,14 +28,16 @@ import android.widget.Toast;
 
 import com.about.zhiye.R;
 import com.about.zhiye.db.DBLab;
-import com.about.zhiye.fragment.NewsListFragment;
+import com.about.zhiye.fragment.BaseSearchViewFragment;
+import com.about.zhiye.fragment.DiscoverFragment;
 import com.about.zhiye.fragment.ReadLaterFragment;
-import com.about.zhiye.fragment.ThemeListFragment;
+import com.about.zhiye.fragment.SingleZhihuNewsListFragment;
 import com.about.zhiye.fragment.ZhihuFragment;
 import com.about.zhiye.model.VersionInfoFir;
 import com.about.zhiye.util.CheckUpdateHelper;
 import com.about.zhiye.util.QueryPreferences;
 import com.about.zhiye.util.StateUtils;
+import com.arlib.floatingsearchview.FloatingSearchView;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
 import com.google.gson.Gson;
@@ -56,30 +56,38 @@ import static com.qiangxi.checkupdatelibrary.dialog.ForceUpdateDialog.FORCE_UPDA
  * Contact me : mcxinyu@foxmail.com
  * 管理 fragment
  */
-public class MainActivity extends AppCompatActivity implements NewsListFragment.Callbacks {
-    public static final String TAG = "MainActivity";
+public class MainActivity extends AppCompatActivity
+        implements SingleZhihuNewsListFragment.Callbacks, BaseSearchViewFragment.Callbacks {
+    private static final String TAG = "MainActivity";
     private static final int CHECK_UPDATE_WHAT = 1024;
+
+    private static final int ZHIHU_FRAGMENT = 0;
+    private static final int THEME_FRAGMENT = 1;
+    private static final int READ_LATER_FRAGMENT = 2;
 
     @BindView(R.id.fragment_content)
     FrameLayout mFragmentContent;
     @BindView(R.id.bottom_navigation)
     AHBottomNavigation mBottomNavigation;
-    @BindView(R.id.status_bar_view)
-    View mStatusBarView;
+    // @BindView(R.id.status_bar_view)
+    // View mStatusBarView;
     @BindView(R.id.nav_view)
     NavigationView mNavView;
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
+    // @BindView(R.id.fragment_view_pager)
+    // ViewPager mFragmentViewPager;
     private Unbinder unbinder;
+
     private TextView mEmailTextView;
     private ActionBarDrawerToggle mDrawerToggle;
 
     private FragmentManager mFragmentManager;
-
     private ZhihuFragment mZhihuFragment;
-    private ThemeListFragment mThemeFragment;
+    private DiscoverFragment mDiscoverFragment;
     private ReadLaterFragment mReadLaterFragment;
     private Fragment currentFragment;
+
     private ForceUpdateDialog mForceUpdateDialog;
 
     private Handler mHandler = new Handler() {
@@ -98,13 +106,12 @@ public class MainActivity extends AppCompatActivity implements NewsListFragment.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.Theme_Zhiye_Light_NoActionbar_Translucent);
+        setTheme(R.style.Theme_Zhiye_Light_NoActionbar);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawer_layout);
         unbinder = ButterKnife.bind(this);
-        setStatusBarView();
+        // setStatusBarView();
 
-        initToolbar();
         initDrawer();
 
         mFragmentManager = getSupportFragmentManager();
@@ -128,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements NewsListFragment.
 
         final boolean isColorful = QueryPreferences.getColorfulState(this);
         mBottomNavigation.setTranslucentNavigationEnabled(true);
+
         if (isColorful) {
             mBottomNavigation.setColored(true);
         } else {
@@ -144,31 +152,31 @@ public class MainActivity extends AppCompatActivity implements NewsListFragment.
             @Override
             public boolean onTabSelected(int position, boolean wasSelected) {
                 switch (position) {
-                    case 0:
+                    case ZHIHU_FRAGMENT:
                         if (mZhihuFragment == null) {
                             mZhihuFragment = ZhihuFragment.newInstance();
                         }
-                        mStatusBarView.setVisibility(View.GONE);
+                        if (isColorful) {
+                            // mStatusBarView.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[0]);
+                        }
                         switchFragment(mZhihuFragment);
                         return true;
-                    case 1:
-                        if (mThemeFragment == null) {
-                            mThemeFragment = ThemeListFragment.newInstance();
+                    case THEME_FRAGMENT:
+                        if (mDiscoverFragment == null) {
+                            mDiscoverFragment = DiscoverFragment.newInstance();
                         }
                         if (isColorful) {
-                            mStatusBarView.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[1]);
+                            // mStatusBarView.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[1]);
                         }
-                        mStatusBarView.setVisibility(View.VISIBLE);
-                        switchFragment(mThemeFragment);
+                        switchFragment(mDiscoverFragment);
                         return true;
-                    case 2:
+                    case READ_LATER_FRAGMENT:
                         if (mReadLaterFragment == null) {
                             mReadLaterFragment = ReadLaterFragment.newInstance();
                         }
                         if (isColorful) {
-                            mStatusBarView.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[2]);
+                            // mStatusBarView.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[2]);
                         }
-                        mStatusBarView.setVisibility(View.VISIBLE);
                         switchFragment(mReadLaterFragment);
                         return true;
                 }
@@ -242,21 +250,13 @@ public class MainActivity extends AppCompatActivity implements NewsListFragment.
         startActivity(intent);
     }
 
-    private void initToolbar() {
-        ActionBar supportActionBar = getSupportActionBar();
-        if (supportActionBar != null) {
-            supportActionBar.setDisplayHomeAsUpEnabled(true);
-            supportActionBar.setHomeButtonEnabled(true);
-        }
-    }
-
     private void setStatusBarView() {
         // ViewGroup contentView = (ViewGroup) findViewById(android.R.id.content);
         // View statusBarView = new View(MainActivity.this);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 StateUtils.getStatusBarHeight(this));
-        mStatusBarView.setLayoutParams(lp);
-        mStatusBarView.setVisibility(View.GONE);
+        // mStatusBarView.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[0]);
+        // mStatusBarView.setLayoutParams(lp);
         // contentView.addView(statusBarView, lp);
     }
 
@@ -270,6 +270,10 @@ public class MainActivity extends AppCompatActivity implements NewsListFragment.
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else if (currentFragment instanceof BaseSearchViewFragment) {
+            if (!((BaseSearchViewFragment) currentFragment).onActivityBackPress()) {
+                super.onBackPressed();
+            }
         } else {
             super.onBackPressed();
         }
@@ -335,5 +339,15 @@ public class MainActivity extends AppCompatActivity implements NewsListFragment.
                 Log.e(TAG, "true.请开启读写sd卡权限,不然无法正常工作");
             }
         }
+    }
+
+    @Override
+    public void onAttachSearchViewToDrawer(FloatingSearchView searchView) {
+        searchView.attachNavigationDrawerToMenuButton(mDrawerLayout);
+    }
+
+    @Override
+    public void onNestViewScroll(float verticalOffset) {
+        mBottomNavigation.setTranslationY(-verticalOffset);
     }
 }

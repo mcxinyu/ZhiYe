@@ -3,34 +3,19 @@ package com.about.zhiye.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.about.zhiye.R;
-import com.about.zhiye.util.QueryPreferences;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
+import com.arlib.floatingsearchview.FloatingSearchView;
 
 /**
  * Created by huangyuefeng on 2017/3/29.
  * Contact me : mcxinyu@foxmail.com
  */
-public class ReadLaterFragment extends Fragment {
+public class ReadLaterFragment extends SearchViewFragment {
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-    @BindView(R.id.fragment_container)
-    FrameLayout mFragmentContainer;
-    Unbinder unbinder;
-
-    private NewsListFragment mNewsListFragment;
+    private Fragment mFragment;
     private boolean isVisibleToUser;
     private boolean isPreloadFailure;
 
@@ -44,41 +29,51 @@ public class ReadLaterFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected Fragment createFragment() {
+        return SingleZhihuNewsListFragment.newInstance(null, null);
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_read_later, container, false);
-        unbinder = ButterKnife.bind(this, view);
+    protected String setSearchViewTitle() {
+        return getString(R.string.title_read_later);
+    }
 
-        FragmentManager fragmentManager = getFragmentManager();
-        mNewsListFragment = (NewsListFragment) fragmentManager.findFragmentById(R.id.fragment_container);
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mSearchView.inflateOverflowMenu(R.menu.menu_read_later);
 
-        if (mNewsListFragment == null) {
-            mNewsListFragment = new NewsListFragment();
-            fragmentManager.beginTransaction()
-                    .add(R.id.fragment_container, mNewsListFragment)
-                    .commit();
-        }
+        mSearchView.setOnMenuItemClickListener(new FloatingSearchView.OnMenuItemClickListener() {
+            @Override
+            public void onActionMenuItemSelected(MenuItem item) {
+                if (item.getItemId() == R.id.action_clear) {
+                    // TODO: 2017/6/7 clear read later
+                }
+            }
+        });
+
+        mFragment = getFragment();
 
         if (isVisibleToUser && isPreloadFailure) {
-            mNewsListFragment.setUserVisibleHint(isVisibleToUser);
+            mFragment.setUserVisibleHint(isVisibleToUser);
             isPreloadFailure = false;
         }
-
-        initToolbar();
-        return view;
     }
 
-    private void initToolbar() {
-        mToolbar.setTitle(getString(R.string.title_read_later));
-        if (QueryPreferences.getColorfulState(getContext())) {
-            mToolbar.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[2]);
+    @Override
+    public boolean onActivityBackPress() {
+        if (!isAppBarLayoutExpanded) {
+            mAppBarLayout.setExpanded(true);
+            ((SingleZhihuNewsListFragment) mFragment).scrollToTop();
+            return true;
+        } else if (mSearchView.isSearchBarFocused()) {
+            mSearchView.setSearchFocused(false);
+            return true;
+        } else if (((SingleZhihuNewsListFragment) mFragment).getRecyclerScrollY() != 0) {
+            ((SingleZhihuNewsListFragment) mFragment).scrollToTop();
+            return true;
         }
-        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+        return false;
     }
 
     @Override
@@ -86,19 +81,13 @@ public class ReadLaterFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         this.isVisibleToUser = isVisibleToUser;
         if (isVisibleToUser) {
-            if (mNewsListFragment == null) {
-                // 加载的时候可能 mNewsListFragment 还没创建
+            if (mFragment == null) {
+                // 加载的时候可能 mFragment 还没创建
                 isPreloadFailure = true;
-            } else {
+            } else if (mFragment instanceof SingleZhihuNewsListFragment) {
                 // 每次 ReadLaterFragment 可见都去加载数据
-                mNewsListFragment.doRefresh(true);
+                ((SingleZhihuNewsListFragment) mFragment).doRefresh(true);
             }
         }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
     }
 }

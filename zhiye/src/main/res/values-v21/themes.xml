@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Zhiye.Light.NoActionbar" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionModeOverlay">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:textColorPrimary">@color/colorWhite</item>
+        <item name="popupTheme">@style/OverflowMenuStyle</item>
+        <item name="textAppearanceLargePopupMenu">
+            @style/Theme.Zhiye.Light.PopupMenuTextAppearanceLarge
+        </item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+        <item name="android:textAppearanceLargePopupMenu">
+            <!-- 菜单的颜色 底部菜单-->
+            @style/Theme.Zhiye.Light.PopupMenuTextAppearanceLarge
+        </item>
+        <item name="colorControlNormal">@color/colorWhite</item>
+        <item name="actionMenuTextColor">@color/colorWhite</item>
+    </style>
+</resources>
