@@ -118,11 +118,13 @@ public class ZhihuHelper {
      * @param context
      * @return
      */
-    public static Observable<List<News>> getNewsesOfIds(Context context) {
+    public static Observable<List<News>> getNewsesOfIds(final Context context) {
+        final String[] currentId = new String[1];
         return Observable.from(DBLab.get(context).queryAllReadLater())
                 .flatMap(new Func1<String, Observable<News>>() {
                     @Override
                     public Observable<News> call(String id) {
+                        currentId[0] = id;
                         return ZHIHU_API.getDetailNews(id);
                     }
                 })
@@ -130,6 +132,10 @@ public class ZhihuHelper {
                     @Override
                     public News call(Throwable throwable) {
                         throwable.printStackTrace();
+                        // 记录被服务器删除了，那么在稍后阅读列表中也删除，
+                        // 以后可以考虑直接下载到sql或者尝试读取缓存
+                        DBLab.get(context)
+                                .deleteReadLaterNews(currentId[0]);
                         return null;
                     }
                 })

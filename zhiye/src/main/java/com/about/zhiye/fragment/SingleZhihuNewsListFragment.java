@@ -85,6 +85,7 @@ public class SingleZhihuNewsListFragment extends Fragment
     private boolean isDailyNewsFragment = false;
 
     private Subscription mSubscribe;
+    private int mUnReadLaterCount;
 
     public static SingleZhihuNewsListFragment newInstance(@Nullable String date, @Nullable String keyWord) {
         SingleZhihuNewsListFragment fragment = new SingleZhihuNewsListFragment();
@@ -114,6 +115,7 @@ public class SingleZhihuNewsListFragment extends Fragment
         } else {
             isReadLaterFragment = true;
         }
+        mUnReadLaterCount = DBLab.get(getContext()).queryAllUnHaveReadCountForReadLater();
     }
 
     @Override
@@ -282,12 +284,18 @@ public class SingleZhihuNewsListFragment extends Fragment
      */
     @Override
     public void onCompleted() {
-        isRefreshed = true;
-        mSwipeRefreshLayout.setRefreshing(false);
-        mNewsAdapter.updateStories(mNewses);
-        setEmptyNewsView(mNewses.size() > 0 ? View.INVISIBLE : View.VISIBLE);
-        if (isReadLaterFragment) {
+        if (isReadLaterFragment && mNewses.size() < mUnReadLaterCount) {
+            //  如果存在记录呗服务器删除了，那么需要再刷新一次
+            doRefresh(true);
             updateBottomNavigationNotification();
+        } else {
+            isRefreshed = true;
+            mSwipeRefreshLayout.setRefreshing(false);
+            mNewsAdapter.updateStories(mNewses);
+            setEmptyNewsView(mNewses.size() > 0 ? View.INVISIBLE : View.VISIBLE);
+            if (isReadLaterFragment) {
+                updateBottomNavigationNotification();
+            }
         }
     }
 
@@ -395,9 +403,9 @@ public class SingleZhihuNewsListFragment extends Fragment
     }
 
     public void updateBottomNavigationNotification() {
-        int count = DBLab.get(getContext()).queryAllUnHaveReadCountForReadLater();
-        if (count > 0) {
-            mCallback.setBottomNavigationNotification("" + count, 2);
+        mUnReadLaterCount = DBLab.get(getContext()).queryAllUnHaveReadCountForReadLater();
+        if (mUnReadLaterCount > 0) {
+            mCallback.setBottomNavigationNotification("" + mUnReadLaterCount, 2);
         } else {
             mCallback.setBottomNavigationNotification(null, 2);
         }
