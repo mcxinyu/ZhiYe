@@ -60,4 +60,5 @@
     <string name="title_discover">发现</string>
     <string name="news_empty">没有相关内容</string>
     <string name="action_title_clear_read_later">清空列表</string>
+    <string name="open_client_summary">使用知乎客户端打开连接</string>
 </resources>

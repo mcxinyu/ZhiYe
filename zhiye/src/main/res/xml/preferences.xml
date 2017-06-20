@@ -24,6 +24,11 @@
             android:key="setting_colorful"
             android:summary="@string/colorful_summary"
             android:title="@string/title_settings_colorful"/>
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:enabled="true"
+            android:key="setting_open_client"
+            android:title="@string/open_client_summary"/>
     </PreferenceCategory>
 
     <PreferenceCategory

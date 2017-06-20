@@ -21,9 +21,11 @@ import com.about.zhiye.R;
 import com.about.zhiye.ZhiYeApp;
 import com.about.zhiye.activity.ZhihuWebActivity;
 import com.about.zhiye.adapter.NewsListAdapter;
+import com.about.zhiye.adapter.QuestionListAdapter;
 import com.about.zhiye.api.ZhihuHelper;
 import com.about.zhiye.db.DBLab;
 import com.about.zhiye.model.News;
+import com.about.zhiye.model.Question;
 import com.about.zhiye.util.QueryPreferences;
 
 import java.util.List;
@@ -70,9 +72,11 @@ public class SingleZhihuNewsListFragment extends Fragment
     private Unbinder unbinder;
 
     private List<News> mNewses;
+    private List<Question> mQuestions;
 
     private Callbacks mCallback;
     private NewsListAdapter mNewsAdapter;
+    private QuestionListAdapter mQuestionListAdapter;
     private String mDate;
     private String mKeyWord;
     private boolean isRefreshed = false;
@@ -124,8 +128,13 @@ public class SingleZhihuNewsListFragment extends Fragment
         unbinder = ButterKnife.bind(this, view);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        mNewsAdapter = new NewsListAdapter(getContext(), mNewses, this);
-        mRecyclerView.setAdapter(mNewsAdapter);
+        if (isSearchResultFragment) {
+            mQuestionListAdapter = new QuestionListAdapter(getContext(), mQuestions);
+            mRecyclerView.setAdapter(mQuestionListAdapter);
+        } else {
+            mNewsAdapter = new NewsListAdapter(getContext(), mNewses, this);
+            mRecyclerView.setAdapter(mNewsAdapter);
+        }
 
         // 为了让下拉刷新的时候不先打开 mCoordinatorLayout
         mRecyclerView.setVisibility(View.INVISIBLE);
@@ -184,7 +193,11 @@ public class SingleZhihuNewsListFragment extends Fragment
             mEmptyTextView.setText(getString(R.string.read_later_empty));
         }
         mReadLaterEmptyLayout.setVisibility(visible);
-        if (mNewses.size() > 0) mRecyclerView.setVisibility(View.VISIBLE);
+        if (isSearchResultFragment) {
+            if (mQuestions.size() > 0) mRecyclerView.setVisibility(View.VISIBLE);
+        } else {
+            if (mNewses.size() > 0) mRecyclerView.setVisibility(View.VISIBLE);
+        }
     }
 
     private void setErrorView() {
@@ -222,8 +235,9 @@ public class SingleZhihuNewsListFragment extends Fragment
     }
 
     public boolean isFirstItemOnTop() {
-        return mRecyclerView != null
-                && ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findFirstVisibleItemPosition() == 0;
+        return mRecyclerView.getVisibility() == View.INVISIBLE ||
+                mRecyclerView == null ||
+                ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findFirstVisibleItemPosition() == 0;
     }
 
     public int getRecyclerScrollY() {
@@ -249,7 +263,37 @@ public class SingleZhihuNewsListFragment extends Fragment
             mSubscribe = getSearchResultObservable()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this);
+                    .subscribe(new Observer<List<Question>>() {
+                        @Override
+                        public void onCompleted() {
+                            isRefreshed = true;
+                            mSwipeRefreshLayout.setRefreshing(false);
+                            mQuestionListAdapter.updateStories(mQuestions);
+                            setEmptyNewsView(mQuestions.size() > 0 ? View.INVISIBLE : View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                            mSwipeRefreshLayout.setRefreshing(false);
+                            setErrorView();
+                            if (isAdded()) {
+                                Snackbar.make(mContainer, getString(R.string.load_failure), Snackbar.LENGTH_SHORT)
+                                        .setAction(getResources().getString(R.string.retry), new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                doRefresh(true);
+                                            }
+                                        })
+                                        .show();
+                            }
+                        }
+
+                        @Override
+                        public void onNext(List<Question> questions) {
+                            mQuestions = questions;
+                        }
+                    });
         } else {
             // date 有可能为空，因为 setUserVisibleHint 可能在 onCreate 之前调用。
             if (mDate == null) {
@@ -275,8 +319,8 @@ public class SingleZhihuNewsListFragment extends Fragment
         return ZhihuHelper.getNewsesOfIds(getContext());
     }
 
-    private Observable<List<News>> getSearchResultObservable() {
-        return ZhihuHelper.withKeyword(mKeyWord);
+    private Observable<List<Question>> getSearchResultObservable() {
+        return ZhihuHelper.getQuestionsWithKeyword(mKeyWord);
     }
 
     /**
@@ -285,7 +329,7 @@ public class SingleZhihuNewsListFragment extends Fragment
     @Override
     public void onCompleted() {
         if (isReadLaterFragment && mNewses.size() < mUnReadLaterCount) {
-            //  如果存在记录呗服务器删除了，那么需要再刷新一次
+            //  如果存在记录被服务器删除了，那么需要再刷新一次
             doRefresh(true);
             updateBottomNavigationNotification();
         } else {

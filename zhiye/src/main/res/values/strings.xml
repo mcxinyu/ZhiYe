@@ -60,4 +60,5 @@
     <string name="title_discover">Discover</string>
     <string name="news_empty">No Related News</string>
     <string name="action_title_clear_read_later">Clear Read Later</string>
+    <string name="open_client_summary">Open Link Using Zhihu Client</string>
 </resources>

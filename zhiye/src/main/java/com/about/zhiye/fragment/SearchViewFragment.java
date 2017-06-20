@@ -136,7 +136,8 @@ public abstract class SearchViewFragment extends BaseSearchViewFragment {
             public void onSearchAction(final String query) {
                 // mLastQuery = query;
                 QueryPreferences.setSearchHistory(getActivity(), query);
-                getActivity().startActivity(SingleNewsListActivity.newIntent(getActivity(), query));
+                getActivity().startActivity(
+                        SingleNewsListActivity.newIntent(getActivity(), query));
             }
         });
 

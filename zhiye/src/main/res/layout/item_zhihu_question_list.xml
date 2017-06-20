@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/news_list_card_view"
+    style="@style/AppThemeCardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp">
+
+    <TextView
+        android:id="@+id/daily_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/view_padding"
+        android:padding="@dimen/view_padding"
+        android:textSize="@dimen/list_text_min_size"
+        android:textStyle="normal"
+        tools:text="@string/app_name"/>
+</android.support.v7.widget.CardView>

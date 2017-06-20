@@ -10,6 +10,7 @@ import com.about.zhiye.R;
 import com.about.zhiye.db.DBLab;
 import com.about.zhiye.model.News;
 import com.about.zhiye.model.NewsTimeLine;
+import com.about.zhiye.model.Question;
 import com.about.zhiye.model.Story;
 import com.about.zhiye.model.Theme;
 import com.about.zhiye.model.Themes;
@@ -24,6 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -179,8 +181,18 @@ public class ZhihuHelper {
      * @param keyword
      * @return
      */
-    public static Observable<List<News>> withKeyword(String keyword) {
+    public static Observable<List<News>> getNewsesWithKeyword(String keyword) {
         return toNewsListObservable(getHtml(ApiRetrofit.ZHIHU_SEARCH, "q", keyword));
+    }
+
+    /**
+     * 关键词搜索
+     *
+     * @param keyword
+     * @return
+     */
+    public static Observable<List<Question>> getQuestionsWithKeyword(String keyword) {
+        return toQuestionListObservable(getHtml(ApiRetrofit.ZHIHU_SEARCH, "q", keyword), keyword);
     }
 
     private static Observable<String> getHtml(final String baseUrl, final String key, final String value) {
@@ -223,6 +235,51 @@ public class ZhihuHelper {
                         return reflectNewsListFromJSON(jsonArray);
                     }
                 });
+    }
+
+    private static Observable<List<Question>> toQuestionListObservable(Observable<String> htmlObservable, final String keyword) {
+        return htmlObservable
+                .map(new Func1<String, String>() {
+                    @Override
+                    public String call(String s) {
+                        return decodeHtml(s);
+                    }
+                })
+                .flatMap(new Func1<String, Observable<JSONObject>>() {
+                    @Override
+                    public Observable<JSONObject> call(String s) {
+                        return toJSONObject(s);
+                    }
+                })
+                .flatMap(new Func1<JSONObject, Observable<JSONArray>>() {
+                    @Override
+                    public Observable<JSONArray> call(JSONObject jsonObject) {
+                        return getDailyNewsJSONArray(jsonObject);
+                    }
+                })
+                .map(new Func1<JSONArray, List<News>>() {
+                    @Override
+                    public List<News> call(JSONArray jsonArray) {
+                        return reflectNewsListFromJSON(jsonArray);
+                    }
+                })
+                .map(new Func1<List<News>, List<Question>>() {
+                    @Override
+                    public List<Question> call(List<News> newses) {
+                        return reflectQuestionListFromNews(newses, keyword);
+                    }
+                });
+    }
+
+    private static List<Question> reflectQuestionListFromNews(final List<News> newses, String keyword) {
+        List<Question> list = new ArrayList<>();
+        for (News news : newses) {
+            for (Question question : news.getQuestions()) {
+                if (question.getTitle().toUpperCase().contains(keyword.toUpperCase()))
+                    list.add(question);
+            }
+        }
+        return list;
     }
 
     private static List<News> reflectNewsListFromJSON(JSONArray newsListJsonArray) {
@@ -306,57 +363,4 @@ public class ZhihuHelper {
         return context.getPackageManager().queryIntentActivities(intent, 0).size() > 0;
     }
 
-    /*
-    // 分享到客户端相关代码
-    private void shareToZhihu() {
-        final List<Question> questions = ZhihuHelper.getQuestions(mNews);
-        String[] titlesArray = getQuestionTitlesAsStringArray(questions);
-
-        if (titlesArray.length > 1){
-            new AlertDialog.Builder(getContext(), R.style.dialog)
-                    .setTitle("用知乎打开一个你感兴趣的问题")
-                    .setItems(titlesArray, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            shareToZhihuClient(questions.get(which).getUrl());
-                        }
-                    })
-                    .create()
-                    .show();
-        } else {
-            shareToZhihuClient(questions.get(0).getUrl());
-        }
-    }
-
-    private void shareToZhihuClient(String questionUrl) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(questionUrl));
-        intent.setPackage(Constants.Information.ZHIHU_PACKAGE_ID);
-        if (isZhihuClientInstalled()) {
-            getActivity().startActivity(intent);
-        } else {
-            Toast.makeText(getContext(), getString(R.string.no_zhihu_client), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private String[] getQuestionTitlesAsStringArray(List<Question> questions) {
-        String[] titles = new String[questions.size()];
-
-        for (int i = 0; i < titles.length; i++) {
-            titles[i] = questions.get(i).getTitle();
-        }
-
-        return titles;
-    }
-
-    private boolean isZhihuClientInstalled() {
-        try {
-            return getActivity()
-                    .getPackageManager()
-                    .getPackageInfo(Constants.Information.ZHIHU_PACKAGE_ID,
-                            PackageManager.GET_ACTIVITIES) != null;
-        } catch (PackageManager.NameNotFoundException ignored) {
-            return false;
-        }
-    }
-    */
 }

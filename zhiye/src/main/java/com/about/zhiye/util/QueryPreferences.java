@@ -18,6 +18,7 @@ public class QueryPreferences {
     public static final String SETTING_AUTO_REFRESH = "setting_auto_refresh";
     public static final String SETTING_COLORFUL = "setting_colorful";
     public static final String SETTING_NOTIFICATION = "setting_notification";
+    public static final String SETTING_OPEN_CLIENT = "setting_open_client";
 
     public static final String SETTING_CLEAN_CACHE = "setting_clean_cache";
     public static final String SETTING_CHECK_UPDATE = "setting_check_update";
@@ -71,6 +72,18 @@ public class QueryPreferences {
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putBoolean(SETTING_NOTIFICATION, enable)
+                .apply();
+    }
+
+    public static boolean getOpenClientState(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(SETTING_OPEN_CLIENT, false);
+    }
+
+    public static void setOpenClientState(Context context, boolean enable) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putBoolean(SETTING_OPEN_CLIENT, enable)
                 .apply();
     }
 
