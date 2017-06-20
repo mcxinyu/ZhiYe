@@ -1,12 +1,17 @@
 package com.about.zhiye.fragment;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.about.zhiye.R;
+import com.about.zhiye.db.DBLab;
 import com.arlib.floatingsearchview.FloatingSearchView;
 
 /**
@@ -47,7 +52,44 @@ public class ReadLaterFragment extends SearchViewFragment {
             @Override
             public void onActionMenuItemSelected(MenuItem item) {
                 if (item.getItemId() == R.id.action_clear) {
-                    // TODO: 2017/6/7 clear read later
+                    if (DBLab.get(getActivity()).queryAllReadLater().size() > 0) {
+                        new AlertDialog.Builder(getActivity(), R.style.DialogStyle)
+                                .setTitle(R.string.warning)
+                                .setMessage(R.string.confirm_empty)
+                                .setCancelable(true)
+                                .setOnKeyListener(new DialogInterface.OnKeyListener() {
+                                    @Override
+                                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                                        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+                                            dialog.dismiss();
+                                        }
+                                        return false;
+                                    }
+                                })
+                                .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        int i = DBLab.get(getActivity())
+                                                .deleteAllReadLaterNews();
+                                        dialog.dismiss();
+                                        Toast.makeText(getActivity(),
+                                                getResources().getQuantityString(R.plurals.clear_count, i, i),
+                                                Toast.LENGTH_SHORT)
+                                                .show();
+                                        ((SingleZhihuNewsListFragment) mFragment).doRefresh(true);
+                                    }
+                                })
+                                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .create()
+                                .show();
+                    } else {
+                        Toast.makeText(getActivity(), R.string.no_more_records, Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });

@@ -36,4 +36,7 @@
         <item name="android:button">@drawable/selector_read_later_toggle_button</item>
         <!--<item name="android:foreground">?attr/selectableItemBackground</item>-->
     </style>
+
+    <style name="DialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+    </style>
 </resources>

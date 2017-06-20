@@ -61,4 +61,12 @@
     <string name="news_empty">没有相关内容</string>
     <string name="action_title_clear_read_later">清空列表</string>
     <string name="open_client_summary">使用知乎客户端打开连接</string>
+    <string name="warning">请注意！</string>
+    <string name="confirm_empty">确认要清空"稍后阅读"列表吗？</string>
+    <string name="confirm">确认</string>
+    <string name="cancel">取消</string>
+    <string name="no_more_records">没有更多记录了</string>
+    <plurals name="clear_count">
+        <item quantity="other">清理了 %d 条记录</item>
+    </plurals>
 </resources>

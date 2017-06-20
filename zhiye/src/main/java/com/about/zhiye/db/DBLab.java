@@ -62,8 +62,22 @@ public class DBLab {
         }
     }
 
-    public void deleteReadLaterNews(String newsId) {
-        updateReadLaterNews(newsId, true);
+    public int deleteReadLaterNews(String newsId) {
+        return updateReadLaterNews(newsId, true);
+    }
+
+    public int deleteAllReadLaterNews() {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd HH:mm:ss", Locale.PRC);
+        String currentDate = formatter.format(new Date(System.currentTimeMillis()));
+
+        ContentValues values = new ContentValues();
+        values.put(ReadLaterTable.Columns.DELETED, true);
+        values.put(ReadLaterTable.Columns.DELETED_DATE, currentDate);
+
+        return mDatabase.update(ReadLaterTable.TABLE_NAME,
+                values,
+                ReadLaterTable.Columns.DELETED + "=0 and  " + ReadLaterTable.Columns.DELETED_DATE + "=?",
+                new String[]{""});
     }
 
     /**
@@ -72,7 +86,7 @@ public class DBLab {
      * @param newsId
      * @param delete 删除实际只是标记，并非真正删除，所有需要判断是不是又一次添加为稍后阅读
      */
-    private void updateReadLaterNews(String newsId, boolean delete) {
+    private int updateReadLaterNews(String newsId, boolean delete) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd HH:mm:ss", Locale.PRC);
         String currentDate = formatter.format(new Date(System.currentTimeMillis()));
 
@@ -87,7 +101,7 @@ public class DBLab {
             values.put(ReadLaterTable.Columns.DELETED_DATE, "");
         }
 
-        mDatabase.update(ReadLaterTable.TABLE_NAME, values, ReadLaterTable.Columns.NEWS_ID + "=?", new String[]{newsId});
+        return mDatabase.update(ReadLaterTable.TABLE_NAME, values, ReadLaterTable.Columns.NEWS_ID + "=?", new String[]{newsId});
     }
 
     /**
