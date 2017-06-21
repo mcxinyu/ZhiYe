@@ -2,6 +2,8 @@ package com.about.zhiye.fragment;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -19,6 +21,24 @@ import com.arlib.floatingsearchview.FloatingSearchView;
  * Contact me : mcxinyu@foxmail.com
  */
 public class ReadLaterFragment extends SearchViewFragment {
+
+    Handler mHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1024:
+                    int i = DBLab.get(getActivity())
+                            .deleteAllReadLaterNews();
+                    Toast.makeText(getActivity(),
+                            getResources().getQuantityString(R.plurals.clear_count, i, i),
+                            Toast.LENGTH_SHORT)
+                            .show();
+                    ((SingleZhihuNewsListFragment) mFragment).doRefresh(true);
+                    break;
+            }
+            return false;
+        }
+    });
 
     private Fragment mFragment;
     private boolean isVisibleToUser;
@@ -69,14 +89,8 @@ public class ReadLaterFragment extends SearchViewFragment {
                                 .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        int i = DBLab.get(getActivity())
-                                                .deleteAllReadLaterNews();
+                                        mHandler.sendEmptyMessage(1024);
                                         dialog.dismiss();
-                                        Toast.makeText(getActivity(),
-                                                getResources().getQuantityString(R.plurals.clear_count, i, i),
-                                                Toast.LENGTH_SHORT)
-                                                .show();
-                                        ((SingleZhihuNewsListFragment) mFragment).doRefresh(true);
                                     }
                                 })
                                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
