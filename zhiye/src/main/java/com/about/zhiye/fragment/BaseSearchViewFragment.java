@@ -40,8 +40,6 @@ public abstract class BaseSearchViewFragment extends Fragment {
         mCallbacks.onNestViewScroll(verticalOffset);
     }
 
-    ;
-
     protected void attachSearchViewToActivityDrawer(FloatingSearchView searchView) {
         if (mCallbacks != null) {
             mCallbacks.onAttachSearchViewToDrawer(searchView);

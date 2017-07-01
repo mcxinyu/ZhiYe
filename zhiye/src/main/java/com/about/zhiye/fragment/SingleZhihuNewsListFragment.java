@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,7 +46,7 @@ import static android.app.Activity.RESULT_OK;
  * Contact me : mcxinyu@foxmail.com
  * 一天的 NewsList
  */
-public class SingleZhihuNewsListFragment extends Fragment
+public class SingleZhihuNewsListFragment extends BaseFragment
         implements SwipeRefreshLayout.OnRefreshListener,
         Observer<List<News>>,
         NewsListAdapter.Callbacks {
@@ -82,7 +81,7 @@ public class SingleZhihuNewsListFragment extends Fragment
     private boolean isRefreshed = false;
     private boolean isPreloadFailure = false;
 
-    private int recyclerScrollY = 0;
+    private int totalScrollY = 0;
 
     private boolean isReadLaterFragment = false;
     private boolean isSearchResultFragment = false;
@@ -143,7 +142,7 @@ public class SingleZhihuNewsListFragment extends Fragment
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                recyclerScrollY += dy;
+                totalScrollY -= dy;
             }
         });
 
@@ -226,22 +225,24 @@ public class SingleZhihuNewsListFragment extends Fragment
         doRefresh(false);
     }
 
-    public void notifyDataSetChanged() {
-        mNewsAdapter.notifyDataSetChanged();
-    }
-
+    @Override
     public void scrollToTop() {
         mRecyclerView.smoothScrollToPosition(0);
+    }
+
+    @Override
+    public int getVerticalOffset() {
+        return totalScrollY;
+    }
+
+    public void notifyDataSetChanged() {
+        mNewsAdapter.notifyDataSetChanged();
     }
 
     public boolean isFirstItemOnTop() {
         return mRecyclerView.getVisibility() == View.INVISIBLE ||
                 mRecyclerView == null ||
                 ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findFirstVisibleItemPosition() == 0;
-    }
-
-    public int getRecyclerScrollY() {
-        return recyclerScrollY;
     }
 
     /**

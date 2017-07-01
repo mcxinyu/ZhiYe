@@ -1,14 +1,20 @@
 package com.about.zhiye.activity;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.ValueAnimator;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -17,9 +23,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -27,10 +35,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.about.zhiye.R;
+import com.about.zhiye.data.SearchDataHelper;
+import com.about.zhiye.data.SearchNewsSuggestion;
 import com.about.zhiye.db.DBLab;
-import com.about.zhiye.fragment.BaseSearchViewFragment;
+import com.about.zhiye.fragment.BaseFragment;
 import com.about.zhiye.fragment.DiscoverFragment;
-import com.about.zhiye.fragment.ReadLaterFragment;
 import com.about.zhiye.fragment.SingleZhihuNewsListFragment;
 import com.about.zhiye.fragment.ZhihuFragment;
 import com.about.zhiye.model.VersionInfoFir;
@@ -38,10 +47,13 @@ import com.about.zhiye.util.CheckUpdateHelper;
 import com.about.zhiye.util.QueryPreferences;
 import com.about.zhiye.util.StateUtils;
 import com.arlib.floatingsearchview.FloatingSearchView;
+import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
 import com.google.gson.Gson;
 import com.qiangxi.checkupdatelibrary.dialog.ForceUpdateDialog;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,49 +69,71 @@ import static com.qiangxi.checkupdatelibrary.dialog.ForceUpdateDialog.FORCE_UPDA
  * 管理 fragment
  */
 public class MainActivity extends AppCompatActivity
-        implements SingleZhihuNewsListFragment.Callbacks, BaseSearchViewFragment.Callbacks {
+        implements SingleZhihuNewsListFragment.Callbacks {
     private static final String TAG = "MainActivity";
-    private static final int CHECK_UPDATE_WHAT = 1024;
+    private static final int WHAT_CHECK_UPDATE = 1024;
+    private static final int WHAT_DELETE_ALL_READ_LATER = 1023;
 
     private static final int ZHIHU_FRAGMENT = 0;
-    private static final int THEME_FRAGMENT = 1;
+    private static final int DISCOVER_FRAGMENT = 1;
     private static final int READ_LATER_FRAGMENT = 2;
+
+    private static final long FIND_SUGGESTION_SIMULATED_DELAY = 250;
+    private static final int SUGGESTION_COUNT = 5;
+    private static final long ANIM_DURATION = 350;
 
     @BindView(R.id.fragment_content)
     FrameLayout mFragmentContent;
     @BindView(R.id.bottom_navigation)
     AHBottomNavigation mBottomNavigation;
-    // @BindView(R.id.status_bar_view)
-    // View mStatusBarView;
     @BindView(R.id.nav_view)
     NavigationView mNavView;
     @BindView(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
-    // @BindView(R.id.fragment_view_pager)
-    // ViewPager mFragmentViewPager;
+    @BindView(R.id.app_bar_layout)
+    AppBarLayout mAppBarLayout;
+    @BindView(R.id.floating_search_view)
+    FloatingSearchView mSearchView;
+    @BindView(R.id.dim_background)
+    FrameLayout mDimBackground;
     private Unbinder unbinder;
 
     private TextView mEmailTextView;
     private ActionBarDrawerToggle mDrawerToggle;
 
+    private ColorDrawable mDimDrawable;
+
     private FragmentManager mFragmentManager;
     private ZhihuFragment mZhihuFragment;
     private DiscoverFragment mDiscoverFragment;
-    private ReadLaterFragment mReadLaterFragment;
+    private SingleZhihuNewsListFragment mReadLaterFragment;
     private Fragment currentFragment;
+
+    private boolean isAppBarLayoutExpanded = false;
 
     private ForceUpdateDialog mForceUpdateDialog;
 
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            super.handleMessage(msg);
             if (!QueryPreferences.getDrawerOpenState(MainActivity.this)) {
                 mDrawerLayout.openDrawer(Gravity.START);
                 QueryPreferences.setDrawerOpenState(MainActivity.this, true);
             }
-            if (msg.what == CHECK_UPDATE_WHAT) {
-                checkForUpdate();
+
+            switch (msg.what) {
+                case WHAT_DELETE_ALL_READ_LATER:
+                    int i = DBLab.get(MainActivity.this)
+                            .deleteAllReadLaterNews();
+                    Toast.makeText(MainActivity.this,
+                            getResources().getQuantityString(R.plurals.clear_count, i, i),
+                            Toast.LENGTH_SHORT)
+                            .show();
+                    mReadLaterFragment.doRefresh(true);
+                    break;
+                case WHAT_CHECK_UPDATE:
+                    checkForUpdate();
+                    break;
             }
         }
     };
@@ -113,6 +147,10 @@ public class MainActivity extends AppCompatActivity
         // setStatusBarView();
 
         initDrawer();
+        initBottomNavigation();
+        initAppBar();
+        setupFloatingSearchView();
+        setupDrawer();
 
         mFragmentManager = getSupportFragmentManager();
         currentFragment = mFragmentManager.findFragmentById(R.id.fragment_content);
@@ -124,9 +162,7 @@ public class MainActivity extends AppCompatActivity
                     .commit();
         }
 
-        initBottomNavigation();
-
-        mHandler.sendEmptyMessageDelayed(CHECK_UPDATE_WHAT, 3000);
+        mHandler.sendEmptyMessageDelayed(WHAT_CHECK_UPDATE, 3000);
     }
 
     private void initBottomNavigation() {
@@ -135,6 +171,8 @@ public class MainActivity extends AppCompatActivity
 
         final boolean isColorful = QueryPreferences.getColorfulState(this);
         mBottomNavigation.setTranslucentNavigationEnabled(true);
+        // mBottomNavigation.setBehaviorTranslationEnabled(true);
+        // mBottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_HIDE);
 
         if (isColorful) {
             mBottomNavigation.setColored(true);
@@ -159,30 +197,171 @@ public class MainActivity extends AppCompatActivity
                         if (isColorful) {
                             // mStatusBarView.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[0]);
                         }
+                        mSearchView.setSearchBarTitle(getString(R.string.title_zhihu));
                         switchFragment(mZhihuFragment);
                         return true;
-                    case THEME_FRAGMENT:
+                    case DISCOVER_FRAGMENT:
                         if (mDiscoverFragment == null) {
                             mDiscoverFragment = DiscoverFragment.newInstance();
                         }
                         if (isColorful) {
                             // mStatusBarView.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[1]);
                         }
+                        mSearchView.setSearchBarTitle(getString(R.string.title_discover));
                         switchFragment(mDiscoverFragment);
                         return true;
                     case READ_LATER_FRAGMENT:
                         if (mReadLaterFragment == null) {
-                            mReadLaterFragment = ReadLaterFragment.newInstance();
+                            mReadLaterFragment = SingleZhihuNewsListFragment.newInstance(null, null);
                         }
                         if (isColorful) {
                             // mStatusBarView.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[2]);
                         }
+                        // TODO: 2017/7/2 菜单设置
+                        mSearchView.setSearchBarTitle(getString(R.string.title_read_later));
+                        mSearchView.inflateOverflowMenu(R.menu.menu_read_later);
                         switchFragment(mReadLaterFragment);
                         return true;
                 }
                 return false;
             }
         });
+    }
+
+    private void initAppBar() {
+        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                mSearchView.setTranslationY(verticalOffset);
+                // onListViewScroll(verticalOffset);
+                mBottomNavigation.setTranslationY(-verticalOffset);
+                // EXPANDED
+                isAppBarLayoutExpanded = verticalOffset == 0;
+            }
+        });
+    }
+
+    private void setupFloatingSearchView() {
+        mDimDrawable = new ColorDrawable(Color.BLACK);
+        mDimDrawable.setAlpha(0);
+        mDimBackground.setBackground(mDimDrawable);
+
+        mSearchView.setSearchBarTitle(getString(R.string.title_zhihu));
+
+        mSearchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
+            @Override
+            public void onSearchTextChanged(String oldQuery, String newQuery) {
+                if (!oldQuery.equals("") && newQuery.equals("")) {
+                    mSearchView.swapSuggestions(
+                            SearchDataHelper.getSearchSuggestion(MainActivity.this, SUGGESTION_COUNT));
+                } else {
+                    mSearchView.showProgress();
+                    SearchDataHelper.findSuggestions(MainActivity.this, newQuery, SUGGESTION_COUNT,
+                            FIND_SUGGESTION_SIMULATED_DELAY,
+                            new SearchDataHelper.OnFindSuggestionsListener() {
+                                @Override
+                                public void onResults(List<SearchNewsSuggestion> results) {
+                                    mSearchView.swapSuggestions(results);
+                                    mSearchView.hideProgress();
+                                }
+                            });
+                }
+            }
+        });
+
+        mSearchView.setOnSearchListener(new FloatingSearchView.OnSearchListener() {
+            // 此处处理点击搜索
+            @Override
+            public void onSuggestionClicked(final SearchSuggestion searchSuggestion) {
+                SearchNewsSuggestion suggestion = (SearchNewsSuggestion) searchSuggestion;
+                MainActivity.this.startActivity(
+                        SingleNewsListActivity.newIntent(MainActivity.this, suggestion.getBody()));
+                // mLastQuery = searchSuggestion.getBody();
+            }
+
+            @Override
+            public void onSearchAction(final String query) {
+                // mLastQuery = query;
+                QueryPreferences.setSearchHistory(MainActivity.this, query);
+                MainActivity.this.startActivity(SingleNewsListActivity.newIntent(MainActivity.this, query));
+            }
+        });
+
+        mSearchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
+            @Override
+            public void onFocus() {
+                fadeDimBackground(0, 150, null);
+                mSearchView.swapSuggestions(
+                        SearchDataHelper.getSearchSuggestion(MainActivity.this, SUGGESTION_COUNT));
+            }
+
+            @Override
+            public void onFocusCleared() {
+                mSearchView.setSearchBarTitle(getString(R.string.title_zhihu));
+                fadeDimBackground(150, 0, null);
+            }
+        });
+
+        mSearchView.setOnMenuItemClickListener(new FloatingSearchView.OnMenuItemClickListener() {
+            @Override
+            public void onActionMenuItemSelected(MenuItem item) {
+                if (item.getItemId() == R.id.action_clear) {
+                    if (DBLab.get(MainActivity.this).queryAllReadLater().size() > 0) {
+                        new AlertDialog.Builder(MainActivity.this, R.style.DialogStyle)
+                                .setTitle(R.string.warning)
+                                .setMessage(R.string.confirm_empty)
+                                .setCancelable(true)
+                                .setOnKeyListener(new DialogInterface.OnKeyListener() {
+                                    @Override
+                                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                                        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+                                            dialog.dismiss();
+                                        }
+                                        return false;
+                                    }
+                                })
+                                .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        mHandler.sendEmptyMessage(1024);
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .create()
+                                .show();
+                    } else {
+                        Toast.makeText(MainActivity.this, R.string.no_more_records, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        });
+    }
+
+    private void setupDrawer() {
+        mSearchView.attachNavigationDrawerToMenuButton(mDrawerLayout);
+    }
+
+    private void fadeDimBackground(int from, int to, Animator.AnimatorListener listener) {
+        ValueAnimator anim = ValueAnimator.ofInt(from, to);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+
+                int value = (Integer) animation.getAnimatedValue();
+                mDimDrawable.setAlpha(value);
+            }
+        });
+        if (listener != null) {
+            anim.addListener(listener);
+        }
+        anim.setDuration(ANIM_DURATION);
+        anim.start();
     }
 
     @Override
@@ -270,13 +449,27 @@ public class MainActivity extends AppCompatActivity
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
-        } else if (currentFragment instanceof BaseSearchViewFragment) {
-            if (!((BaseSearchViewFragment) currentFragment).onActivityBackPress()) {
-                super.onBackPressed();
-            }
+        } else if (!isAppBarLayoutExpanded) {
+            mAppBarLayout.setExpanded(true);
+            scrollCurrentFragmentToTop();
+        } else if (mSearchView.isSearchBarFocused()) {
+            mSearchView.setSearchFocused(false);
+        } else if (getCurrentFragmentVertical() != 0) {
+            scrollCurrentFragmentToTop();
         } else {
             super.onBackPressed();
         }
+    }
+
+    private int getCurrentFragmentVertical() {
+        if (currentFragment != null) {
+            return ((BaseFragment) currentFragment).getVerticalOffset();
+        }
+        return 0;
+    }
+
+    private void scrollCurrentFragmentToTop() {
+        if (currentFragment != null) ((BaseFragment) currentFragment).scrollToTop();
     }
 
     private void checkForUpdate() {
@@ -339,15 +532,5 @@ public class MainActivity extends AppCompatActivity
                 Log.e(TAG, "true.请开启读写sd卡权限,不然无法正常工作");
             }
         }
-    }
-
-    @Override
-    public void onAttachSearchViewToDrawer(FloatingSearchView searchView) {
-        searchView.attachNavigationDrawerToMenuButton(mDrawerLayout);
-    }
-
-    @Override
-    public void onNestViewScroll(float verticalOffset) {
-        mBottomNavigation.setTranslationY(-verticalOffset);
     }
 }

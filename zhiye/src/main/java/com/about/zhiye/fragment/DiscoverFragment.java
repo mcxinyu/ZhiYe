@@ -40,7 +40,7 @@ import rx.schedulers.Schedulers;
  * Created by huangyuefeng on 2017/6/4.
  * Contact me : mcxinyu@foxmail.com
  */
-public class ZhihuThemeListFragment extends Fragment
+public class DiscoverFragment extends BaseFragment
         implements SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.recycler_view)
@@ -62,10 +62,8 @@ public class ZhihuThemeListFragment extends Fragment
     private Subscription mTopNewsSubscribe;
     private Subscription mThemeSubscribe;
 
-    private int recyclerScrollY = 0;
-
-    public static ZhihuThemeListFragment newInstance() {
-        ZhihuThemeListFragment fragment = new ZhihuThemeListFragment();
+    public static DiscoverFragment newInstance() {
+        DiscoverFragment fragment = new DiscoverFragment();
         Bundle args = new Bundle();
         // args.putString(ARG_PARAM1, param1);
         // args.putString(ARG_PARAM2, param2);
@@ -76,7 +74,7 @@ public class ZhihuThemeListFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_zhihu_theme_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_discover, container, false);
         unbinder = ButterKnife.bind(this, view);
 
         mTopNewsPagerAdapter = new TopNewsPagerAdapter(getChildFragmentManager());
@@ -97,24 +95,18 @@ public class ZhihuThemeListFragment extends Fragment
         mAdapter = new ThemesAdapter(getContext(), mOthersBeanList);
         mRecyclerView.setAdapter(mAdapter);
 
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                recyclerScrollY += dy;
-            }
-        });
-
         mSwipeRefreshLayout.setOnRefreshListener(this);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         return view;
     }
 
+    @Override
     public void scrollToTop() {
         mNestedScrollView.smoothScrollTo(0, 0);
     }
 
-    public int getScrollY() {
+    @Override
+    public int getVerticalOffset() {
         return mNestedScrollView.getScrollY();
     }
 
