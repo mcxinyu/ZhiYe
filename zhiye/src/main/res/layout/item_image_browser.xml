@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <com.bm.library.PhotoView
+        android:id="@+id/show_image_photo_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/translucenceBlack"
+        android:gravity="center"
+        android:scaleType="centerInside"
+        tools:src="@drawable/ic_empty_bookmark"/>
+</RelativeLayout>

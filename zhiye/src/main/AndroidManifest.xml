@@ -68,6 +68,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Zhiye.Light.NoActionbar.Preferences">
         </activity>
+        <activity
+            android:name=".activity.ShowImageFromWebActivity"
+            android:theme="@style/Theme.Zhiye.Light.NoActionbar.Translucent">
+        </activity>
 
         <service android:name="com.qiangxi.checkupdatelibrary.service.DownloadService"/>
 

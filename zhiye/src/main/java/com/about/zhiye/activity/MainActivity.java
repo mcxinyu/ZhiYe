@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity
                         if (isColorful) {
                             // mStatusBarView.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[2]);
                         }
-                        // TODO: 2017/7/2 菜单设置
+                        // TODO: 2017/7/2 弹出菜单设置
                         mSearchView.setSearchBarTitle(getString(R.string.title_read_later));
                         mSearchView.inflateOverflowMenu(R.menu.menu_read_later);
                         switchFragment(mReadLaterFragment);

@@ -1,6 +1,9 @@
 package com.about.zhiye.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -30,6 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.about.zhiye.R;
+import com.about.zhiye.activity.ShowImageFromWebActivity;
 import com.about.zhiye.api.ApiFactory;
 import com.about.zhiye.api.ZhihuHelper;
 import com.about.zhiye.db.DBLab;
@@ -39,6 +44,12 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,7 +62,8 @@ import rx.schedulers.Schedulers;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, Observer<News> {
+public class ZhihuWebFragment extends Fragment
+        implements SwipeRefreshLayout.OnRefreshListener, Observer<News> {
     private static final String ARGS_NEWS_ID = "news_id";
     private static final String KEY_NEWS = "news_save";
     private static final String ARGS_TYPE = "type";
@@ -264,7 +276,8 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
         mTitleTextView.setText(news.getTitle());
         if (null == news.getImage()) {
             mScrollView.setNestedScrollingEnabled(false);
-            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mAppBarLayout.getChildAt(0).getLayoutParams();
+            AppBarLayout.LayoutParams params =
+                    (AppBarLayout.LayoutParams) mAppBarLayout.getChildAt(0).getLayoutParams();
             params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL |
                     AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED |
                     AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
@@ -278,7 +291,8 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
                         public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
                             super.onResourceReady(resource, animation);
                             mImageSource.setText(news.getImageSource());
-                            AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) mAppBarLayout.getChildAt(0).getLayoutParams();
+                            AppBarLayout.LayoutParams params =
+                                    (AppBarLayout.LayoutParams) mAppBarLayout.getChildAt(0).getLayoutParams();
                             params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL |
                                     AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS |
                                     AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS_COLLAPSED |
@@ -308,6 +322,13 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
                 super.onProgressChanged(view, newProgress);
             }
         });
+        mWebView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                responseWebLongClick(v);
+                return false;
+            }
+        });
 
         switch (mType) {
             case "1":   // 1、无body，无图片；
@@ -326,16 +347,113 @@ public class ZhihuWebFragment extends Fragment implements SwipeRefreshLayout.OnR
             case "0":   // 0、有body，有图片；
             case "2":   // 2、有body，无图片；
                 WebSettings settings = mWebView.getSettings();
-                // settings.setJavaScriptEnabled(true);
+                settings.setJavaScriptEnabled(true);
                 settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
 
                 String head = "<head>\n\t<link rel=\"stylesheet\" href=\""
                         + news.getCss()[0] + "\"/>\n</head>";
-                String image = "<div class=\"headline\">";
-                String html = head + news.getBody().replace(image, " ");
+                String topImage = "<div class=\"headline\">";
+                String html = head + news.getBody().replace(topImage, " ");
+                mWebView.addJavascriptInterface(new JavascriptInterface(getContext()), "ImageListener");
+                mWebView.setWebViewClient(new WebViewClient() {
+                    @Override
+                    public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                        view.getSettings().setJavaScriptEnabled(true);
+                        super.onPageStarted(view, url, favicon);
+                    }
+
+                    @Override
+                    public void onPageFinished(WebView view, String url) {
+                        view.getSettings().setJavaScriptEnabled(true);
+                        super.onPageFinished(view, url);
+                        addImageClickListener();
+                    }
+                });
                 mWebView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
                 break;
         }
+    }
+
+    private ArrayList<String> getAllImageUrl(String body) {
+        ArrayList<String> list = new ArrayList<>();
+        Elements elements = Jsoup.parseBodyFragment(body)
+                .body()
+                .select(".content-image");
+        // .getElementsByClass("content-image");
+        for (Element element : elements) {
+            list.add(element.attr("src"));
+        }
+        return list;
+    }
+
+    private void responseWebLongClick(View v) {
+        if (v instanceof WebView) {
+            WebView.HitTestResult result = ((WebView) v).getHitTestResult();
+            if (result != null) {
+                int type = result.getType();
+                //判断点击类型如果是图片
+                if (type == WebView.HitTestResult.IMAGE_TYPE || type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
+                    //弹出对话框
+                    showImageOptionDialog(result.getExtra());
+                }
+            }
+        }
+    }
+
+    private void showImageOptionDialog(final String url) {
+        String[] items = new String[]{getString(R.string.save_picture), getString(R.string.share_picture)};
+        new AlertDialog.Builder(getContext())
+                .setCancelable(true)
+                .setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                downloadImage(url);
+                                break;
+                            case 1:
+                                // TODO: 2017/7/3
+                                Toast.makeText(getContext(), "分享", Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+                        dialog.dismiss();
+                    }
+                })
+                .show();
+    }
+
+    private void addImageClickListener() {
+        // 这段js函数的功能就是，遍历所有的img几点，
+        // 并添加onclick函数，函数的功能是在图片点击的时候调用本地java接口并传递url过去
+        mWebView.loadUrl("javascript:(function(){" +
+                "var objects = document.getElementsByTagName(\"img\");" +
+                "  for (var i=0;i<objects.length;i++) {" +
+                "    if (objects[i].getAttribute(\"class\") == \"content-image\") {" +
+                "      objects[i].onclick = function() {" +
+                "        window.ImageListener.openImage(this.src);" +
+                "      }" +
+                "    }" +
+                "  }" +
+                "})()");
+    }
+
+    private class JavascriptInterface {
+        private Context mContext;
+
+        JavascriptInterface(Context context) {
+            mContext = context;
+        }
+
+        @android.webkit.JavascriptInterface
+        public void openImage(String img) {
+            Intent intent = ShowImageFromWebActivity
+                    .newIntent(getContext(), getAllImageUrl(mNews.getBody()), img);
+            mContext.startActivity(intent);
+        }
+    }
+
+    private void downloadImage(String url) {
+        ZhihuHelper.downloadZhihuImageToAlbum(getContext(), url);
     }
 
     @Override

@@ -8,8 +8,10 @@ import com.about.zhiye.model.StoryExtra;
 import com.about.zhiye.model.Theme;
 import com.about.zhiye.model.Themes;
 
+import okhttp3.ResponseBody;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -88,4 +90,7 @@ public interface ZhihuApi {
      */
     @GET("api/4/theme/{id}")
     Observable<Theme> getTheme(@Path("id") String id);
+
+    @GET
+    Observable<ResponseBody> downloadZhihuImage(@Url String url);
 }

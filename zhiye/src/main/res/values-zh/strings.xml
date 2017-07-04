@@ -66,6 +66,9 @@
     <string name="confirm">确认</string>
     <string name="cancel">取消</string>
     <string name="no_more_records">没有更多记录了</string>
+    <string name="save">保存</string>
+    <string name="save_picture">保存图片</string>
+    <string name="share_picture">分享图片</string>
     <plurals name="clear_count">
         <item quantity="other">清理了 %d 条记录</item>
     </plurals>

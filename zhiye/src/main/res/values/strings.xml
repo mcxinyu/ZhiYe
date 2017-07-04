@@ -66,6 +66,9 @@
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="no_more_records">No more records</string>
+    <string name="save">Save</string>
+    <string name="save_picture">Save Picture</string>
+    <string name="share_picture">Share Picture</string>
     <plurals name="clear_count">
         <item quantity="zero">Cleared 0 records</item>
         <item quantity="one">Cleared 1 record</item>

@@ -1,8 +1,14 @@
 package com.about.zhiye.api;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.widget.Toast;
 
@@ -24,21 +30,29 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import rx.Observable;
+import rx.Observer;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by huangyuefeng on 2017/3/19.
  * Contact me : mcxinyu@foxmail.com
  */
 public class ZhihuHelper {
-
+    public static final int ZHIHU_HELPER_PERMISSION_REQUEST_CODE = 1024;
     private static final ZhihuApi ZHIHU_API = ApiFactory.getZhihuApiSingleton();
 
     public static Observable<List<Story>> getNewses(String date) {
@@ -195,6 +209,87 @@ public class ZhihuHelper {
         return toQuestionListObservable(getHtml(ApiRetrofit.ZHIHU_SEARCH, "q", keyword), keyword);
     }
 
+    public static void downloadZhihuImageToAlbum(final Context context, String url) {
+        final String destFileDir = Environment
+                .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                .getAbsolutePath();
+
+        if (context.getApplicationInfo().targetSdkVersion >= 23) {
+            if (Build.VERSION.SDK_INT >= 23) {
+                int permissionStatus = ContextCompat
+                        .checkSelfPermission(context, android.Manifest.permission_group.STORAGE);
+                if (permissionStatus != 0) {
+                    ActivityCompat.requestPermissions(
+                            (AppCompatActivity) context,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            ZHIHU_HELPER_PERMISSION_REQUEST_CODE);
+                }
+            } else {
+                downloadZhihuImage(context, url, destFileDir);
+            }
+        } else {
+            downloadZhihuImage(context, url, destFileDir);
+        }
+    }
+
+    private static void downloadZhihuImage(final Context context, String url, final String destFileDir) {
+        ZHIHU_API.downloadZhihuImage(url)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ResponseBody>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(context, "保存失败", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onNext(ResponseBody responseBody) {
+                        InputStream is = null;
+                        byte[] buf = new byte[2048];
+                        int len = 0;
+                        FileOutputStream fos = null;
+                        try {
+                            is = responseBody.byteStream();
+                            File file = new File(destFileDir);
+                            //如果file不存在,就创建这个file
+                            if (!file.exists()) {
+                                file.mkdir();
+                            }
+
+                            final File imageFile = new File(destFileDir, new Date().getTime() + ".jpg");
+                            fos = new FileOutputStream(imageFile);
+                            while ((len = is.read(buf)) != -1) {
+                                fos.write(buf, 0, len);
+                            }
+                            fos.flush();
+                            Toast.makeText(context, "保存成功", Toast.LENGTH_SHORT).show();
+                            //更新相册
+                            Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                            Uri uri = Uri.fromFile(file);
+                            intent.setData(uri);
+                            context.sendBroadcast(intent);
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Toast.makeText(context, "保存失败", Toast.LENGTH_SHORT).show();
+                        } finally {
+                            try {
+                                if (is != null) is.close();
+                            } catch (IOException e) {
+                            }
+                            try {
+                                if (fos != null) fos.close();
+                            } catch (IOException e) {
+                            }
+                        }
+                    }
+                });
+    }
+
     private static Observable<String> getHtml(final String baseUrl, final String key, final String value) {
         return Observable.create(new Observable.OnSubscribe<String>() {
             @Override
@@ -347,6 +442,26 @@ public class ZhihuHelper {
      * @param newsUrl
      */
     public static void shareNews(Context context, String newsTitle, String newsUrl) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        //noinspection deprecation
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        intent.putExtra(Intent.EXTRA_TEXT, context.getString(R.string.the_left_brace) +
+                newsTitle +
+                context.getString(R.string.the_right_brace) + " " +
+                newsUrl + " " +
+                context.getString(R.string.share_from_zhihu));
+        context.startActivity(Intent.createChooser(intent, context.getString(R.string.share_to)));
+    }
+
+    /**
+     * 分享新闻
+     *
+     * @param context
+     * @param newsTitle
+     * @param newsUrl
+     */
+    public static void shareImage(Context context, String newsTitle, String newsUrl) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         //noinspection deprecation
