@@ -69,6 +69,9 @@
     <string name="save">保存</string>
     <string name="save_picture">保存图片</string>
     <string name="share_picture">分享图片</string>
+    <string name="save_failed">保存失败</string>
+    <string name="save_success">保存成功</string>
+    <string name="please_grant_permissions">请授予权限</string>
     <plurals name="clear_count">
         <item quantity="other">清理了 %d 条记录</item>
     </plurals>

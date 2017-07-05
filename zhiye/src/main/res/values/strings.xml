@@ -69,6 +69,9 @@
     <string name="save">Save</string>
     <string name="save_picture">Save Picture</string>
     <string name="share_picture">Share Picture</string>
+    <string name="save_failed">Save Failed</string>
+    <string name="save_success">Save Success</string>
+    <string name="please_grant_permissions">Please grant permissions</string>
     <plurals name="clear_count">
         <item quantity="zero">Cleared 0 records</item>
         <item quantity="one">Cleared 1 record</item>

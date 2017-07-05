@@ -1,14 +1,11 @@
 package com.about.zhiye.api;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.widget.Toast;
 
@@ -25,6 +22,8 @@ import com.about.zhiye.support.Http;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.tbruyelle.rxpermissions.Permission;
+import com.tbruyelle.rxpermissions.RxPermissions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -209,27 +208,24 @@ public class ZhihuHelper {
         return toQuestionListObservable(getHtml(ApiRetrofit.ZHIHU_SEARCH, "q", keyword), keyword);
     }
 
-    public static void downloadZhihuImageToAlbum(final Context context, String url) {
+    public static void downloadZhihuImageToAlbum(final Context context, final String url) {
         final String destFileDir = Environment
                 .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
                 .getAbsolutePath();
 
-        if (context.getApplicationInfo().targetSdkVersion >= 23) {
-            if (Build.VERSION.SDK_INT >= 23) {
-                int permissionStatus = ContextCompat
-                        .checkSelfPermission(context, android.Manifest.permission_group.STORAGE);
-                if (permissionStatus != 0) {
-                    ActivityCompat.requestPermissions(
-                            (AppCompatActivity) context,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            ZHIHU_HELPER_PERMISSION_REQUEST_CODE);
-                }
-            } else {
-                downloadZhihuImage(context, url, destFileDir);
-            }
-        } else {
-            downloadZhihuImage(context, url, destFileDir);
-        }
+        RxPermissions rxPermissions = new RxPermissions((Activity) context);
+        rxPermissions.setLogging(true);
+        rxPermissions.requestEach(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .subscribe(new Action1<Permission>() {
+                    @Override
+                    public void call(Permission permission) {
+                        if (permission.granted) {
+                            downloadZhihuImage(context, url, destFileDir);
+                        } else {
+                            Toast.makeText(context, context.getString(R.string.please_grant_permissions), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     private static void downloadZhihuImage(final Context context, String url, final String destFileDir) {
@@ -243,7 +239,7 @@ public class ZhihuHelper {
 
                     @Override
                     public void onError(Throwable e) {
-                        Toast.makeText(context, "保存失败", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, context.getString(R.string.save_failed), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -266,7 +262,7 @@ public class ZhihuHelper {
                                 fos.write(buf, 0, len);
                             }
                             fos.flush();
-                            Toast.makeText(context, "保存成功", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, context.getString(R.string.save_success), Toast.LENGTH_SHORT).show();
                             //更新相册
                             Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
                             Uri uri = Uri.fromFile(file);
@@ -275,7 +271,7 @@ public class ZhihuHelper {
 
                         } catch (IOException e) {
                             e.printStackTrace();
-                            Toast.makeText(context, "保存失败", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, context.getString(R.string.save_failed), Toast.LENGTH_SHORT).show();
                         } finally {
                             try {
                                 if (is != null) is.close();

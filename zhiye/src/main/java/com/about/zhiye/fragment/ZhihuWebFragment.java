@@ -401,7 +401,8 @@ public class ZhihuWebFragment extends Fragment
     }
 
     private void showImageOptionDialog(final String url) {
-        String[] items = new String[]{getString(R.string.save_picture), getString(R.string.share_picture)};
+        // String[] items = new String[]{getString(R.string.save_picture), getString(R.string.share_picture)};
+        String[] items = new String[]{getString(R.string.save_picture)};
         new AlertDialog.Builder(getContext())
                 .setCancelable(true)
                 .setItems(items, new DialogInterface.OnClickListener() {
