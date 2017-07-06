@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment;
 /**
  * Created by huangyuefeng on 2017/7/1.
  * Contact me : mcxinyu@foxmail.com
+ *
+ * 该类是 底部导航栏中切换的 Fragment 的基类
  */
 public abstract class BaseFragment extends Fragment {
 

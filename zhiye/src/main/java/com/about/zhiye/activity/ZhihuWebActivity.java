@@ -8,10 +8,12 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 
 import com.about.zhiye.db.DBLab;
+import com.about.zhiye.fragment.BackHandledFragment;
 import com.about.zhiye.fragment.ZhihuWebFragment;
 
 public class ZhihuWebActivity extends BaseActivity
-        implements ZhihuWebFragment.Callbacks {
+        implements ZhihuWebFragment.Callbacks,
+        BackHandledFragment.BackHandledInterface {
     private static final String EXTRA_NEWS_ID = "news_id";
     private static final String EXTRA_TYPE = "type";
 
@@ -67,5 +69,17 @@ public class ZhihuWebActivity extends BaseActivity
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mFragment == null || !((BackHandledFragment) mFragment).onBackPressed()) {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void setSelectedFragment(BackHandledFragment selectedFragment) {
+        // mFragment = selectedFragment;
     }
 }

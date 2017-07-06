@@ -11,7 +11,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -28,7 +27,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +38,8 @@ import com.about.zhiye.api.ApiFactory;
 import com.about.zhiye.api.ZhihuHelper;
 import com.about.zhiye.db.DBLab;
 import com.about.zhiye.model.News;
+import com.bm.library.Info;
+import com.bm.library.PhotoView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -62,14 +63,16 @@ import rx.schedulers.Schedulers;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class ZhihuWebFragment extends Fragment
+public class ZhihuWebFragment extends BackHandledFragment
         implements SwipeRefreshLayout.OnRefreshListener, Observer<News> {
     private static final String ARGS_NEWS_ID = "news_id";
     private static final String KEY_NEWS = "news_save";
     private static final String ARGS_TYPE = "type";
 
     @BindView(R.id.image_view)
-    ImageView mImageView;
+    PhotoView mImageView;
+    @BindView(R.id.image_view2)
+    PhotoView mImageView2;
     @BindView(R.id.image_source)
     TextView mImageSource;
     @BindView(R.id.toolbar)
@@ -90,6 +93,10 @@ public class ZhihuWebFragment extends Fragment
     AppBarLayout mAppBarLayout;
     @BindView(R.id.progress_bar)
     ProgressBar mProgressBar;
+    @BindView(R.id.share_button)
+    Button mShareButton;
+    @BindView(R.id.save_button)
+    Button mSaveButton;
     private Unbinder unbinder;
 
     private String mNewsId;
@@ -98,6 +105,7 @@ public class ZhihuWebFragment extends Fragment
     private Callbacks mCallbacks;
     private boolean isUserTouch = false;
     private Subscription mSubscribe;
+    private Info mRectF;
 
     public static ZhihuWebFragment newInstance(String newsId, String type) {
         Bundle args = new Bundle();
@@ -142,6 +150,39 @@ public class ZhihuWebFragment extends Fragment
     }
 
     private void initToolbar() {
+        mImageView.disenable();
+        mImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mImageView.setVisibility(View.GONE);
+                mImageView2.setVisibility(View.VISIBLE);
+                mSaveButton.setVisibility(View.VISIBLE);
+                mSaveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        downloadImage(mNews.getImage());
+                    }
+                });
+
+                mRectF = mImageView.getInfo();
+                mImageView2.animaFrom(mRectF);
+            }
+        });
+
+        mImageView2.enable();
+        mImageView2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mImageView2.animaTo(mRectF, new Runnable() {
+                    @Override
+                    public void run() {
+                        mImageView2.setVisibility(View.GONE);
+                        mSaveButton.setVisibility(View.GONE);
+                        mImageView.setVisibility(View.VISIBLE);
+                    }
+                });
+            }
+        });
 
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         mCollapsingLayout.setExpandedTitleColor(Color.TRANSPARENT);
@@ -158,6 +199,22 @@ public class ZhihuWebFragment extends Fragment
                 mScrollView.fullScroll(View.FOCUS_UP);
             }
         });
+    }
+
+    @Override
+    public boolean onBackPressed() {
+        if (mImageView2.getVisibility() == View.VISIBLE) {
+            mImageView2.animaTo(mRectF, new Runnable() {
+                @Override
+                public void run() {
+                    mImageView2.setVisibility(View.GONE);
+                    mImageView.setVisibility(View.VISIBLE);
+                }
+            });
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -302,6 +359,11 @@ public class ZhihuWebFragment extends Fragment
                             }
                         }
                     });
+            Glide.with(this)
+                    .load(news.getImage())
+                    .fitCenter()
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(mImageView2);
         }
         mScrollView.setVisibility(View.VISIBLE);
         setWebSettings(news);
