@@ -72,6 +72,11 @@
     <string name="save_failed">保存失败</string>
     <string name="save_success">保存成功</string>
     <string name="please_grant_permissions">请授予权限</string>
+    <string name="title_settings_keyboard_settings">键盘设置</string>
+    <string name="back_to_top">返回顶部</string>
+    <string name="back_to_top_summary">点击返回按钮回到顶部</string>
+    <string name="open_bottom_navigate">打开底部导航</string>
+    <string name="open_bottom_navigate_summary">点击返回按钮打开底部导航栏</string>
     <plurals name="clear_count">
         <item quantity="other">清理了 %d 条记录</item>
     </plurals>

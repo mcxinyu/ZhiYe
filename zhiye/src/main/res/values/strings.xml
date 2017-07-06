@@ -72,6 +72,11 @@
     <string name="save_failed">Save Failed</string>
     <string name="save_success">Save Success</string>
     <string name="please_grant_permissions">Please grant permissions</string>
+    <string name="title_settings_keyboard_settings">Keyboard settings</string>
+    <string name="back_to_top">Back to the top</string>
+    <string name="back_to_top_summary">Click the back button to return to the top</string>
+    <string name="open_bottom_navigate">Open the bottom navigate</string>
+    <string name="open_bottom_navigate_summary">Click the back button to open the bottom navigate</string>
     <plurals name="clear_count">
         <item quantity="zero">Cleared 0 records</item>
         <item quantity="one">Cleared 1 record</item>

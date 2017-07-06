@@ -19,6 +19,8 @@ public class QueryPreferences {
     public static final String SETTING_COLORFUL = "setting_colorful";
     public static final String SETTING_NOTIFICATION = "setting_notification";
     public static final String SETTING_OPEN_CLIENT = "setting_open_client";
+    public static final String SETTING_BACK_TO_TOP = "setting_back_to_top";
+    public static final String SETTING_OPEN_BOTTOM_NAVIGATE = "setting_open_bottom_navigate";
 
     public static final String SETTING_CLEAN_CACHE = "setting_clean_cache";
     public static final String SETTING_CHECK_UPDATE = "setting_check_update";
@@ -65,7 +67,7 @@ public class QueryPreferences {
 
     public static boolean getNotificationState(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(SETTING_NOTIFICATION, false);
+                .getBoolean(SETTING_NOTIFICATION, true);
     }
 
     public static void setNotificationState(Context context, boolean enable) {
@@ -84,6 +86,30 @@ public class QueryPreferences {
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putBoolean(SETTING_OPEN_CLIENT, enable)
+                .apply();
+    }
+
+    public static boolean getBackToTopState(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(SETTING_BACK_TO_TOP, true);
+    }
+
+    public static void setBackToTopState(Context context, boolean enable) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putBoolean(SETTING_BACK_TO_TOP, enable)
+                .apply();
+    }
+
+    public static boolean getOpenBottomNavigateState(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(SETTING_OPEN_BOTTOM_NAVIGATE, true);
+    }
+
+    public static void setOpenBottomNavigateState(Context context, boolean enable) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putBoolean(SETTING_OPEN_BOTTOM_NAVIGATE, enable)
                 .apply();
     }
 

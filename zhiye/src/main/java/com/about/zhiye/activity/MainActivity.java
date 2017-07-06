@@ -449,12 +449,14 @@ public class MainActivity extends AppCompatActivity
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
-        } else if (!isAppBarLayoutExpanded) {
+        } else if (!isAppBarLayoutExpanded && QueryPreferences.getOpenBottomNavigateState(this)) {
             mAppBarLayout.setExpanded(true);
-            scrollCurrentFragmentToTop();
+            if (QueryPreferences.getBackToTopState(this)) {
+                scrollCurrentFragmentToTop();
+            }
         } else if (mSearchView.isSearchBarFocused()) {
             mSearchView.setSearchFocused(false);
-        } else if (getCurrentFragmentVertical() != 0) {
+        } else if (getCurrentFragmentVertical() != 0 && QueryPreferences.getBackToTopState(this)) {
             scrollCurrentFragmentToTop();
         } else {
             super.onBackPressed();

@@ -32,6 +32,23 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:key="keyboard_settings"
+        android:title="@string/title_settings_keyboard_settings">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:enabled="true"
+            android:key="setting_back_to_top"
+            android:summary="@string/back_to_top_summary"
+            android:title="@string/back_to_top"/>
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:enabled="true"
+            android:key="setting_open_bottom_navigate"
+            android:summary="@string/open_bottom_navigate_summary"
+            android:title="@string/open_bottom_navigate"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:title="@string/title_settings_others">
         <PreferenceScreen
             android:key="setting_clean_cache"
