@@ -73,7 +73,7 @@ public class PickDateFragment extends Fragment {
             public void onInvalidDateSelected(Date date) {
                 if (date.after(new Date())) {
                     Snackbar.make(mCalendarView, getString(R.string.not_coming), Snackbar.LENGTH_SHORT)
-                            .setAction(getString(R.string.ramdom_data), new View.OnClickListener() {
+                            .setAction(getString(R.string.random_data), new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     startActivity(SingleNewsListActivity.newIntent(getContext(), getRandomDate()));
@@ -82,7 +82,7 @@ public class PickDateFragment extends Fragment {
                             .show();
                 } else {
                     Snackbar.make(mCalendarView, getString(R.string.not_born), Snackbar.LENGTH_SHORT)
-                            .setAction(getString(R.string.ramdom_data), new View.OnClickListener() {
+                            .setAction(getString(R.string.random_data), new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     startActivity(SingleNewsListActivity.newIntent(getContext(), getRandomDate()));
