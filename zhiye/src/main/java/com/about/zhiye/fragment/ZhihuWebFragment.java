@@ -352,8 +352,7 @@ public class ZhihuWebFragment extends BackHandledFragment
                                     (AppBarLayout.LayoutParams) mAppBarLayout.getChildAt(0).getLayoutParams();
                             params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL |
                                     AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS |
-                                    AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS_COLLAPSED |
-                                    AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP);
+                                    AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS_COLLAPSED);
                             if (!isUserTouch) {
                                 mAppBarLayout.setExpanded(true);
                             }
