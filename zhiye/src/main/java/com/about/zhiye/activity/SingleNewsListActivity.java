@@ -29,9 +29,15 @@ public class SingleNewsListActivity extends SingleFragmentActivity
 
     private SingleZhihuNewsListFragment mFragment;
 
-    public static Intent newIntent(Context context, @NonNull Date date) {
+    public static Intent newIntent(Context context, @NonNull Calendar calendar) {
         Intent intent = new Intent(context, SingleNewsListActivity.class);
-        intent.putExtra(EXTRA_DATE, date);
+        intent.putExtra(EXTRA_DATE, calendar.getTime());
+        return intent;
+    }
+
+    public static Intent newIntent(Context context, @NonNull Date data) {
+        Intent intent = new Intent(context, SingleNewsListActivity.class);
+        intent.putExtra(EXTRA_DATE, data);
         return intent;
     }
 

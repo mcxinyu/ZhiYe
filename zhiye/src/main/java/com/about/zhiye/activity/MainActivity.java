@@ -29,6 +29,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -52,8 +53,12 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
 import com.google.gson.Gson;
 import com.qiangxi.checkupdatelibrary.dialog.ForceUpdateDialog;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,6 +66,7 @@ import butterknife.Unbinder;
 import im.fir.sdk.FIR;
 import im.fir.sdk.VersionCheckCallback;
 
+import static com.about.zhiye.util.DateUtil.ZHIHU_DAILY_BIRTHDAY;
 import static com.qiangxi.checkupdatelibrary.dialog.ForceUpdateDialog.FORCE_UPDATE_DIALOG_PERMISSION_REQUEST_CODE;
 
 /**
@@ -198,6 +204,7 @@ public class MainActivity extends AppCompatActivity
                             // mStatusBarView.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[0]);
                         }
                         mSearchView.setSearchBarTitle(getString(R.string.title_zhihu));
+                        mSearchView.inflateOverflowMenu(R.menu.menu_zhihu_daily);
                         switchFragment(mZhihuFragment);
                         return true;
                     case DISCOVER_FRAGMENT:
@@ -208,6 +215,7 @@ public class MainActivity extends AppCompatActivity
                             // mStatusBarView.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[1]);
                         }
                         mSearchView.setSearchBarTitle(getString(R.string.title_discover));
+                        mSearchView.inflateOverflowMenu(R.menu.menu_empty);
                         switchFragment(mDiscoverFragment);
                         return true;
                     case READ_LATER_FRAGMENT:
@@ -217,7 +225,6 @@ public class MainActivity extends AppCompatActivity
                         if (isColorful) {
                             // mStatusBarView.setBackgroundColor(getResources().getIntArray(R.array.tab_colors)[2]);
                         }
-                        // TODO: 2017/7/2 弹出菜单设置
                         mSearchView.setSearchBarTitle(getString(R.string.title_read_later));
                         mSearchView.inflateOverflowMenu(R.menu.menu_read_later);
                         switchFragment(mReadLaterFragment);
@@ -302,45 +309,126 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        mSearchView.inflateOverflowMenu(R.menu.menu_zhihu_daily);
+
         mSearchView.setOnMenuItemClickListener(new FloatingSearchView.OnMenuItemClickListener() {
             @Override
             public void onActionMenuItemSelected(MenuItem item) {
-                if (item.getItemId() == R.id.action_clear) {
-                    if (DBLab.get(MainActivity.this).queryAllReadLater().size() > 0) {
-                        new AlertDialog.Builder(MainActivity.this, R.style.DialogStyle)
-                                .setTitle(R.string.warning)
-                                .setMessage(R.string.confirm_empty)
-                                .setCancelable(true)
-                                .setOnKeyListener(new DialogInterface.OnKeyListener() {
-                                    @Override
-                                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                                        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-                                            dialog.dismiss();
-                                        }
-                                        return false;
-                                    }
-                                })
-                                .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        mHandler.sendEmptyMessage(1024);
-                                        dialog.dismiss();
-                                    }
-                                })
-                                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                })
-                                .create()
-                                .show();
-                    } else {
-                        Toast.makeText(MainActivity.this, R.string.no_more_records, Toast.LENGTH_SHORT).show();
-                    }
+                switch (item.getItemId()) {
+                    case R.id.action_date:
+                        selectDate();
+                        break;
+                    case R.id.action_clear:
+                        clearAllReadLater();
+                        break;
                 }
             }
         });
+    }
+
+    private void selectDate() {
+        // mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+        //     @Override
+        //     public void onClick(View v) {
+        //         startActivity(PickDateActivity.newIntent(getContext()));
+        //     }
+        // });
+        // mFloatingActionButton.setOnLongClickListener(new View.OnLongClickListener() {
+        //     @Override
+        //     public boolean onLongClick(View v) {
+        //         Snackbar.make(mViewPager, getString(R.string.title_pick_date), Snackbar.LENGTH_SHORT)
+        //                 .setAction(getResources().getString(R.string.start), new View.OnClickListener() {
+        //                     @Override
+        //                     public void onClick(View v) {
+        //                         startActivity(PickDateActivity.newIntent(getContext()));
+        //                     }
+        //                 })
+        //                 .show();
+        //         return false;
+        //     }
+        // });
+
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone("GMT+08"));
+
+        Calendar zhihuDailyBirthday = Calendar.getInstance();
+        zhihuDailyBirthday.set(2013, 5, 20);
+
+        DatePickerDialog dialog = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                calendar.set(year, monthOfYear, dayOfMonth);
+                Date date = calendar.getTime();
+                startActivity(SingleNewsListActivity.newIntent(MainActivity.this, date));
+            }
+        });
+
+        dialog.setMinDate(zhihuDailyBirthday);
+        dialog.setMaxDate(calendar);
+        dialog.dismissOnPause(true);
+        dialog.autoDismiss(true);
+        dialog.setNeutralButton(getString(R.string.random_data), View.VISIBLE, new DatePickerDialog.NeutralClickListener() {
+
+            @Override
+            public void onClickListener() {
+                startActivity(SingleNewsListActivity.newIntent(MainActivity.this, getRandomDate()));
+            }
+        });
+
+        dialog.show(getFragmentManager(), MainActivity.class.getSimpleName());
+    }
+
+    private Date getRandomDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(ZHIHU_DAILY_BIRTHDAY);
+        calendar.add(Calendar.DAY_OF_YEAR, 1 - (int) (Math.random() * getDaysBetween(new Date(), ZHIHU_DAILY_BIRTHDAY)));
+        return calendar.getTime();
+    }
+
+    public int getDaysBetween(Date date1, Date date2) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date1);
+        long time1 = calendar.getTimeInMillis();
+        calendar.setTime(date2);
+        long time2 = calendar.getTimeInMillis();
+        long between_days = (time2 - time1) / (1000 * 3600 * 24);
+
+        return Integer.parseInt(String.valueOf(between_days));
+    }
+
+    private void clearAllReadLater() {
+        if (DBLab.get(MainActivity.this).queryAllReadLater().size() > 0) {
+            new AlertDialog.Builder(this, R.style.DialogStyle)
+                    .setTitle(R.string.warning)
+                    .setMessage(R.string.confirm_empty)
+                    .setCancelable(true)
+                    .setOnKeyListener(new DialogInterface.OnKeyListener() {
+                        @Override
+                        public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                            if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+                                dialog.dismiss();
+                            }
+                            return false;
+                        }
+                    })
+                    .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            mHandler.sendEmptyMessage(1024);
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create()
+                    .show();
+        } else {
+            Toast.makeText(MainActivity.this, R.string.no_more_records, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void setupDrawer() {

@@ -31,7 +31,7 @@
     <string name="not_born">过去到过去！</string>
     <string name="title_pick_date">选择日期</string>
     <string name="back">返回</string>
-    <string name="ramdom_data">随机选择</string>
+    <string name="random_data">随机选择</string>
     <string name="title_themes">主题日报</string>
     <string name="title_editor">主编</string>
     <string name="multiple_picture">多图</string>
@@ -77,6 +77,7 @@
     <string name="back_to_top_summary">点击返回按钮回到顶部</string>
     <string name="open_bottom_navigate">打开底部导航</string>
     <string name="open_bottom_navigate_summary">点击返回按钮打开底部导航栏</string>
+    <string name="action_title_date">选择日期</string>
     <plurals name="clear_count">
         <item quantity="other">清理了 %d 条记录</item>
     </plurals>

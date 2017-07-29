@@ -89,27 +89,6 @@ public class ZhihuFragment extends BaseFragment {
             }
         });
 
-        // mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-        //     @Override
-        //     public void onClick(View v) {
-        //         startActivity(PickDateActivity.newIntent(getContext()));
-        //     }
-        // });
-        // mFloatingActionButton.setOnLongClickListener(new View.OnLongClickListener() {
-        //     @Override
-        //     public boolean onLongClick(View v) {
-        //         Snackbar.make(mViewPager, getString(R.string.title_pick_date), Snackbar.LENGTH_SHORT)
-        //                 .setAction(getResources().getString(R.string.start), new View.OnClickListener() {
-        //                     @Override
-        //                     public void onClick(View v) {
-        //                         startActivity(PickDateActivity.newIntent(getContext()));
-        //                     }
-        //                 })
-        //                 .show();
-        //         return false;
-        //     }
-        // });
-
         return view;
     }
 

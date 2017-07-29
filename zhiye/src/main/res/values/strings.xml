@@ -31,7 +31,7 @@
     <string name="not_born">Zhihu Daily not born that day!</string>
     <string name="title_pick_date">Pick Date</string>
     <string name="back">back</string>
-    <string name="ramdom_data">Random Selection</string>
+    <string name="random_data">Random Selection</string>
     <string name="title_themes">Daily Themes</string>
     <string name="title_editor">Editor</string>
     <string name="multiple_picture">Multi-Images</string>
@@ -77,6 +77,7 @@
     <string name="back_to_top_summary">Click the back button to return to the top</string>
     <string name="open_bottom_navigate">Open the bottom navigate</string>
     <string name="open_bottom_navigate_summary">Click the back button to open the bottom navigate</string>
+    <string name="action_title_date">Select Date</string>
     <plurals name="clear_count">
         <item quantity="zero">Cleared 0 records</item>
         <item quantity="one">Cleared 1 record</item>

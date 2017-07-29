@@ -120,4 +120,5 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
     compile 'com.bm.photoview:library:1.4.1'
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.9.4@aar'
+    compile project(path: ':library')
 }
