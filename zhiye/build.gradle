@@ -121,4 +121,5 @@ dependencies {
     compile 'com.bm.photoview:library:1.4.1'
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.9.4@aar'
     compile project(path: ':library')
+    compile project(path: ':slidebacklibrary')
 }

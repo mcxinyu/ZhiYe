@@ -7,9 +7,13 @@ import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 
+import com.about.zhiye.ZhiYeApp;
 import com.about.zhiye.db.DBLab;
 import com.about.zhiye.fragment.BackHandledFragment;
 import com.about.zhiye.fragment.ZhihuWebFragment;
+import com.oubowu.slideback.SlideBackHelper;
+import com.oubowu.slideback.SlideConfig;
+import com.oubowu.slideback.widget.SlideBackLayout;
 
 public class ZhihuWebActivity extends BaseActivity
         implements ZhihuWebFragment.Callbacks,
@@ -22,6 +26,7 @@ public class ZhihuWebActivity extends BaseActivity
     private String mNewsId;
     private String mType;
     private boolean isReadLaterAdd;
+    private SlideBackLayout slideBackLayout;
 
     public static Intent newIntent(Context context, String newsId, String type) {
         Intent intent = new Intent(context, ZhihuWebActivity.class);
@@ -43,6 +48,17 @@ public class ZhihuWebActivity extends BaseActivity
         isReadLaterAdd = DBLab.get(this).queryReadLaterExist(mNewsId);
 
         super.onCreate(savedInstanceState);
+
+        slideBackLayout = SlideBackHelper.attach(this,
+                ZhiYeApp.getActivityHelper(),
+                new SlideConfig.Builder()
+                        .rotateScreen(true)
+                        .edgeOnly(false)
+                        .lock(false)
+                        .edgePercent(0.1f)
+                        .slideOutPercent(0.5f)
+                        .create(),
+                null);
     }
 
     @Override
@@ -75,6 +91,7 @@ public class ZhihuWebActivity extends BaseActivity
     public void onBackPressed() {
         if (mFragment == null || !((BackHandledFragment) mFragment).onBackPressed()) {
             super.onBackPressed();
+            slideBackLayout.isComingToFinish();
         }
     }
 
