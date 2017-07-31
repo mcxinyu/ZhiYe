@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity
                     .commit();
         }
 
-        mHandler.sendEmptyMessageDelayed(WHAT_CHECK_UPDATE, 3000);
+        mHandler.sendEmptyMessageDelayed(WHAT_CHECK_UPDATE, 6000);
     }
 
     private void initBottomNavigation() {
