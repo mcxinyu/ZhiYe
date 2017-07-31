@@ -1,1 +1,1 @@
-include ':zhiye', ':library'
+include ':zhiye', ':library', ':slidebacklibrary'
