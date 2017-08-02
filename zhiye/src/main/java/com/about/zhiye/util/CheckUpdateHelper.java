@@ -9,7 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.about.zhiye.R;
-import com.about.zhiye.model.VersionInfoFir;
+import com.pgyersdk.javabean.AppBean;
 import com.qiangxi.checkupdatelibrary.dialog.ForceUpdateDialog;
 import com.qiangxi.checkupdatelibrary.dialog.UpdateDialog;
 
@@ -25,7 +25,7 @@ public class CheckUpdateHelper {
     private static ForceUpdateDialog buildForceUpdateDialog(Activity activity,
                                                             @Nullable android.app.Fragment fragment,
                                                             @Nullable Fragment compatFragment,
-                                                            VersionInfoFir versionInfo) {
+                                                            AppBean versionInfo) {
         ForceUpdateDialog forceUpdateDialog;
         if (fragment != null) {
             forceUpdateDialog = new ForceUpdateDialog(activity, fragment);
@@ -34,27 +34,28 @@ public class CheckUpdateHelper {
         } else {
             forceUpdateDialog = new ForceUpdateDialog(activity);
         }
-        forceUpdateDialog.setAppSize(versionInfo.getBinary().getFileSize())
-                .setDownloadUrl(versionInfo.getInstallUrl())
-                .setTitle(versionInfo.getName() + "有更新啦")
-                .setReleaseTime(versionInfo.getUpdatedAt())
-                .setVersionName(versionInfo.getVersionShort())
-                .setUpdateDesc(versionInfo.getChangelog())
-                .setFileName(versionInfo.getName() + " v" + versionInfo.getVersionShort() + ".apk")
+        forceUpdateDialog
+                // .setAppSize(versionInfo.getBinary().getFileSize())
+                .setDownloadUrl(versionInfo.getDownloadURL())
+                .setTitle(activity.getString(R.string.app_name) + "有更新啦")
+                // .setReleaseTime(versionInfo.getUpdatedAt())
+                .setVersionName(versionInfo.getVersionName())
+                .setUpdateDesc(versionInfo.getReleaseNote())
+                .setFileName(activity.getString(R.string.app_name) + " v" + versionInfo.getVersionName() + ".apk")
                 .setFilePath(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath())
                 .show();
         return forceUpdateDialog;
     }
 
-    public static ForceUpdateDialog buildForceUpdateDialog(Activity activity, android.app.Fragment fragment, VersionInfoFir versionInfo) {
+    public static ForceUpdateDialog buildForceUpdateDialog(Activity activity, android.app.Fragment fragment, AppBean versionInfo) {
         return buildForceUpdateDialog(activity, fragment, null, versionInfo);
     }
 
-    public static ForceUpdateDialog buildForceUpdateDialog(Activity activity, Fragment compatFragment, VersionInfoFir versionInfo) {
+    public static ForceUpdateDialog buildForceUpdateDialog(Activity activity, Fragment compatFragment, AppBean versionInfo) {
         return buildForceUpdateDialog(activity, null, compatFragment, versionInfo);
     }
 
-    public static ForceUpdateDialog buildForceUpdateDialog(Activity activity, VersionInfoFir versionInfo) {
+    public static ForceUpdateDialog buildForceUpdateDialog(Activity activity, AppBean versionInfo) {
         return buildForceUpdateDialog(activity, null, null, versionInfo);
     }
 
@@ -64,7 +65,7 @@ public class CheckUpdateHelper {
     private static UpdateDialog buildUpdateDialog(Activity activity,
                                                   @Nullable android.app.Fragment fragment,
                                                   @Nullable Fragment compatFragment,
-                                                  VersionInfoFir versionInfo) {
+                                                  AppBean versionInfo) {
         UpdateDialog updateDialog;
         if (fragment != null) {
             updateDialog = new UpdateDialog(activity, fragment);
@@ -73,30 +74,31 @@ public class CheckUpdateHelper {
         } else {
             updateDialog = new UpdateDialog(activity);
         }
-        updateDialog.setAppSize(versionInfo.getBinary().getFileSize())
-                .setDownloadUrl(versionInfo.getInstallUrl())
-                .setTitle(versionInfo.getName() + "有更新啦")
-                .setReleaseTime(versionInfo.getUpdatedAt())
-                .setVersionName(versionInfo.getVersionShort())
-                .setUpdateDesc(versionInfo.getChangelog())
-                .setFileName(versionInfo.getName() + " v" + versionInfo.getVersionShort() + ".apk")
+        updateDialog
+                // .setAppSize(versionInfo.getBinary().getFileSize())
+                .setDownloadUrl(versionInfo.getDownloadURL())
+                .setTitle(activity.getString(R.string.app_name) + "有更新啦")
+                // .setReleaseTime(versionInfo.getUpdatedAt())
+                .setVersionName(versionInfo.getVersionName())
+                .setUpdateDesc(versionInfo.getReleaseNote())
+                .setFileName(activity.getString(R.string.app_name) + " v" + versionInfo.getVersionName() + ".apk")
                 .setFilePath(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath())
                 .setShowProgress(true)
                 .setIconResId(R.mipmap.ic_launcher)
-                .setAppName(versionInfo.getName())
+                .setAppName(activity.getString(R.string.app_name))
                 .show();
         return updateDialog;
     }
 
-    public static UpdateDialog buildUpdateDialog(Activity activity, android.app.Fragment fragment, VersionInfoFir versionInfo) {
+    public static UpdateDialog buildUpdateDialog(Activity activity, android.app.Fragment fragment, AppBean versionInfo) {
         return buildUpdateDialog(activity, fragment, null, versionInfo);
     }
 
-    public static UpdateDialog buildUpdateDialog(Activity activity, Fragment compatFragment, VersionInfoFir versionInfo) {
+    public static UpdateDialog buildUpdateDialog(Activity activity, Fragment compatFragment, AppBean versionInfo) {
         return buildUpdateDialog(activity, null, compatFragment, versionInfo);
     }
 
-    public static UpdateDialog buildUpdateDialog(Activity activity, VersionInfoFir versionInfo) {
+    public static UpdateDialog buildUpdateDialog(Activity activity, AppBean versionInfo) {
         return buildUpdateDialog(activity, null, null, versionInfo);
     }
 

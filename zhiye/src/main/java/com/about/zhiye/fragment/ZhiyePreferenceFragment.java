@@ -2,7 +2,6 @@ package com.about.zhiye.fragment;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,19 +16,17 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.about.zhiye.R;
-import com.about.zhiye.model.VersionInfoFir;
 import com.about.zhiye.util.CheckUpdateHelper;
 import com.about.zhiye.util.QueryPreferences;
-import com.google.gson.Gson;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
+import com.pgyersdk.javabean.AppBean;
+import com.pgyersdk.update.PgyUpdateManager;
+import com.pgyersdk.update.UpdateManagerListener;
 import com.qiangxi.checkupdatelibrary.dialog.UpdateDialog;
 
 import java.io.File;
 import java.text.DecimalFormat;
-
-import im.fir.sdk.FIR;
-import im.fir.sdk.VersionCheckCallback;
 
 import static com.qiangxi.checkupdatelibrary.dialog.UpdateDialog.UPDATE_DIALOG_PERMISSION_REQUEST_CODE;
 
@@ -229,43 +226,35 @@ public class ZhiyePreferenceFragment extends PreferenceFragmentCompat implements
     }
 
     private void checkForUpdate() {
-        try {
-            ApplicationInfo appInfo = getActivity().getPackageManager()
-                    .getApplicationInfo(getActivity().getPackageName(), PackageManager.GET_META_DATA);
-            String firToken = appInfo.metaData.getString("fir_token");
 
-            FIR.checkForUpdateInFIR(firToken, new VersionCheckCallback() {
-                @Override
-                public void onSuccess(String versionJson) {
-                    Log.i(TAG, "check from fir.im success! " + "\n" + versionJson);
-                    final VersionInfoFir versionInfoFir = new Gson().fromJson(versionJson, VersionInfoFir.class);
-
-                    if (versionInfoFir.getVersion() > CheckUpdateHelper.getCurrentVersionCode(getActivity())) {
-                        mUpdateDialog = CheckUpdateHelper.buildUpdateDialog(getActivity(), ZhiyePreferenceFragment.this, versionInfoFir);
-                    } else {
-                        mCheckUpdatePreference.setSummary("当前为最新版本：" + CheckUpdateHelper.getCurrentVersionName(getActivity()));
+        PgyUpdateManager.register(getActivity(), "com.about.zhiye",
+                new UpdateManagerListener() {
+                    @Override
+                    public void onNoUpdateAvailable() {
+                        mCheckUpdatePreference.setSummary("当前为最新版本：" +
+                                CheckUpdateHelper.getCurrentVersionName(getActivity()));
                     }
-                }
 
-                @Override
-                public void onFail(Exception exception) {
-                    Log.i(TAG, "check fir.im fail! " + "\n" + exception.getMessage());
-                    Toast.makeText(getActivity(), "更新失败", Toast.LENGTH_SHORT).show();
-                }
+                    @Override
+                    public void onUpdateAvailable(String s) {
+                        AppBean appBean = getAppBeanFromString(s);
 
-                @Override
-                public void onStart() {
-                    Toast.makeText(getActivity(), "正在获取更新", Toast.LENGTH_SHORT).show();
-                }
+                        mCheckUpdatePreference.setSummary("最新版本：" +
+                                appBean.getVersionName() +
+                                "（当前版本：" +
+                                CheckUpdateHelper.getCurrentVersionName(getActivity()) + "）");
 
-                @Override
-                public void onFinish() {
-                    // Toast.makeText(getActivity(), "获取完成", Toast.LENGTH_SHORT).show();
-                }
-            });
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+                        mUpdateDialog = CheckUpdateHelper
+                                .buildUpdateDialog(getActivity(),
+                                        ZhiyePreferenceFragment.this, appBean);
+                    }
+                });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        PgyUpdateManager.unregister();
     }
 
     private void startAboutActivity() {

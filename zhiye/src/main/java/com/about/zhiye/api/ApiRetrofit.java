@@ -27,7 +27,6 @@ public class ApiRetrofit {
     private static final String TAG = "ApiRetrofit";
 
     public ZhihuApi ZhihuApiService;
-    public FirApi FirApiServices;
 
     public static final String ZHIHU_BASE_URL = "http://news-at.zhihu.com/";
     public static final String ZHIHU_SEARCH = "http://zhihudailypurify.herokuapp.com/search/";
@@ -35,10 +34,6 @@ public class ApiRetrofit {
 
     public ZhihuApi getZhihuApiService() {
         return ZhihuApiService;
-    }
-
-    public FirApi getFirApiService() {
-        return FirApiServices;
     }
 
     public ApiRetrofit() {
@@ -69,7 +64,6 @@ public class ApiRetrofit {
                 .build();
 
         ZhihuApiService = retrofitZhihu.create(ZhihuApi.class);
-        FirApiServices = retrofitFir.create(FirApi.class);
     }
 
     // 缓存

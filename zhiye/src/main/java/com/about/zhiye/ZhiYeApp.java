@@ -4,8 +4,6 @@ import android.app.Application;
 
 import com.oubowu.slideback.ActivityHelper;
 
-import im.fir.sdk.FIR;
-
 /**
  * Created by huangyuefeng on 2017/3/17.
  * Contact me : mcxinyu@foxmail.com
@@ -21,7 +19,7 @@ public class ZhiYeApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        FIR.init(this);
+        // FIR.init(this);
 
         mActivityHelper = new ActivityHelper();
         registerActivityLifecycleCallbacks(mActivityHelper);

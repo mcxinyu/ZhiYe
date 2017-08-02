@@ -8,6 +8,9 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <!--<uses-permission android:name="android.permission.RECORD_AUDIO" /> &lt;!&ndash; 允许程序录制音频 &ndash;&gt;-->
+    <!--<uses-permission android:name="android.permission.GET_TASKS"/>-->
+    <!--<uses-permission android:name="android.permission.READ_LOGS" /> &lt;!&ndash; 获取logcat日志 &ndash;&gt;-->
 
     <application
         android:name=".ZhiYeApp"
@@ -21,11 +24,9 @@
             android:name="com.google.android.backup.api_key"
             android:value="${com_google_android_backup_api_key}"/>
         <meta-data
-            android:name="BUG_HD_SDK_GENERAL_KEY"
-            android:value="${bug_hd_sdk_general_key}"/>
-        <meta-data
-            android:name="fir_token"
-            android:value="${fir_token}"/>
+            android:name="PGYER_APPID"
+            android:value="${pgyer_appid}">
+        </meta-data>
 
         <activity
             android:name=".activity.MainActivity"
@@ -72,17 +73,27 @@
             android:name=".activity.ShowImageFromWebActivity"
             android:theme="@style/Theme.Zhiye.Light.NoActionbar.Translucent">
         </activity>
+        <!--<activity android:name="com.pgyersdk.activity.FeedbackActivity"/>-->
 
         <service android:name="com.qiangxi.checkupdatelibrary.service.DownloadService"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.about.zhiye"
+            android:authorities="com.about.zhiye.checkupdate"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/checkupdatelibrary_uri_grant"/>
+        </provider>
+        <provider
+            android:name=".util.PGYProvider"
+            android:authorities="com.about.zhiye.pgy"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
         </provider>
     </application>
 

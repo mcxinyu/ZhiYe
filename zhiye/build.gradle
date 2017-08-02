@@ -35,14 +35,12 @@ android {
             debuggable true
             signingConfig signingConfigs.zhiye_release
             manifestPlaceholders = [com_google_android_backup_api_key: zhiyeProperties['com_google_android_backup_api_key'],
-                                    bug_hd_sdk_general_key           : zhiyeProperties['bug_hd_sdk_general_key'],
-                                    fir_token                        : zhiyeProperties['fir_token']]
+                                    pgyer_appid                      : zhiyeProperties['pgyer_appid']]
         }
         debug {
             signingConfig signingConfigs.zhiye_release
             manifestPlaceholders = [com_google_android_backup_api_key: zhiyeProperties['com_google_android_backup_api_key'],
-                                    bug_hd_sdk_general_key           : zhiyeProperties['bug_hd_sdk_general_key'],
-                                    fir_token                        : zhiyeProperties['fir_token']]
+                                    pgyer_appid                      : zhiyeProperties['pgyer_appid']]
         }
     }
     compileOptions {
@@ -113,7 +111,6 @@ dependencies {
     compile 'com.squareup:android-times-square:1.7.2'
     compile 'com.mikepenz:aboutlibraries:5.9.5'
     compile 'com.aurelhubert:ahbottomnavigation:2.0.6'
-    compile 'im.fir:fir-sdk:latest.integration@aar'
     compile 'com.qiangxi.checkupdatelibrary:checkupdatelibrary:1.1.3@aar'
     compile 'com.github.arimorty:floatingsearchview:2.0.4'
     testCompile 'junit:junit:4.12'
@@ -122,4 +119,5 @@ dependencies {
     compile 'com.tbruyelle.rxpermissions:rxpermissions:0.9.4@aar'
     compile project(path: ':library')
     compile project(path: ':slidebacklibrary')
+    compile 'com.pgyersdk:sdk:2.7.0'
 }

@@ -5,7 +5,6 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -43,7 +42,6 @@ import com.about.zhiye.fragment.BaseFragment;
 import com.about.zhiye.fragment.DiscoverFragment;
 import com.about.zhiye.fragment.SingleZhihuNewsListFragment;
 import com.about.zhiye.fragment.ZhihuFragment;
-import com.about.zhiye.model.VersionInfoFir;
 import com.about.zhiye.util.CheckUpdateHelper;
 import com.about.zhiye.util.QueryPreferences;
 import com.about.zhiye.util.StateUtils;
@@ -51,7 +49,9 @@ import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
-import com.google.gson.Gson;
+import com.pgyersdk.javabean.AppBean;
+import com.pgyersdk.update.PgyUpdateManager;
+import com.pgyersdk.update.UpdateManagerListener;
 import com.qiangxi.checkupdatelibrary.dialog.ForceUpdateDialog;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
@@ -63,8 +63,6 @@ import java.util.TimeZone;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import im.fir.sdk.FIR;
-import im.fir.sdk.VersionCheckCallback;
 
 import static com.about.zhiye.util.DateUtil.ZHIHU_DAILY_BIRTHDAY;
 import static com.qiangxi.checkupdatelibrary.dialog.ForceUpdateDialog.FORCE_UPDATE_DIALOG_PERMISSION_REQUEST_CODE;
@@ -531,6 +529,7 @@ public class MainActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
+        PgyUpdateManager.unregister();
     }
 
     @Override
@@ -563,42 +562,25 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void checkForUpdate() {
-        try {
-            ApplicationInfo appInfo = MainActivity.this.getPackageManager()
-                    .getApplicationInfo(MainActivity.this.getPackageName(), PackageManager.GET_META_DATA);
-            String firToken = appInfo.metaData.getString("fir_token");
 
-            FIR.checkForUpdateInFIR(firToken, new VersionCheckCallback() {
-                @Override
-                public void onSuccess(String versionJson) {
-                    Log.i(TAG, "check from fir.im success! " + "\n" + versionJson);
-                    final VersionInfoFir versionInfoFir = new Gson().fromJson(versionJson, VersionInfoFir.class);
+        PgyUpdateManager.register(MainActivity.this, "com.about.zhiye",
+                new UpdateManagerListener() {
+                    @Override
+                    public void onNoUpdateAvailable() {
 
-                    if (versionInfoFir.getVersion() > CheckUpdateHelper.getCurrentVersionCode(MainActivity.this)) {
-                        if (versionInfoFir.getVersionShort().contains("force")) {
-                            mForceUpdateDialog = CheckUpdateHelper.buildForceUpdateDialog(MainActivity.this, versionInfoFir);
+                    }
+
+                    @Override
+                    public void onUpdateAvailable(String result) {
+                        Log.d("MainActivity", result);
+                        final AppBean appBean = getAppBeanFromString(result);
+
+                        if (appBean.getVersionName().contains("force")) {
+                            mForceUpdateDialog = CheckUpdateHelper
+                                    .buildForceUpdateDialog(MainActivity.this, appBean);
                         }
                     }
-                }
-
-                @Override
-                public void onFail(Exception exception) {
-                    Log.i(TAG, "check fir.im fail! " + "\n" + exception.getMessage());
-                }
-
-                @Override
-                public void onStart() {
-                    Log.i(TAG, "check update start.");
-                }
-
-                @Override
-                public void onFinish() {
-                    Log.i(TAG, "check update finish.");
-                }
-            });
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+                });
     }
 
     @Override
