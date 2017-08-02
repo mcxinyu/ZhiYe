@@ -53,7 +53,7 @@ public class ZhihuWebActivity extends BaseActivity
                 ZhiYeApp.getActivityHelper(),
                 new SlideConfig.Builder()
                         .rotateScreen(true)
-                        .edgeOnly(false)
+                        .edgeOnly(true)
                         .lock(false)
                         .edgePercent(0.1f)
                         .slideOutPercent(0.5f)
