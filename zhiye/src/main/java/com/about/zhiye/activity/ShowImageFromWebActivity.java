@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -31,7 +30,7 @@ import butterknife.ButterKnife;
  * Created by huangyuefeng on 2017/7/3.
  * Contact me : mcxinyu@foxmail.com
  */
-public class ShowImageFromWebActivity extends AppCompatActivity {
+public class ShowImageFromWebActivity extends BaseAppCompatActivity {
     private static final String TAG = "ShowImageFromWeb";
     private static final String EXTRA_IMAGE_URL_ARRAY = "extra_image_url_array";
     private static final String EXTRA_IMAGE_URL = "extra_image_url";

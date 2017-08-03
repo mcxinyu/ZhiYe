@@ -8,9 +8,9 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <!--<uses-permission android:name="android.permission.RECORD_AUDIO" /> &lt;!&ndash; 允许程序录制音频 &ndash;&gt;-->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/> <!-- 允许程序录制音频 -->
+    <uses-permission android:name="android.permission.READ_LOGS"/> <!-- 获取logcat日志 -->
     <!--<uses-permission android:name="android.permission.GET_TASKS"/>-->
-    <!--<uses-permission android:name="android.permission.READ_LOGS" /> &lt;!&ndash; 获取logcat日志 &ndash;&gt;-->
 
     <application
         android:name=".ZhiYeApp"

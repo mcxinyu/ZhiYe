@@ -25,6 +25,7 @@ public class QueryPreferences {
     public static final String SETTING_CLEAN_CACHE = "setting_clean_cache";
     public static final String SETTING_CHECK_UPDATE = "setting_check_update";
     public static final String SETTING_ABOUT = "setting_about";
+    public static final String SETTING_SHAKE_FEEDBACK = "setting_shake_feedback";
     public static final String SETTING_FEEDBACK = "setting_feedback";
 
     public static final String SEARCH_HISTORY = "search_history";
@@ -110,6 +111,18 @@ public class QueryPreferences {
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putBoolean(SETTING_OPEN_BOTTOM_NAVIGATE, enable)
+                .apply();
+    }
+
+    public static boolean getSettingShakeFeedbackState(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(SETTING_SHAKE_FEEDBACK, true);
+    }
+
+    public static void setSettingShakeFeedbackState(Context context, boolean enable) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putBoolean(SETTING_SHAKE_FEEDBACK, enable)
                 .apply();
     }
 

@@ -78,6 +78,7 @@
     <string name="open_bottom_navigate">打开底部导航</string>
     <string name="open_bottom_navigate_summary">点击返回按钮打开底部导航栏</string>
     <string name="action_title_date">选择日期</string>
+    <string name="title_setting_shake_feedback">摇一摇反馈</string>
     <plurals name="clear_count">
         <item quantity="other">清理了 %d 条记录</item>
     </plurals>

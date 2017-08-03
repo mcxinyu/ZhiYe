@@ -3,6 +3,7 @@ package com.about.zhiye;
 import android.app.Application;
 
 import com.oubowu.slideback.ActivityHelper;
+import com.pgyersdk.crash.PgyCrashManager;
 
 /**
  * Created by huangyuefeng on 2017/3/17.
@@ -19,7 +20,7 @@ public class ZhiYeApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        // FIR.init(this);
+        PgyCrashManager.register(this);
 
         mActivityHelper = new ActivityHelper();
         registerActivityLifecycleCallbacks(mActivityHelper);

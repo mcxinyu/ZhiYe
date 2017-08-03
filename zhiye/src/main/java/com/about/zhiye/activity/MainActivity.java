@@ -23,7 +23,6 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -49,6 +48,8 @@ import com.arlib.floatingsearchview.FloatingSearchView;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
+import com.pgyersdk.feedback.PgyFeedback;
+import com.pgyersdk.feedback.PgyFeedbackShakeManager;
 import com.pgyersdk.javabean.AppBean;
 import com.pgyersdk.update.PgyUpdateManager;
 import com.pgyersdk.update.UpdateManagerListener;
@@ -72,7 +73,7 @@ import static com.qiangxi.checkupdatelibrary.dialog.ForceUpdateDialog.FORCE_UPDA
  * Contact me : mcxinyu@foxmail.com
  * 管理 fragment
  */
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseAppCompatActivity
         implements SingleZhihuNewsListFragment.Callbacks {
     private static final String TAG = "MainActivity";
     private static final int WHAT_CHECK_UPDATE = 1024;
@@ -167,6 +168,12 @@ public class MainActivity extends AppCompatActivity
         }
 
         mHandler.sendEmptyMessageDelayed(WHAT_CHECK_UPDATE, 6000);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        PgyFeedbackShakeManager.unregister();
     }
 
     private void initBottomNavigation() {
@@ -325,26 +332,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void selectDate() {
-        // mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-        //     @Override
-        //     public void onClick(View v) {
-        //         startActivity(PickDateActivity.newIntent(getContext()));
-        //     }
-        // });
-        // mFloatingActionButton.setOnLongClickListener(new View.OnLongClickListener() {
-        //     @Override
-        //     public boolean onLongClick(View v) {
-        //         Snackbar.make(mViewPager, getString(R.string.title_pick_date), Snackbar.LENGTH_SHORT)
-        //                 .setAction(getResources().getString(R.string.start), new View.OnClickListener() {
-        //                     @Override
-        //                     public void onClick(View v) {
-        //                         startActivity(PickDateActivity.newIntent(getContext()));
-        //                     }
-        //                 })
-        //                 .show();
-        //         return false;
-        //     }
-        // });
 
         final Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("GMT+08"));
@@ -489,7 +476,8 @@ public class MainActivity extends AppCompatActivity
                         startActivity(PreferencesActivity.newIntent(MainActivity.this));
                         break;
                     case R.id.menu_feedback:
-                        sendEmailFeedback();
+                        // sendEmailFeedback();
+                        showPgyerDialog();
                         break;
                 }
                 mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -513,6 +501,10 @@ public class MainActivity extends AppCompatActivity
         Uri uri = Uri.parse(uriText);
         intent.setData(uri);
         startActivity(intent);
+    }
+
+    private void showPgyerDialog() {
+        PgyFeedback.getInstance().showDialog(this);
     }
 
     private void setStatusBarView() {

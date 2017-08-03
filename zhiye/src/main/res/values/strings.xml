@@ -78,6 +78,7 @@
     <string name="open_bottom_navigate">Open the bottom navigate</string>
     <string name="open_bottom_navigate_summary">Click the back button to open the bottom navigate</string>
     <string name="action_title_date">Select Date</string>
+    <string name="title_setting_shake_feedback">Shake to feedback</string>
     <plurals name="clear_count">
         <item quantity="zero">Cleared 0 records</item>
         <item quantity="one">Cleared 1 record</item>

@@ -20,6 +20,7 @@ import com.about.zhiye.util.CheckUpdateHelper;
 import com.about.zhiye.util.QueryPreferences;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
+import com.pgyersdk.feedback.PgyFeedback;
 import com.pgyersdk.javabean.AppBean;
 import com.pgyersdk.update.PgyUpdateManager;
 import com.pgyersdk.update.UpdateManagerListener;
@@ -34,7 +35,8 @@ import static com.qiangxi.checkupdatelibrary.dialog.UpdateDialog.UPDATE_DIALOG_P
  * Created by huangyuefeng on 2017/4/25.
  * Contact me : mcxinyu@foxmail.com
  */
-public class ZhiyePreferenceFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceClickListener {
+public class ZhiyePreferenceFragment extends PreferenceFragmentCompat
+        implements Preference.OnPreferenceClickListener {
     public static final String TAG = "ZhiyePreferenceFragment";
 
     private PreferenceScreen mCheckUpdatePreference;
@@ -165,7 +167,8 @@ public class ZhiyePreferenceFragment extends PreferenceFragmentCompat implements
                 clearAppCache();
                 return true;
             case QueryPreferences.SETTING_FEEDBACK:
-                sendEmailFeedback();
+                // sendEmailFeedback();
+                showPgyerDialog();
                 return true;
         }
         return false;
@@ -252,8 +255,8 @@ public class ZhiyePreferenceFragment extends PreferenceFragmentCompat implements
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDetach() {
+        super.onDetach();
         PgyUpdateManager.unregister();
     }
 
@@ -275,6 +278,10 @@ public class ZhiyePreferenceFragment extends PreferenceFragmentCompat implements
         Uri uri = Uri.parse(uriText);
         intent.setData(uri);
         startActivity(intent);
+    }
+
+    private void showPgyerDialog() {
+        PgyFeedback.getInstance().showDialog(getActivity());
     }
 
     @Override

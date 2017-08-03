@@ -6,7 +6,6 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 
 import com.about.zhiye.R;
 
@@ -15,7 +14,7 @@ import com.about.zhiye.R;
  * Contact me : mcxinyu@foxmail.com
  * 具有一个简单的 FrameLayout 来存放 Fragment 的 Activity 抽象类
  */
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends BaseAppCompatActivity {
 
     protected abstract Fragment createFragment();
 
