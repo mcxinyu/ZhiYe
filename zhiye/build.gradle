@@ -22,8 +22,8 @@ android {
         applicationId "com.about.zhiye"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 3
-        versionName '1.0.2'
+        versionCode Integer.parseInt(project.VERSION_CODE)
+        versionName project.VERSION_NAME
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         signingConfig signingConfigs.zhiye_release
@@ -53,8 +53,8 @@ android {
             applicationId "com.about.zhiye"
             minSdkVersion 19
             targetSdkVersion 25
-            versionCode 13
-            versionName '1.2.0'
+            versionCode Integer.parseInt(project.VERSION_CODE)
+            versionName project.VERSION_NAME
             testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
             vectorDrawables.useSupportLibrary = true
             signingConfig signingConfigs.zhiye_release
@@ -64,8 +64,8 @@ android {
             applicationId "com.about.zhiye"
             minSdkVersion 19
             targetSdkVersion 25
-            versionCode 1
-            versionName '1.0.0'
+            versionCode Integer.parseInt(project.VERSION_CODE)
+            versionName project.VERSION_NAME
             testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
             vectorDrawables.useSupportLibrary = true
             signingConfig signingConfigs.zhiye_release
@@ -75,8 +75,8 @@ android {
             applicationId "com.about.zhiye"
             minSdkVersion 19
             targetSdkVersion 25
-            versionCode 13
-            versionName '1.2.0'
+            versionCode Integer.parseInt(project.VERSION_CODE)
+            versionName project.VERSION_NAME
             versionNameSuffix '(force)'
             testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
             vectorDrawables.useSupportLibrary = true
