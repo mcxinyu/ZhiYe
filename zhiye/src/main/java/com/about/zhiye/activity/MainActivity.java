@@ -560,7 +560,9 @@ public class MainActivity extends BaseAppCompatActivity
                         Log.d("MainActivity", result);
                         final AppBean appBean = getAppBeanFromString(result);
 
-                        if (appBean.getVersionName().contains("force")) {
+                        if (Integer.parseInt(appBean.getVersionCode()) >
+                                CheckUpdateHelper.getCurrentVersionCode(MainActivity.this)
+                                && appBean.getVersionName().contains("force")) {
                             mForceUpdateDialog = CheckUpdateHelper
                                     .buildForceUpdateDialog(MainActivity.this, appBean);
                         }
