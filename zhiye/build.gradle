@@ -53,8 +53,8 @@ android {
             applicationId "com.about.zhiye"
             minSdkVersion 19
             targetSdkVersion 25
-            versionCode 10
-            versionName '1.1.1'
+            versionCode 13
+            versionName '1.2.0'
             testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
             vectorDrawables.useSupportLibrary = true
             signingConfig signingConfigs.zhiye_release
@@ -75,12 +75,12 @@ android {
             applicationId "com.about.zhiye"
             minSdkVersion 19
             targetSdkVersion 25
-            versionCode 100
-            versionName '1.1.0'
+            versionCode 13
+            versionName '1.2.0'
+            versionNameSuffix '(force)'
             testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
             vectorDrawables.useSupportLibrary = true
             signingConfig signingConfigs.zhiye_release
-            versionNameSuffix '(force)'
 //            dimension "color"
         }
     }

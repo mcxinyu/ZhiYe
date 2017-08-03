@@ -49,7 +49,6 @@ import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
 import com.pgyersdk.feedback.PgyFeedback;
-import com.pgyersdk.feedback.PgyFeedbackShakeManager;
 import com.pgyersdk.javabean.AppBean;
 import com.pgyersdk.update.PgyUpdateManager;
 import com.pgyersdk.update.UpdateManagerListener;
@@ -168,12 +167,6 @@ public class MainActivity extends BaseAppCompatActivity
         }
 
         mHandler.sendEmptyMessageDelayed(WHAT_CHECK_UPDATE, 6000);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        PgyFeedbackShakeManager.unregister();
     }
 
     private void initBottomNavigation() {

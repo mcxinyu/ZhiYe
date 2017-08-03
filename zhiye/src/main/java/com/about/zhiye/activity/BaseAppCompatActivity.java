@@ -19,4 +19,10 @@ public class BaseAppCompatActivity extends AppCompatActivity {
             PgyFeedbackShakeManager.register(this);
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PgyFeedbackShakeManager.unregister();
+    }
 }
