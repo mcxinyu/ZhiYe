@@ -234,22 +234,27 @@ public class ZhiyePreferenceFragment extends PreferenceFragmentCompat
                 new UpdateManagerListener() {
                     @Override
                     public void onNoUpdateAvailable() {
-                        mCheckUpdatePreference.setSummary("当前为最新版本：" +
-                                CheckUpdateHelper.getCurrentVersionName(getActivity()));
+
                     }
 
                     @Override
                     public void onUpdateAvailable(String s) {
                         AppBean appBean = getAppBeanFromString(s);
 
-                        mCheckUpdatePreference.setSummary("最新版本：" +
-                                appBean.getVersionName() +
-                                "（当前版本：" +
-                                CheckUpdateHelper.getCurrentVersionName(getActivity()) + "）");
+                        if (Integer.parseInt(appBean.getVersionCode()) >
+                                CheckUpdateHelper.getCurrentVersionCode(getContext())) {
+                            mCheckUpdatePreference.setSummary("最新版本：" +
+                                    appBean.getVersionName() +
+                                    "（当前版本：" +
+                                    CheckUpdateHelper.getCurrentVersionName(getActivity()) + "）");
 
-                        mUpdateDialog = CheckUpdateHelper
-                                .buildUpdateDialog(getActivity(),
-                                        ZhiyePreferenceFragment.this, appBean);
+                            mUpdateDialog = CheckUpdateHelper
+                                    .buildUpdateDialog(getActivity(),
+                                            ZhiyePreferenceFragment.this, appBean);
+                        } else {
+                            mCheckUpdatePreference.setSummary("当前为最新版本：" +
+                                    CheckUpdateHelper.getCurrentVersionName(getActivity()));
+                        }
                     }
                 });
     }
