@@ -98,7 +98,7 @@ public class ZhiyePreferenceFragment extends PreferenceFragmentCompat
                     e.printStackTrace();
                     msg.what = -1;
                 }
-                handler.sendMessage(msg);
+                handler.sendMessageDelayed(msg, 1000);
             }
         }.start();
     }

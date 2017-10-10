@@ -19,16 +19,19 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,7 +48,9 @@ import com.about.zhiye.util.CheckUpdateHelper;
 import com.about.zhiye.util.QueryPreferences;
 import com.about.zhiye.util.StateUtils;
 import com.arlib.floatingsearchview.FloatingSearchView;
+import com.arlib.floatingsearchview.suggestions.SearchSuggestionsAdapter;
 import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
+import com.arlib.floatingsearchview.util.Util;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter;
 import com.pgyersdk.feedback.PgyFeedback;
@@ -322,6 +327,38 @@ public class MainActivity extends BaseAppCompatActivity
                 }
             }
         });
+
+        mSearchView.setOnBindSuggestionCallback(new SearchSuggestionsAdapter.OnBindSuggestionCallback() {
+            @Override
+            public void onBindSuggestion(View suggestionView, ImageView leftIcon,
+                                         TextView textView, SearchSuggestion item, int itemPosition) {
+                SearchNewsSuggestion colorSuggestion = (SearchNewsSuggestion) item;
+
+                // String textColor = mIsDarkSearchTheme ? "#ffffff" : "#000000";
+                // String textLight = mIsDarkSearchTheme ? "#bfbfbf" : "#787878";
+
+                String textColor = "#000000";
+                String textLight = "#787878";
+
+                if (colorSuggestion.isHistory()) {
+                    leftIcon.setImageDrawable(ResourcesCompat.getDrawable(getResources(),
+                            R.drawable.ic_history_black_24dp, null));
+
+                    Util.setIconColor(leftIcon, Color.parseColor(textColor));
+                    leftIcon.setAlpha(.36f);
+                } else {
+                    leftIcon.setAlpha(0.0f);
+                    leftIcon.setImageDrawable(null);
+                }
+
+                textView.setTextColor(Color.parseColor(textColor));
+                String text = colorSuggestion.getBody()
+                        .replaceFirst(mSearchView.getQuery(),
+                                "<font color=\"" + textLight + "\">" + mSearchView.getQuery() + "</font>");
+                textView.setText(Html.fromHtml(text));
+            }
+
+        });
     }
 
     private void selectDate() {
@@ -548,7 +585,7 @@ public class MainActivity extends BaseAppCompatActivity
 
     private void checkForUpdate() {
 
-        PgyUpdateManager.register(MainActivity.this, "com.about.zhiye",
+        PgyUpdateManager.register(MainActivity.this, "com.about.zhiye.pgy",
                 new UpdateManagerListener() {
                     @Override
                     public void onNoUpdateAvailable() {

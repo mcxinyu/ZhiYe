@@ -3,9 +3,10 @@
 buildscript {
     repositories {
         jcenter()
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.0.0-beta7'
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.5.1'
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -16,10 +17,11 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-        maven { url '"https://maven.google.com"' }
+        maven { url 'https://maven.google.com' }
         maven { url 'http://maven.bughd.com/public' }
         maven { url 'https://jitpack.io' }
-        maven { url "https://raw.githubusercontent.com/Pgyer/mvn_repo_pgyer/master" }
+        maven { url 'https://raw.githubusercontent.com/Pgyer/mvn_repo_pgyer/master' }
+        google()
     }
 }
 
