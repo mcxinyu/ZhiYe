@@ -551,7 +551,6 @@ public class MainActivity extends BaseAppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
-        PgyUpdateManager.unregister();
     }
 
     @Override
@@ -589,7 +588,7 @@ public class MainActivity extends BaseAppCompatActivity
                 new UpdateManagerListener() {
                     @Override
                     public void onNoUpdateAvailable() {
-
+                        PgyUpdateManager.unregister();
                     }
 
                     @Override
@@ -603,6 +602,8 @@ public class MainActivity extends BaseAppCompatActivity
                             mForceUpdateDialog = CheckUpdateHelper
                                     .buildForceUpdateDialog(MainActivity.this, appBean);
                         }
+
+                        PgyUpdateManager.unregister();
                     }
                 });
     }

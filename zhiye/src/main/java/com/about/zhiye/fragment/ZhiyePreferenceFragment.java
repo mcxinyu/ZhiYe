@@ -234,7 +234,7 @@ public class ZhiyePreferenceFragment extends PreferenceFragmentCompat
                 new UpdateManagerListener() {
                     @Override
                     public void onNoUpdateAvailable() {
-
+                        PgyUpdateManager.unregister();
                     }
 
                     @Override
@@ -255,14 +255,9 @@ public class ZhiyePreferenceFragment extends PreferenceFragmentCompat
                             mCheckUpdatePreference.setSummary("当前为最新版本：" +
                                     CheckUpdateHelper.getCurrentVersionName(getActivity()));
                         }
+                        PgyUpdateManager.unregister();
                     }
                 });
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        PgyUpdateManager.unregister();
     }
 
     private void startAboutActivity() {

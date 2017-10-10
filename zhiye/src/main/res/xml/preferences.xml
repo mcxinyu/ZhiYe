@@ -61,11 +61,11 @@
             android:key="setting_about"
             android:summary="没有工作室 No own a house"
             android:title="@string/title_settings_others_about"/>
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:enabled="true"
-            android:key="setting_shake_feedback"
-            android:title="@string/title_setting_shake_feedback"/>
+        <!--<CheckBoxPreference-->
+        <!--android:defaultValue="true"-->
+        <!--android:enabled="true"-->
+        <!--android:key="setting_shake_feedback"-->
+        <!--android:title="@string/title_setting_shake_feedback"/>-->
         <PreferenceScreen
             android:key="setting_feedback"
             android:title="@string/title_settings_feedback"/>
